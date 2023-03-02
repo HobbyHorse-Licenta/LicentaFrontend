@@ -5,4 +5,5 @@ import ScheduleSvg from "./ScheduleSvg";
 import MyEventsSvg from "./MyEventsSvg";
 import ProfileSvg from "./ProfileSvg";
 import PlusSvg from "./PlusSvg";
-export {ChatSvg, AllEventsSvg, MapsSvg, ScheduleSvg, MyEventsSvg, ProfileSvg, PlusSvg}
+import LocationSvg from "./LocationSvg";
+export {ChatSvg, AllEventsSvg, MapsSvg, ScheduleSvg, MyEventsSvg, ProfileSvg, PlusSvg, LocationSvg}

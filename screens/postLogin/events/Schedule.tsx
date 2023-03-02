@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 import { scale } from "react-native-size-matters";
 
 import { SpacingStyles } from '../../../styles';
-import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '../../../components/schedule';
+import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectTime } from '../../../components/schedule';
 // import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '@schedule';
 import Layout3Piece from "../Layout3Piece";
 
@@ -24,6 +24,9 @@ const Schedule = () => {
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
          <AddSports></AddSports>
+        </View>
+        <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
+         <SelectLocation></SelectLocation>
         </View>
       </View>
     );
