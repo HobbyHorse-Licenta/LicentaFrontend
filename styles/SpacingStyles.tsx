@@ -66,6 +66,17 @@ export const SpacingStyles = StyleSheet.create({
         justifyContent: 'center',
         margin: scale(7)
       },
+      selectTimeContainer: {
+        borderRadius: 15, 
+        minHeight: 25,
+        minWidth: 25,
+        maxHeight: 200,
+        maxWidth: 200, 
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: scale(30),
+        margin: scale(15)
+      },
       row: { flexDirection: "row" },
       timeContainer: { justifyContent: "center", flex: 1, alignItems: "center" },
       timeText: { fontSize: scale(80) },

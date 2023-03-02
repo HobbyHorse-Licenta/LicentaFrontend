@@ -19,8 +19,8 @@ const Schedule = () => {
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 1, flexDirection: 'row'}]}>
           <Text>Time</Text>
-          <SelectTime></SelectTime>
-          <SelectTime></SelectTime>
+          <SelectTime textAbovePicker="Start time"></SelectTime>
+          <SelectTime textAbovePicker="End time"></SelectTime>
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
          <AddSports></AddSports>
