@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { Text, TextInput, Button } from 'react-native-paper';
+import { View } from 'react-native';
 
+import { SafeAreaView } from 'react-navigation';
+
+import { Text, TextInput, Button } from 'react-native-paper';
 
 const LoginScreen = () => {
 
@@ -11,7 +13,7 @@ const LoginScreen = () => {
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
 
-    // //const {loginAccountWrapper} = useContext(AuthContext);
+    
     const handleLogin = async () => {
         // try{
         //     await loginAccountWrapper(email,password);

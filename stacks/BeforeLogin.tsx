@@ -1,11 +1,12 @@
-import {NavigationContainer} from '@react-navigation/native';
+import React from 'react';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { LoadingScreen, LoginScreen, SignUpScreen } from '../screens/preLogin';
 
 const BeforeLogin = () => {
 
   const Stack = createNativeStackNavigator();
-  
   
   return ( 
     //<NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>

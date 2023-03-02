@@ -1,3 +1,3 @@
 import EventsHeader from "./EventsHeader";
-
-export {EventsHeader}
+import EventsBody from './EventsBody'
+export {EventsHeader, EventsBody}

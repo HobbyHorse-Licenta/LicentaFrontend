@@ -1,26 +1,41 @@
-import React, {FC} from 'react'
+import React from 'react'
 import { View, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
-import {IconButton} from '../general';
 
+import { useTheme } from 'react-native-paper';
 
-const EventsHeader: FC = () => {
+import {ChatSvg} from '../svg/general';
+import { SpacingStyles } from '../../styles';
+
+const EventsHeader = () => {
+
+    const theme = useTheme();
 
     return(
-        <View style={styles.container}>
-            <View style={{height: '80%', width:'20%', alignSelf: 'flex-end'}}>
-                <IconButton path='../../assets/chatIcon.png'></IconButton>
+        <View style={[SpacingStyles.fullSizeContainer, styles.container, {backgroundColor: theme.colors.surface}]}>
+            <View style={{height: '80%', width:'80%'}}>
+                
+            </View>
+            <View style={[styles.svg, {backgroundColor: theme.colors.onSurface}]}>
+               
+            </View>
+            <View onTouchEnd={() => console.log("Chat")} style={{height: '80%', width:'18%'}}>
+                <ChatSvg></ChatSvg>
             </View>
         </View>
     );
 };
 
+export default EventsHeader;
+
 const styles = StyleSheet.create({
     container: {
-        height: '100%',
-        width: '100%',
         flexDirection: 'row',
+        alignItems: 'center',
+    },
+    svg: {
+        height: '60%',
+        width:'0.5%',
+        margin: '1%',
     }
 })
 
-export default EventsHeader;

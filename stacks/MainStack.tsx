@@ -1,13 +1,9 @@
-import {Text } from 'react-native';
+import React from 'react';
+
 import { SafeAreaView } from 'react-navigation';
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import * as Linking from 'expo-linking';
+
 import BeforeLogin from './BeforeLogin';
-import AfterLogin from './AfterLogin';
-
-
-
 
 const MainStack = () => {
 
@@ -17,12 +13,10 @@ const MainStack = () => {
   //   prefixes: [Linking.createURL('/'), 'http://localhost:19007'],
   // };
 
-
-  
   return ( 
-    <NavigationContainer>
       <SafeAreaView>
         <Stack.Navigator>
+          <Stack.Screen name="BeforeLogin" component={BeforeLogin}/>
         {
           // (false) ? (
           //   <>
@@ -33,13 +27,9 @@ const MainStack = () => {
           //     <Stack.Screen name="BeforeLogin" component={BeforeLogin}/>
           //     </>
           //   )
-          <>
-              <Stack.Screen name="BeforeLogin" component={BeforeLogin}/>
-              </>
         }
         </Stack.Navigator>
       </SafeAreaView>
-    </NavigationContainer>
   );
 }
 

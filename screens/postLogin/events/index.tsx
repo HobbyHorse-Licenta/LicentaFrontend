@@ -1,3 +1,3 @@
 import AllEvents from "./AllEvents";
-
-export {AllEvents}
+import Schedule from "./Schedule";
+export {AllEvents, Schedule}
