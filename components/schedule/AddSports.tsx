@@ -1,5 +1,8 @@
 import React from 'react'
-import {Text, View, FlatList } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
+
+import {verticalScale} from 'react-native-size-matters'
+import {Text, useTheme} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles'
 import { SportTile } from '../general';
@@ -7,21 +10,21 @@ import PlusTile from '../general/PlusTile';
 
 const AddSports = () => {
 
+    const theme = useTheme();
+
     return(
-       <View>
+       <View style={[SpacingStyles.centeredContainer, styles.addSportsContainer , {backgroundColor: theme.colors.primary}]}>
             <Text>Sports</Text>
            
             <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
                 <FlatList   data={
                             [<PlusTile></PlusTile>,
-                            <SportTile sport='Tennis' ></SportTile>,
-                            <SportTile sport='Ping-Pong' ></SportTile>,
-                            <SportTile sport='Basketball' ></SportTile>,
-                            <SportTile sport='Hiking' ></SportTile>,
-                            <SportTile sport='Tennis' ></SportTile>,
-                            <SportTile sport='Ping-Pong' ></SportTile>,
-                            <SportTile sport='Basketball' ></SportTile>,
-                            <SportTile sport='Hiking' ></SportTile>]}
+                            <SportTile sport={{sportName: 'Tennis'}} color={theme.colors.secondary}></SportTile>,
+                            <SportTile sport={{sportName: 'Ping-Pong'}} color={theme.colors.secondary}></SportTile>,
+                            <SportTile sport={{sportName: 'Hiking'}} color={theme.colors.secondary}></SportTile>,
+                            <SportTile sport={{sportName: 'Basketball'}} color={theme.colors.secondary}></SportTile>,
+                            <SportTile sport={{sportName: 'Tennis'}} color={theme.colors.secondary}></SportTile>,
+                            <SportTile sport={{sportName: 'Hiking'}} color={theme.colors.secondary}></SportTile>]}
 
                             renderItem = {
                                 ({item, index, separators}) => (<View>{item}</View>)
@@ -35,3 +38,10 @@ const AddSports = () => {
 };
 
 export default AddSports;
+
+const styles = StyleSheet.create({
+    addSportsContainer: {
+        borderRadius: 15,
+        padding: verticalScale(15)
+    }
+});

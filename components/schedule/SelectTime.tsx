@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Pressable, View, Text, StyleSheet} from "react-native";
+import { Pressable, View, StyleSheet} from "react-native";
 
-import {useTheme} from 'react-native-paper'
+import {useTheme, Text} from 'react-native-paper'
 import { scale } from "react-native-size-matters";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
@@ -36,17 +36,26 @@ const SelectTime = ({textAbovePicker} : timePickerInput) => {
 
   return (
       <View style={[SpacingStyles.selectTimeContainer,{backgroundColor: theme.colors.onSecondaryContainer, flexWrap: 'nowrap'}]}>
-          <Text >
+          <Text variant='bodyMedium'>
             {textAbovePicker}
           </Text>
-          
-        <Pressable onPress={handleChangeTime} style={styles.picker}>
-          <Text >
-           {time.getHours()} : {time.getMinutes()}
-          </Text>
-        </Pressable>
+        {/* <Shadow distance={4} offset={[1,1]} startColor={theme.colors.onSecondaryContainer} endColor={'#DADADA'}> 
+          <Pressable onPress={handleChangeTime} style={styles.picker}>
+            <Text >
+              {time.getHours()} : {time.getMinutes()}
+            </Text>
+         </Pressable>
+        </Shadow> */}
+         <Pressable onPress={handleChangeTime} style={[styles.picker]}>
+            <Text>
+              {time.getHours()} : {time.getMinutes()}
+            </Text>
+         </Pressable>
+       
         
+
         <DateTimePickerModal
+          style={styles.activePicker}
           isVisible={isDatePickerVisible}
           mode="time"
           display="spinner"
@@ -69,6 +78,15 @@ export default SelectTime;
 
 const styles = StyleSheet.create({
     picker: {
-      margin: scale(10)
+      margin: scale(10),
+      borderRadius: 10,
+      shadowOffset: {width: -2, height: 4},  
+      shadowColor: '#DADADA',  
+      shadowOpacity: 0.2,  
+      shadowRadius: 3,  
+    },
+    activePicker: {
+      width: scale(200),
+      height: scale(200)
     }
 });

@@ -1,7 +1,8 @@
 import React from "react";
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 
 import { scale } from "react-native-size-matters";
+import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../../styles';
 import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectTime } from '../../../components/schedule';
@@ -18,7 +19,6 @@ const Schedule = () => {
           <SelectDays></SelectDays>
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 1, flexDirection: 'row'}]}>
-          <Text>Time</Text>
           <SelectTime textAbovePicker="Start time"></SelectTime>
           <SelectTime textAbovePicker="End time"></SelectTime>
         </View>

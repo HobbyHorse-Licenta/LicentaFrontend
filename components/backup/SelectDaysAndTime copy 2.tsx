@@ -1,7 +1,8 @@
 
 import React, { useCallback, useState } from "react";
-import { Alert, Platform, Pressable, ToastAndroid, View, Button, Text} from "react-native";
+import { Alert, Platform, Pressable, ToastAndroid, View, Button} from "react-native";
 
+import {Text} from 'react-native-paper'
 import { SafeAreaView } from "react-navigation";
 //import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import DateTimePickerModal from "react-native-modal-datetime-picker";

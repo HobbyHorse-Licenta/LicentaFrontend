@@ -1,7 +1,8 @@
 import React, { useState, useEffect} from 'react'
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
 
 import { scale } from 'react-native-size-matters';
+import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles';
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect} from 'react'
-import { View, StyleSheet, Dimensions, Text, Image} from 'react-native';
+import { View, StyleSheet, Dimensions, Image} from 'react-native';
 
 import { verticalScale } from 'react-native-size-matters';
-import { useTheme } from 'react-native-paper';
+import { useTheme, Text } from 'react-native-paper';
 
 import Button from './Button';
 import { EventDescription } from '../../types';

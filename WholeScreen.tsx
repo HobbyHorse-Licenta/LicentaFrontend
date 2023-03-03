@@ -17,6 +17,7 @@ const WholeScreen = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
 
+    
     useEffect(() => {
       const notifSize = SizeUtil.getDefaultNotificationBarSize();
       dispatch(setNotificationBarHeight(notifSize));
@@ -26,13 +27,15 @@ const WholeScreen = () => {
 
       const windowsSize = SizeUtil.getWindowSize();
       dispatch(setWindowHeight(windowsSize));
-    }, [])
-   
+
+
+    }, []);
+
     return (
        
       <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
       
-      <View style={{width: '100%', height: notificationBarHeight, backgroundColor: theme.colors.surface}}>
+      <View style={{width: '100%', height: notificationBarHeight}}>
       </View>
 
       <View style={{height: SizeUtil.getWindowSize(), width:'100%', justifyContent:'center', alignItems: 'center'}}>

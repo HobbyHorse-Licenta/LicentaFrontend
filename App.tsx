@@ -1,41 +1,52 @@
-import React from 'react'
-import {Provider as PaperProvider} from 'react-native-paper'
+import React, { useEffect } from 'react'
+
+import { MD3Type } from 'react-native-paper/src/types';
+import { Provider as ReduxProvider } from 'react-redux';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import {configureFonts, Provider as PaperProvider} from 'react-native-paper'
+
 import WholeScreen from './WholeScreen';
 import store from './redux/store'
-import { Provider as ReduxProvider, useSelector } from 'react-redux';
 import { COLORS } from './assets/colors/colors';
+import useFonts from './hooks/useFonts';
+import { LoadingScreen } from './screens/preLogin';
+
 
 const theme = {
   "colors": {
-    "primary": COLORS.sandyBrown,
-    "onPrimary": "white",
-    "primaryContainer": COLORS.sandyBrown,
-    "onPrimaryContainer": COLORS.frenchGray,
+    "primary": COLORS.aComponentPrimary,
+    "onPrimary": COLORS.aTextPrimary,
+    
+    "primaryContainer": COLORS.yellow,
+    "onPrimaryContainer": COLORS.yellow,
 
-    "secondary": COLORS.battleshipGray,
-    "onSecondary": "white",
-    "secondaryContainer": COLORS.battleshipGray,
-    "onSecondaryContainer": COLORS.ghostWhite,
+    "secondary": COLORS.aComponenySecondary,
+    "onSecondary": COLORS.aTextPrimary,
 
-    "tertiary": "rgb(70, 102, 75)",
-    "onTertiary": "rgb(255, 255, 255)",
-    "tertiaryContainer": "rgb(200, 236, 201)",
-    "onTertiaryContainer": "rgb(3, 33, 12)",
+    "secondaryContainer": COLORS.yellow,
+    "onSecondaryContainer": COLORS.yellow,
+
+    "tertiary": COLORS.aPrimaryColorOverall,
+    "onTertiary": "white",
+
+    "tertiaryContainer": COLORS.yellow,
+    "onTertiaryContainer": COLORS.yellow,
 
     "error": "rgb(186, 26, 26)",
     "onError": "rgb(255, 255, 255)",
     "errorContainer": "rgb(255, 218, 214)",
     "onErrorContainer": "rgb(65, 0, 2)",
     
-    "background": "white",
-    "onBackground": COLORS.violet,
+    "background": COLORS.aBackground,
+    "onBackground": COLORS.aTextSecondary,
 
-    "surface": COLORS.violet,
-    "onSurface": "white",
+    "surface": COLORS.aComponentPrimary,
+    "onSurface": COLORS.aTextPrimary,
 
-    "surfaceVariant": "rgb(235, 225, 207)",
-    "onSurfaceVariant": "rgb(76, 70, 57)",
-    "outline": "rgb(125, 118, 103)",
+    "surfaceVariant": COLORS.aTextPrimary,
+    "onSurfaceVariant": COLORS.aTextPrimary,
+    "outline": COLORS.aTextPrimary,
+
     "outlineVariant": "rgb(207, 198, 180)",
     "shadow": "rgb(0, 0, 0)",
     "scrim": "rgb(0, 0, 0)",
@@ -60,12 +71,20 @@ const theme = {
 
 export default function App() {
 
- 
+  const loadFonst = async() => {
+    await useFonts();
+  }
+  useEffect(() => {
+    EStyleSheet.build();
+    loadFonst();
+  }, [])
+  
+
   return (
     <ReduxProvider store={store}>
-        <PaperProvider theme={theme}>
-          <WholeScreen></WholeScreen>
-        </PaperProvider>
+      <PaperProvider theme={theme}>
+        <WholeScreen></WholeScreen>
+      </PaperProvider>
     </ReduxProvider>
   );
 }

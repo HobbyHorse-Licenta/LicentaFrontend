@@ -4,7 +4,7 @@ interface UIState {
     notificationBarHeight: number,
     navigationBarHeight: number,
     topBarHeight: number,
-    windowHeight: number 
+    windowHeight: number ,
     bottomBarHeight: number
 }
 
@@ -14,7 +14,7 @@ const initialState: UIState = {
     windowHeight: 0,
     topBarHeight: 0, 
     bottomBarHeight: 0
-  }
+}
 
 export const uiSlice = createSlice({
     name: 'ui',
@@ -35,6 +35,7 @@ export const uiSlice = createSlice({
         setBottomBarHeight: (state, action: PayloadAction<number>) => {
             state.bottomBarHeight = action.payload;
         }
+      
     }
 });
 

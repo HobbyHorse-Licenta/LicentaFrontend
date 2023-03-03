@@ -5,16 +5,19 @@ import { useTheme } from 'react-native-paper';
 import { useSvg } from '../../hooks';
 
 import { SpacingStyles } from '../../styles';
-import { SportName } from '../../types';
+import { Sport } from '../../types';
 
+interface SportTileParam {
+    sport: Sport,
+    color: string
+}
 
-
-const SportTile = ({sport}:SportName) => {
+const SportTile = ({sport, color}: SportTileParam)  => {
 
     const theme = useTheme();
-    const svg = useSvg({sport});
+    const svg = useSvg(sport);
     return(
-        <View style={[SpacingStyles.tile, {backgroundColor: theme.colors.onSecondaryContainer}]}>
+        <View style={[SpacingStyles.tile, {backgroundColor: color}]}>
             {svg}
         </View>
    

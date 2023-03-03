@@ -9,10 +9,6 @@ export type EventDescription = {
   note: string;
 };
 
-export type SportName = {
-  sport: 'Basketball' | 'Tennis' | 'Bowling' | 'Biliard' | 'Ping-Pong' | 'Hiking'
-}
-
-export type Sports = {
-  sportName: SportName
+export type Sport = {
+  sportName: 'Basketball' | 'Tennis' | 'Bowling' | 'Biliard' | 'Ping-Pong' | 'Hiking'
 }

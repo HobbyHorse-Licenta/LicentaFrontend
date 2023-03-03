@@ -1,5 +1,7 @@
 import React from 'react'
-import { ImageBackground, View, Text, StyleSheet } from 'react-native';
+import { ImageBackground, View, StyleSheet } from 'react-native';
+
+import {Text} from 'react-native-paper'
 
 const TextImage = () => {
     const image = {uri: 'https://i.postimg.cc/tR26nKb9/basket.jpg'};

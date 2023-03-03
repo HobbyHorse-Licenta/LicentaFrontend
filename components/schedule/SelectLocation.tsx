@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {Text, View} from 'react-native';
+import {View} from 'react-native';
 
 import { scale } from 'react-native-size-matters';
+import {Text} from 'react-native-paper'
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
 import { SpacingStyles } from "../../styles";

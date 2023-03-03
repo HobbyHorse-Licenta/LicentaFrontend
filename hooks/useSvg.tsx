@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { BasketballSvg, TableTennisSVG, HikingSvg, TennisSvg } from '../components/svg/sports';
-import {SportName} from '../types'
+import {Sport} from '../types'
 
-export default function useSvg(sport : SportName){
+export default function useSvg({sportName} : Sport){
 
-    switch(sport.sport) {
+    switch(sportName) {
         case 'Ping-Pong':
           return <TableTennisSVG></TableTennisSVG>;
         case 'Basketball':

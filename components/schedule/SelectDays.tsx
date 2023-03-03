@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from "react";
-import { Pressable, View, Text} from "react-native";
+import { Pressable, View} from "react-native";
 
-import { useTheme } from "react-native-paper";
+import { useTheme, Text } from "react-native-paper";
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { SpacingStyles } from '../../styles'
 import {Day} from '../../types';
@@ -38,7 +39,9 @@ const SelectDays = () => {
   };
 
   return (
-      <View style={SpacingStyles.daysContainer}>
+    <View style={[styles.daysContainer,{
+      backgroundColor: 'purple'}]}>
+      {/* <View style={[SpacingStyles.daysContainer, {backgroundColor: theme.colors.primary}]}>
           {days.map((day) => {
             return (
               <Pressable key={day.index} onPress={() => selectDay(day)}>
@@ -56,8 +59,18 @@ const SelectDays = () => {
               </Pressable>
             );
           })}
-        </View>
+        </View> */}
+    </View>
+     
   );
 };
 
 export default SelectDays;
+
+const styles = EStyleSheet.create({
+  selectDaysContainer:{
+    borderRadius: 20,
+    width: 80,
+    height: 30
+  }
+});

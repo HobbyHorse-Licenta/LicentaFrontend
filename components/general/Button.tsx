@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react'
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet } from 'react-native';
 
-import { useTheme } from 'react-native-paper';
+import { useTheme, Text } from 'react-native-paper';
 
 interface Params {
     text: string,

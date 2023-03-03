@@ -1,7 +1,8 @@
 import React, { useState} from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
+import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles';
 
