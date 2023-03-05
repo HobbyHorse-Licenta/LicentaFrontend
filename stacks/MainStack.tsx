@@ -1,35 +1,40 @@
 import React from 'react';
+import {View} from 'react-native'
 
-import { SafeAreaView } from 'react-navigation';
+import { useSelector } from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import BeforeLogin from './BeforeLogin';
+import AfterLogin from './AfterLogin';
+import { SpacingStyles } from '../styles';
 
 const MainStack = () => {
 
+  const { isLoggedIn } = useSelector((state: any) => state.appState)
+
   const Stack = createNativeStackNavigator();
 
-  // const linking = {
-  //   prefixes: [Linking.createURL('/'), 'http://localhost:19007'],
-  // };
-
   return ( 
-      <SafeAreaView>
-        <Stack.Navigator>
-          <Stack.Screen name="BeforeLogin" component={BeforeLogin}/>
-        {
-          // (false) ? (
-          //   <>
-          //     <Stack.Screen name="AfterLogin" component={AfterLogin}/>
-          //   </>
-          //   ) : (
-          //     <>
-          //     <Stack.Screen name="BeforeLogin" component={BeforeLogin}/>
-          //     </>
-          //   )
-        }
+    <View style={[SpacingStyles.fullSizeContainer]}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {
+            (false) ? (
+              <>
+                <Stack.Screen name="AfterLogin" component={AfterLogin}/>
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="BeforeLogin" component={BeforeLogin}/>
+              </>
+            )
+          }
         </Stack.Navigator>
-      </SafeAreaView>
+      </NavigationContainer>
+    </View>
+   
+       
   );
 }
 

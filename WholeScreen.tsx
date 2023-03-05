@@ -1,5 +1,5 @@
 import React, { useEffect} from 'react'
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'react-native-paper';
@@ -8,6 +8,7 @@ import { AllEvents, Schedule } from './screens/postLogin/events';
 import { SizeUtil } from './utils';
 import { setNavigationBarHeight, setNotificationBarHeight, setWindowHeight } from './redux/ui';
 import { EditProfile } from './screens/postLogin/profile';
+import MainStack from './stacks/MainStack';
 
 
 const WholeScreen = () => {
@@ -34,14 +35,12 @@ const WholeScreen = () => {
     return (
        
       <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      
-      <View style={{width: '100%', height: notificationBarHeight}}>
+      <View style={[{width: '100%', height: notificationBarHeight},
+            Platform.OS === "ios" ? {backgroundColor: theme.colors.surface} : null ]}>
       </View>
 
-      <View style={{height: SizeUtil.getWindowSize(), width:'100%', justifyContent:'center', alignItems: 'center'}}>
-         {/* <AllEvents></AllEvents> */}
-         {/* <EditProfile></EditProfile> */}
-         <Schedule></Schedule>
+      <View style={{ width:'100%', justifyContent:'center', alignItems: 'center', backgroundColor: 'purple'}}>
+         <MainStack></MainStack>
       </View>
 
       <View style={{width: '100%', height: navigationBarHeight}}>

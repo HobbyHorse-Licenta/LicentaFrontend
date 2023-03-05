@@ -1,8 +1,8 @@
 import React from 'react'
 import { View, FlatList, StyleSheet } from 'react-native';
 
-import {verticalScale} from 'react-native-size-matters'
 import {Text, useTheme} from 'react-native-paper'
+import { verticalScale } from 'react-native-size-matters';
 
 import { SpacingStyles } from '../../styles'
 import { SportTile } from '../general';
@@ -13,7 +13,7 @@ const AddSports = () => {
     const theme = useTheme();
 
     return(
-       <View style={[SpacingStyles.centeredContainer, styles.addSportsContainer , {backgroundColor: theme.colors.primary}]}>
+       <View style={[styles.addSportsContainer, SpacingStyles.containerInsideSchedule , {backgroundColor: theme.colors.primary}]}>
             <Text>Sports</Text>
            
             <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
@@ -41,7 +41,7 @@ export default AddSports;
 
 const styles = StyleSheet.create({
     addSportsContainer: {
-        borderRadius: 15,
-        padding: verticalScale(15)
+        padding: verticalScale(15),
     }
+    
 });

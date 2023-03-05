@@ -5,9 +5,9 @@ import { scale } from "react-native-size-matters";
 import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../../styles';
-import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectTime } from '../../../components/schedule';
+import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange} from '../../../components/schedule';
 // import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '@schedule';
-import Layout3Piece from "../Layout3Piece";
+import { Layout3Piece } from '../../layouts';
 
 const Schedule = () => {
 
@@ -18,9 +18,8 @@ const Schedule = () => {
           <Text>Days</Text>
           <SelectDays></SelectDays>
         </View>
-        <View style={[SpacingStyles.centeredContainer, {flex: 1, flexDirection: 'row'}]}>
-          <SelectTime textAbovePicker="Start time"></SelectTime>
-          <SelectTime textAbovePicker="End time"></SelectTime>
+        <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
+          <SelectHourRange></SelectHourRange>
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
          <AddSports></AddSports>
@@ -34,9 +33,9 @@ const Schedule = () => {
 
   return (
      <Layout3Piece 
-                   header={<ScheduleHeader></ScheduleHeader>}
-                   body={getBody()}
-                   footer={<View></View>}
+        header={<ScheduleHeader></ScheduleHeader>}
+        body={getBody()}
+        footer={<View></View>}
      ></Layout3Piece>
   );
 };

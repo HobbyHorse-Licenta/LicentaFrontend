@@ -1,15 +1,13 @@
 import React, { useEffect } from 'react'
 
-import { MD3Type } from 'react-native-paper/src/types';
 import { Provider as ReduxProvider } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {configureFonts, Provider as PaperProvider} from 'react-native-paper'
+import { Provider as PaperProvider} from 'react-native-paper'
 
 import WholeScreen from './WholeScreen';
 import store from './redux/store'
 import { COLORS } from './assets/colors/colors';
 import useFonts from './hooks/useFonts';
-import { LoadingScreen } from './screens/preLogin';
 
 
 const theme = {
@@ -18,13 +16,13 @@ const theme = {
     "onPrimary": COLORS.aTextPrimary,
     
     "primaryContainer": COLORS.yellow,
-    "onPrimaryContainer": COLORS.yellow,
+    "onPrimaryContainer": COLORS.aPrimaryColorOverall, //rings on 
 
     "secondary": COLORS.aComponenySecondary,
     "onSecondary": COLORS.aTextPrimary,
 
     "secondaryContainer": COLORS.yellow,
-    "onSecondaryContainer": COLORS.yellow,
+    "onSecondaryContainer": COLORS.aPrimaryColorOverall, //small things
 
     "tertiary": COLORS.aPrimaryColorOverall,
     "onTertiary": "white",
@@ -40,7 +38,8 @@ const theme = {
     "background": COLORS.aBackground,
     "onBackground": COLORS.aTextSecondary,
 
-    "surface": COLORS.aComponentPrimary,
+    "surface": COLORS.aPrimaryColorOverall, //header
+    // "surface": COLORS.aComponentPrimary, //header
     "onSurface": COLORS.aTextPrimary,
 
     "surfaceVariant": COLORS.aTextPrimary,
@@ -83,7 +82,7 @@ export default function App() {
   return (
     <ReduxProvider store={store}>
       <PaperProvider theme={theme}>
-        <WholeScreen></WholeScreen>
+          <WholeScreen></WholeScreen>
       </PaperProvider>
     </ReduxProvider>
   );

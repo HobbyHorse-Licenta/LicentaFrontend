@@ -7,6 +7,17 @@ export const SpacingStyles = StyleSheet.create({
         height: '100%',
         width: '100%',
     },
+    header: {
+      height: '100%',
+      width: '100%',
+      borderBottomRightRadius: 60,
+      borderBottomLeftRadius: 60
+    },
+    bottomHeaderAddOn: {
+      height: verticalScale(20),
+      borderBottomRightRadius: 10,
+      borderBottomLeftRadius: 10
+    },
     centeredContainer: {
         alignItems: 'center',
         justifyContent:'center'
@@ -76,6 +87,11 @@ export const SpacingStyles = StyleSheet.create({
         justifyContent: 'center',
         padding: scale(30),
         margin: scale(15)
+      },
+      containerInsideSchedule: {
+        borderRadius: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
       },
       row: { flexDirection: "row" },
       timeContainer: { justifyContent: "center", flex: 1, alignItems: "center" },

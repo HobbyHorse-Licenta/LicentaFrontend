@@ -4,6 +4,7 @@ import { Pressable, View, StyleSheet} from "react-native";
 import {useTheme, Text} from 'react-native-paper'
 import { scale } from "react-native-size-matters";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { SpacingStyles } from '../../styles'
 import Strings from './../../assets/strings'
@@ -52,7 +53,6 @@ const SelectTime = ({textAbovePicker} : timePickerInput) => {
             </Text>
          </Pressable>
        
-        
 
         <DateTimePickerModal
           style={styles.activePicker}

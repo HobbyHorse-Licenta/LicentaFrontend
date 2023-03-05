@@ -11,7 +11,7 @@ const EventsHeader = () => {
     const theme = useTheme();
 
     return(
-        <View style={[SpacingStyles.fullSizeContainer, styles.container, {backgroundColor: theme.colors.surface}]}>
+        <View style={[SpacingStyles.fullSizeContainer, styles.container]}>
             <View style={{height: '80%', width:'80%'}}>
                 
             </View>

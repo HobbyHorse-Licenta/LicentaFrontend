@@ -1,13 +1,14 @@
 import React from 'react';
-import {Image, View } from 'react-native';
+import {View } from 'react-native';
+
+import * as Animatable from 'react-native-animatable';
 
 const LoadingScreen = () => {
     
   return (
     <View style={{width: '100%', height: '100%', justifyContent:'center', alignItems:'center'}}>
-        <Image style={{resizeMode:'center'}}
-        source={require('../../assets/hobby_horse.png')}
-        ></Image>
+       <Animatable.Image animation="swing" iterationCount={Infinity} iterationDelay={4000} style={{resizeMode:'center'}}
+        source={require('../../assets/randomPics/hobby_horse.png')}></Animatable.Image>
     </View>
   );
 };

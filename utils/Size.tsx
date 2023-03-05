@@ -1,5 +1,6 @@
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import {Dimensions} from 'react-native'
+import { verticalScale } from 'react-native-size-matters';
 
 const screenHeight = Dimensions.get('screen').height;
 const windowHeight = Dimensions.get('window').height;
