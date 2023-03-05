@@ -9,7 +9,7 @@ const AfterLogin = () => {
   const Stack = createNativeStackNavigator();
   
   return ( 
-    <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Schedule'>
+    <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='AllEvents'>
         <Stack.Screen name="AllEvents" component={AllEvents} />
         <Stack.Screen name="Schedule" component={Schedule} />
     </Stack.Navigator>

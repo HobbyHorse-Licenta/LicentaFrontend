@@ -1,7 +1,7 @@
 const Authentication = {
 
     loginCredentialsValid: function(){
-        return false;
+        return true;
     }
    
 };

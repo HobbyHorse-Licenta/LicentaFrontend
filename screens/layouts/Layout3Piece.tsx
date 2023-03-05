@@ -15,7 +15,7 @@ const Layout3Piece = ({header, body, footer} : Params) => {
     const {windowHeight} = useSelector((state: any) => state.ui)
    
     return (
-        <SafeAreaView style={{width: '100%', height: windowHeight, display: 'flex', backgroundColor: 'lightblue'}}>
+        <SafeAreaView style={{width: '100%', height: windowHeight, display: 'flex'}}>
             <View style={{flex: 1.3, width: '100%'}}>
                 {header}
             </View>

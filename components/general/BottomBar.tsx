@@ -13,32 +13,26 @@ const BottomBar = () => {
     const theme = useTheme();
 
     return(
-        <View style={[SpacingStyles.fullSizeContainer, styles.container, {backgroundColor: theme.colors.surface}]}>
+        <View style={[SpacingStyles.fullSizeContainer, styles.container, {backgroundColor: theme.colors.primary}]}>
             
             <View onTouchEnd={() => console.log("Schedule")} style={styles.svg}>
                <ScheduleSvg></ScheduleSvg>
             </View>
 
-            <View style={[styles.barSize, {backgroundColor: theme.colors.onSurface}]}>
-            </View>
             <View onTouchEnd={() => console.log("MyEvents")} style={styles.svg}>
                <MyEventsSvg></MyEventsSvg>
             </View>
 
-            <View style={[styles.barSize, {backgroundColor: theme.colors.onSurface}]}>
-            </View>
             <View onTouchEnd={() => console.log("AllEvents")} style={styles.svg}>
                 <AllEventsSvg></AllEventsSvg>
             </View>
 
-            <View style={[styles.barSize, {backgroundColor: theme.colors.onSurface}]}>
-            </View>
+            {/* <View style={[styles.barSize, {backgroundColor: theme.colors.onSurface}]}>
+            </View> */}
             <View onTouchEnd={() => console.log("Maps")} style={styles.svg}>
                <MapsSvg></MapsSvg>
             </View>
 
-            <View style={[styles.barSize, {backgroundColor: theme.colors.onSurface}]}>
-            </View>
             <View onTouchEnd={() => console.log("MyProfile")} style={styles.svg}>
                <ProfileSvg></ProfileSvg>
             </View>
@@ -55,6 +49,8 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between'
+        
     },
     barSize: {
         height: '60%',

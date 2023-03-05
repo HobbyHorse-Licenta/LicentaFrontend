@@ -20,7 +20,7 @@ const MainStack = () => {
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {
-            (false) ? (
+            (isLoggedIn) ? (
               <>
                 <Stack.Screen name="AfterLogin" component={AfterLogin}/>
               </>

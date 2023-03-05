@@ -9,6 +9,8 @@ import NotificationPopup from 'react-native-push-notification-popup';
 import { SpacingStyles } from '../../styles';
 import { Layout1Piece } from '../layouts';
 import { Authentication } from '../../services';
+import { useDispatch } from 'react-redux';
+import {setLoginState} from '../../redux/appState'
 
 const LoginScreen = () => {
 
@@ -17,6 +19,7 @@ const LoginScreen = () => {
     
     const popUp = useRef<NotificationPopup | null>(null);
     const theme = useTheme();
+    const dispatch = useDispatch();
 
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
@@ -35,7 +38,8 @@ const LoginScreen = () => {
         const res = Authentication.loginCredentialsValid();
         if(res)
         {
-            console.log("[LoginScreen]: procced to AFTERLOGIN stack");
+            console.log("[LoginScreen]: go to 'AfterLogin' stack");
+            dispatch(setLoginState(true));
         }
         else showErrorPopUp();
     };
