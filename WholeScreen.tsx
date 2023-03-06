@@ -1,31 +1,47 @@
-import React, { useEffect} from 'react'
-import { StyleSheet, View, StatusBar } from 'react-native';
+import React, { useEffect, useMemo} from 'react'
+import { StyleSheet, View, StatusBar, Dimensions } from 'react-native';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useTheme } from 'react-native-paper';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { setStatusBarHeight } from './redux/ui';
+import { setWindowHeight } from './redux/ui';
 import MainStack from './stacks/MainStack';
 import { SafeAreaView } from 'react-navigation';
+import { Platform } from 'expo-modules-core';
 
+const windowH = Dimensions.get("window").height;
+
+
+const getWindowHeight = () => {
+  if(Platform.OS === 'android')
+  {
+    return windowH;
+  }
+  else if(Platform.OS === 'ios')
+  {
+    return windowH - getStatusBarHeight(); 
+  }  
+}
 
 const WholeScreen = () => {
-
-    const {windowHeight, navigationBarHeight} = useSelector((state: any) => state.ui)
+  
     
     const dispatch = useDispatch();
     const theme = useTheme();
 
 
+   // const statusBarHeight = useMemo(() => getStatusBarHeight(), []);
+
+    const windowHeight = useMemo(() => getWindowHeight(), []);
     
     useEffect(() => {
-      const statusSize = getStatusBarHeight();
-      dispatch(setStatusBarHeight(statusSize));
-    }, []);
+      if(windowHeight != undefined)
+        dispatch(setWindowHeight(windowHeight));
+    }, [windowHeight]);
 
     return (
-       <SafeAreaView style={[styles.container, {backgroundColor: 'theme.colors.background'}]}>
+      <SafeAreaView style={[styles.container, {backgroundColor: 'theme.colors.background'}]}>
             <StatusBar
             animated={true}
             backgroundColor={theme.colors.primary}
@@ -33,17 +49,10 @@ const WholeScreen = () => {
             // showHideTransition={statusBarTransition}
             hidden={false}
             />
-            {/* <View style={[{width: '100%', height: notificationBarHeight},
-                  Platform.OS === "ios" ? {backgroundColor: theme.colors.background} : null ]}>
-            </View> */}
-
-            <View style={{ width:'100%', height: '100%', justifyContent:'center', alignItems: 'center', backgroundColor: 'purple'}}>
+            <View style={{ width:'100%', height: windowHeight, justifyContent:'center', alignItems: 'center'}}>
               <MainStack></MainStack>
             </View>
-
-            {/* <View style={{width: '100%', height: navigationBarHeight, backgroundColor: 'yellow'}}>
-            </View> */}
-       </SafeAreaView>
+      </SafeAreaView>
   );
 };
 

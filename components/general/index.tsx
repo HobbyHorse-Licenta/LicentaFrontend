@@ -5,4 +5,5 @@ import ProfilePicList from "./ProfilePicList";
 import SportTile from "./SportTile";
 import RoundPicUpload from './RoundPicUpload';
 import PlusTile from "./PlusTile";
-export {TextImage, Button, EventCard, ProfilePicList, SportTile, RoundPicUpload, PlusTile}
+import AppHeader from "./AppHeader";
+export {TextImage, Button, EventCard, ProfilePicList, SportTile, RoundPicUpload, PlusTile, AppHeader}

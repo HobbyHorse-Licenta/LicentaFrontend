@@ -3,8 +3,8 @@ import {View} from 'react-native';
 
 import { SafeAreaView } from 'react-navigation';
 import { useSelector } from 'react-redux';
-
-import { SizeUtil } from '../../utils'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+import { verticalScale } from 'react-native-size-matters';
 
 interface Params{
     header: any,
@@ -13,14 +13,16 @@ interface Params{
 
 const Layout2PieceForNavigator = ({header, body} : Params) => {
     
-    const {windowHeightWithoutBottomBar} = useSelector((state: any) => state.ui)
+    const {windowHeight} = useSelector((state: any) => state.ui)
+
+    const windowHeightWithoutBar = windowHeight - useBottomTabBarHeight();
     
     return (
-        <SafeAreaView style={{width: '100%', height: windowHeightWithoutBottomBar, display: 'flex'}}>
-            <View style={{flex: 1, width: '100%'}}>
+        <SafeAreaView style={{width: '100%', height: windowHeightWithoutBar, display: 'flex', flex: 1}}>
+            <View style={{flex: 1.2, width: '100%'}}>
                 {header}
             </View>
-            <View style={{flex: 12, width: '100%'}}>
+            <View style={{flex: 15, width: '100%'}}>
                 {body}
             </View>
         </SafeAreaView>

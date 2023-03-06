@@ -1,29 +1,24 @@
-import React, {useEffect} from 'react'
+import React, {useEffect, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
 
 import { SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { scale } from 'react-native-size-matters';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useTheme } from 'react-native-paper';
 
 import { AllEvents, Maps, MyEvents, Schedule } from '../screens/postLogin/events';
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
 import { MyProfile } from '../screens/postLogin/profile';
-import { setBottomBarHeight } from '../redux/ui';
-import { SpacingStyles } from '../styles';
 
 const AfterLogin = () => {
 
+  const {windowHeight} = useSelector((state: any) => state.ui);
   const Tab = createBottomTabNavigator();
-  const {windowHeight} = useSelector((state: any) => state.ui)
   const theme = useTheme();
  
-  
-  
-
   return ( 
-    <SafeAreaView style={[SpacingStyles.fullSizeContainer]}>
+    <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
       <Tab.Navigator
         initialRouteName="AllEvents"
         screenOptions={{
