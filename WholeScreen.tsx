@@ -1,53 +1,50 @@
 import React, { useEffect} from 'react'
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, StatusBar } from 'react-native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'react-native-paper';
+import { getStatusBarHeight } from 'react-native-status-bar-height';
 
-import { AllEvents, Schedule } from './screens/postLogin/events';
-import { SizeUtil } from './utils';
-import { setNavigationBarHeight, setNotificationBarHeight, setWindowHeight } from './redux/ui';
-import { EditProfile } from './screens/postLogin/profile';
+import { setStatusBarHeight } from './redux/ui';
 import MainStack from './stacks/MainStack';
+import { SafeAreaView } from 'react-navigation';
 
 
 const WholeScreen = () => {
 
-    const {notificationBarHeight, navigationBarHeight} = useSelector((state: any) => state.ui)
+    const {windowHeight, navigationBarHeight} = useSelector((state: any) => state.ui)
     
     const dispatch = useDispatch();
     const theme = useTheme();
 
+
     
     useEffect(() => {
-      const notifSize = SizeUtil.getDefaultNotificationBarSize();
-      dispatch(setNotificationBarHeight(notifSize));
-
-      const navSize = SizeUtil.getDefaultNavigationBarSize();
-      dispatch(setNavigationBarHeight(navSize));
-
-      const windowsSize = SizeUtil.getWindowSize();
-      dispatch(setWindowHeight(windowsSize));
-
-
+      const statusSize = getStatusBarHeight();
+      dispatch(setStatusBarHeight(statusSize));
     }, []);
 
     return (
-       
-      <View style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <View style={[{width: '100%', height: notificationBarHeight},
-            Platform.OS === "ios" ? {backgroundColor: theme.colors.surface} : null ]}>
-      </View>
+       <SafeAreaView style={[styles.container, {backgroundColor: 'theme.colors.background'}]}>
+            <StatusBar
+            animated={true}
+            backgroundColor={theme.colors.primary}
+            barStyle={'dark-content'}
+            // showHideTransition={statusBarTransition}
+            hidden={false}
+            />
+            {/* <View style={[{width: '100%', height: notificationBarHeight},
+                  Platform.OS === "ios" ? {backgroundColor: theme.colors.background} : null ]}>
+            </View> */}
 
-      <View style={{ width:'100%', justifyContent:'center', alignItems: 'center', backgroundColor: 'purple'}}>
-         <MainStack></MainStack>
-      </View>
+            <View style={{ width:'100%', height: '100%', justifyContent:'center', alignItems: 'center', backgroundColor: 'purple'}}>
+              <MainStack></MainStack>
+            </View>
 
-      <View style={{width: '100%', height: navigationBarHeight}}>
-      </View>
-
-    </View>
-    );
+            {/* <View style={{width: '100%', height: navigationBarHeight, backgroundColor: 'yellow'}}>
+            </View> */}
+       </SafeAreaView>
+  );
 };
 
 export default WholeScreen;

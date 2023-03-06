@@ -1,17 +1,26 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
-import { Layout3Piece } from '../../layouts';
+import { useDispatch } from 'react-redux';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
+
+import { Layout2PieceForNavigator } from '../../layouts';
 import { EventsHeader, EventsBody } from '../../../components/events'
-import { BottomBar } from '../../../components/general';
+import { setBottomBarHeight } from '../../../redux/ui';
 
 const AllEvents = () => {
 
+    const dispatch = useDispatch();
+    const bottomBarSize: number = useBottomTabBarHeight();
+      
+    useEffect(() => {
+      dispatch(setBottomBarHeight(bottomBarSize));
+    }, []);
+
     return (
-        <Layout3Piece 
+        <Layout2PieceForNavigator 
             header={ <EventsHeader></EventsHeader>}
             body={<EventsBody></EventsBody>}
-            footer={<BottomBar></BottomBar>}
-        ></Layout3Piece>
+        ></Layout2PieceForNavigator>
     );
 };
 

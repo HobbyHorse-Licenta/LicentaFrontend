@@ -1,3 +1,3 @@
 import EditProfile from "./EditProfile";
-
-export {EditProfile}
+import MyProfile from "./MyProfile";
+export {EditProfile, MyProfile}

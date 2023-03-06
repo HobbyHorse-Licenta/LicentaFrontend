@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BeforeLogin from './BeforeLogin';
 import AfterLogin from './AfterLogin';
 import { SpacingStyles } from '../styles';
+import { lightBlue100 } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 const MainStack = () => {
 

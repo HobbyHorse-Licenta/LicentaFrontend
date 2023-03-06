@@ -1,22 +1,26 @@
 import React from "react";
 import { View } from 'react-native'
 
-import { SafeAreaView } from "react-navigation";
-
-import { SpacingStyles } from '../../../styles'
 import { EditProfilePicture } from "../../../components/profile";
 import { ProfilePicList } from "../../../components/general";
+import { Layout2Piece } from "../../layouts";
 
 const EditProfile = () => {
 
-
+  const getBody = () => {
+    return(
+      <View>
+        <EditProfilePicture></EditProfilePicture>
+        <ProfilePicList></ProfilePicList>
+      </View>
+    );
+  };
+  
   return (
-    <SafeAreaView style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer]}>
-        <View style={{width: '100%', height: '30%', backgroundColor: 'pink'}}>
-            <EditProfilePicture></EditProfilePicture>
-            <ProfilePicList></ProfilePicList>
-        </View>
-    </SafeAreaView>
+    <Layout2Piece 
+            header={ <View></View>}
+            body={getBody()}
+    ></Layout2Piece>
   );
 };
 

@@ -7,7 +7,7 @@ import {Text} from 'react-native-paper'
 import { SpacingStyles } from '../../../styles';
 import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange} from '../../../components/schedule';
 // import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '@schedule';
-import { Layout3Piece } from '../../layouts';
+import { Layout2PieceForNavigator } from '../../layouts';
 
 const Schedule = () => {
 
@@ -32,11 +32,10 @@ const Schedule = () => {
   }
 
   return (
-     <Layout3Piece 
+     <Layout2PieceForNavigator 
         header={<ScheduleHeader></ScheduleHeader>}
         body={getBody()}
-        footer={<View></View>}
-     ></Layout3Piece>
+     ></Layout2PieceForNavigator>
   );
 };
 

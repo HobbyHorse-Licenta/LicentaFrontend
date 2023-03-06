@@ -1,2 +1,2 @@
-import SizeUtil from "./Size";
+import SizeUtil from "./SizeUtil";
 export {SizeUtil};

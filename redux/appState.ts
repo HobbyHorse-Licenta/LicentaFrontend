@@ -5,7 +5,7 @@ interface AppState {
 }
 
 const initialState: AppState = {
-    isLoggedIn: false
+    isLoggedIn: true
 }
 
 export const appStateSlice = createSlice({
