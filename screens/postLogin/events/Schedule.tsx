@@ -14,17 +14,16 @@ const Schedule = () => {
   const getBody = () => {
     return(
       <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {flex: 1, padding: scale(14)}]}>
-        <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
-          <Text>Days</Text>
+        <View style={[SpacingStyles.centeredContainer, {flex: 0.8, backgroundColor:"green"}]}>
           <SelectDays></SelectDays>
         </View>
-        <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
+        <View style={[SpacingStyles.centeredContainer, {flex: 1.2, backgroundColor:"red"}]}>
           <SelectHourRange></SelectHourRange>
         </View>
-        <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
+        <View style={[SpacingStyles.centeredContainer, {flex: 0.7, backgroundColor:"orange"}]}>
          <AddSports></AddSports>
         </View>
-        <View style={[SpacingStyles.centeredContainer, {flex: 1}]}>
+        <View style={[SpacingStyles.centeredContainer, {flex: 0.8, backgroundColor:"lightblue"}]}>
          <SelectLocation></SelectLocation>
         </View>
       </View>

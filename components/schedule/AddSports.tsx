@@ -5,7 +5,7 @@ import {Text, useTheme} from 'react-native-paper'
 import { verticalScale } from 'react-native-size-matters';
 
 import { SpacingStyles } from '../../styles'
-import { SportTile } from '../general';
+import { PrimaryContainer, SportTile } from '../general';
 import PlusTile from '../general/PlusTile';
 
 const AddSports = () => {
@@ -13,7 +13,7 @@ const AddSports = () => {
     const theme = useTheme();
 
     return(
-       <View style={[styles.addSportsContainer, SpacingStyles.containerInsideSchedule , {backgroundColor: theme.colors.primary}]}>
+        <PrimaryContainer>
             <Text>Sports</Text>
            
             <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
@@ -33,7 +33,7 @@ const AddSports = () => {
                 
                 />
             </View>
-       </View>
+        </PrimaryContainer>
     );
 };
 

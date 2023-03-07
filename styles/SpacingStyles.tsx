@@ -88,7 +88,8 @@ export const SpacingStyles = StyleSheet.create({
         padding: scale(30),
         margin: scale(15)
       },
-      containerInsideSchedule: {
+      primaryContainer: {
+        padding: verticalScale(15),
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',

@@ -7,6 +7,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { SpacingStyles } from '../../styles'
 import {Day} from '../../types';
 import { scale } from "react-native-size-matters";
+import { PrimaryContainer } from "../general";
 
 const days: Day[] = [{name : 'S', index: 1}, 
 {name : 'M', index: 2},
@@ -40,29 +41,31 @@ const SelectDays = () => {
   };
 
   return (
-    <View style={[styles.selectDaysContainer,{
-      backgroundColor: 'purple'}]}>
-      <View style={[SpacingStyles.daysContainer, {backgroundColor: theme.colors.primary}]}>
-          {days.map((day) => {
-            return (
-              <Pressable key={day.index} onPress={() => selectDay(day)}>
-                <View
-                  style={[
-                    SpacingStyles.day, SpacingStyles.daySelected, {borderColor: theme.colors.onPrimaryContainer},
-                    isActiveDay(day, selectedDays) 
-                    && [{backgroundColor: theme.colors.surface}],
-                  ]}
-                >
-                  <Text style={isActiveDay(day, selectedDays) ? {color: theme.colors.onPrimary} : {color: 'black'}}>
-                    {day.name}
-                  </Text>
-                </View>
-              </Pressable>
-            );
-          })}
-        </View>
-    </View>
-     
+    <PrimaryContainer>
+      <Text>Days</Text>
+      <View style={[styles.selectDaysContainer,{
+        backgroundColor: 'purple'}]}>
+        <View style={[SpacingStyles.daysContainer, {backgroundColor: theme.colors.primary}]}>
+            {days.map((day) => {
+              return (
+                <Pressable key={day.index} onPress={() => selectDay(day)}>
+                  <View
+                    style={[
+                      SpacingStyles.day, SpacingStyles.daySelected, {borderColor: theme.colors.onPrimaryContainer},
+                      isActiveDay(day, selectedDays) 
+                      && [{backgroundColor: theme.colors.surface}],
+                    ]}
+                  >
+                    <Text style={isActiveDay(day, selectedDays) ? {color: theme.colors.onPrimary} : {color: 'black'}}>
+                      {day.name}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            })}
+          </View>
+      </View>
+    </PrimaryContainer> 
   );
 };
 

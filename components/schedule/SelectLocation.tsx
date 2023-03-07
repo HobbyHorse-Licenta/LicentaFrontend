@@ -7,6 +7,7 @@ import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
 import { SpacingStyles } from "../../styles";
 import { LocationSvg } from '../svg/general';
+import { PrimaryContainer } from '../general';
 
 interface Distance {
     label: string,
@@ -29,12 +30,15 @@ const SelectLocation = () => {
     }, [range])
     
     return(
-        <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {flexDirection: 'row'}]}>
-            <View style={SpacingStyles.tile}>
-                <LocationSvg></LocationSvg>
-            </View>
+        <PrimaryContainer styleInput={{flexDirection: 'row'}}>
+            <View style={{flexDirection:'row', justifyContent: 'center', alignItems: 'center'}}>
+                <View style={SpacingStyles.tile}>
+                    <LocationSvg></LocationSvg>
+                </View>
 
-            <Text>Location</Text>
+                <Text>Location</Text>
+            </View>
+            
 
             <WheelPickerExpo
             height={scale(150)}
@@ -43,7 +47,7 @@ const SelectLocation = () => {
             items={rangeArray.map(range => ({ label: range.label, value: range.label}))}
             onChange={( range ) => {console.log(range.item.label); setRange(range.item.value)}} />
 
-        </View>
+        </PrimaryContainer>
       
     );
 };
