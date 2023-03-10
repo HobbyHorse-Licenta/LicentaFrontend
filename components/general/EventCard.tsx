@@ -5,8 +5,9 @@ import { verticalScale } from 'react-native-size-matters';
 import { useTheme, Text } from 'react-native-paper';
 
 import Button from './Button';
-import { EventDescription } from '../../types';
+import { EventDescription, Event } from '../../types';
 import { SpacingStyles } from '../../styles';
+import EventInfoDisplay from '../allEvents/EventInfoDisplay';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -20,7 +21,11 @@ const computeTextFontSize = (size: number) => {
     else return res;
 }
 
-const EventCard = () => {
+interface EventInput {
+    event: Event
+}
+
+const EventCard = ({event}: EventInput) => {
 
     const [dimensions, setDimensions] = useState({
         window: windowDimensions,
@@ -67,15 +72,8 @@ const EventCard = () => {
                 <Image source={image} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
            </View>
 
-           <View style={[SpacingStyles.centeredContainer, styles.rightRoundness, {backgroundColor: theme.colors.primary}, {width:'60%', height:'100%', paddingRight: '3%', paddingTop:'3%', paddingBottom: '3%'}]}>
-                <View style={[{width:'80%', padding: '6%', flex: 6, flexWrap: 'wrap', backgroundColor: theme.colors.onSecondary}, styles.roundness, SpacingStyles.centeredContainer]}>
-                    {/* <Text style={styles.descriptiomText}>Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5
-                    Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5
-                    </Text> */}
-                     <Text style={styles.descriptiomText}> 
-                     Mole fuje, nime nu-l ajunje
-                    </Text>
-                </View>
+           <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
+                <EventInfoDisplay event={event}></EventInfoDisplay>
                 <View style={{width:'80%', flex: 1, margin: '5%'}}>
                     <Button text='Join' callBack={joinEvent}></Button>
                 </View>
@@ -97,10 +95,10 @@ const styles = StyleSheet.create({
        
     },
     roundness: {
-        borderBottomLeftRadius: 15,
+        borderTopRightRadius: 15,
         borderBottomRightRadius: 15,
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15
+        borderBottomLeftRadius: 15,
+        borderTopLeftRadius: 15
     },
     rightRoundness: {
         borderTopRightRadius: 15,
@@ -110,7 +108,13 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
     },
-    descriptiomText: {
-        fontSize: computeTextFontSize(12),
+    rightSide: {
+        borderTopRightRadius: 15,
+        borderBottomRightRadius: 15,
+        width:'60%',
+        height:'100%',
+        paddingRight: '3%',
+        paddingTop:'3%',
+        paddingBottom: '3%'
     }
 });

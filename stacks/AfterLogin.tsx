@@ -10,6 +10,7 @@ import { useTheme } from 'react-native-paper';
 import { AllEvents, Maps, MyEvents, Schedule } from '../screens/postLogin/events';
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
 import { MyProfile } from '../screens/postLogin/profile';
+import { SpacingStyles } from '../styles';
 
 const AfterLogin = () => {
 
@@ -33,7 +34,7 @@ const AfterLogin = () => {
           options={{
           tabBarLabel: 'Schedules',
           tabBarIcon: () => (
-            <View style={styles.icon}>
+            <View style={SpacingStyles.icon}>
               <ScheduleSvg></ScheduleSvg>
             </View>
           ),
@@ -46,7 +47,7 @@ const AfterLogin = () => {
           options={{
             tabBarLabel: 'My events',
             tabBarIcon: () => (
-              <View style={styles.icon}>
+              <View style={SpacingStyles.icon}>
                 <MyEventsSvg></MyEventsSvg>
               </View>
             ),
@@ -59,7 +60,7 @@ const AfterLogin = () => {
           options={{
             tabBarLabel: 'Events',
             tabBarIcon: () => (
-              <View style={styles.icon}>
+              <View style={SpacingStyles.icon}>
                   <AllEventsSvg></AllEventsSvg>
               </View>
             ),
@@ -73,7 +74,7 @@ const AfterLogin = () => {
           options={{
           tabBarLabel: 'Maps',
           tabBarIcon: () => (
-            <View style={styles.icon}>
+            <View style={SpacingStyles.icon}>
                 <MapsSvg></MapsSvg>
             </View>
           ),
@@ -86,7 +87,7 @@ const AfterLogin = () => {
           options={{
           tabBarLabel: 'Profile',
           tabBarIcon: () => (
-            <View style={styles.icon}>
+            <View style={SpacingStyles.icon}>
                 <ProfileSvg></ProfileSvg>
             </View>
           ),
@@ -100,11 +101,3 @@ const AfterLogin = () => {
 }
 
 export default AfterLogin;
-
-const styles = StyleSheet.create({
-  icon: {
-    width: scale(60),
-    height: scale(60),
-    padding: scale(15),
-  }
-});

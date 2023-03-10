@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Layout2PieceForNavigator } from '../../layouts';
-import { EventsHeader, EventsBody } from '../../../components/events'
+import { EventsHeader, EventsBody } from '../../../components/allEvents'
 
 const AllEvents = () => {
 

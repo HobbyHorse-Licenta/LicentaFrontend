@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text } from 'react-native'
 
+import { MyEventsHeader } from "../../../components/myEvents";
 import { Layout2PieceForNavigator } from "../../layouts";
 
 const MyEvents = () => {
@@ -15,7 +16,7 @@ const MyEvents = () => {
   
   return (
     <Layout2PieceForNavigator 
-            header={ <View></View>}
+            header={ <MyEventsHeader></MyEventsHeader>}
             body={getBody()}
     ></Layout2PieceForNavigator>
   );

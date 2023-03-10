@@ -6,6 +6,7 @@ import { scale } from "react-native-size-matters";
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
 import { SpacingStyles } from '../../styles'
+import { SelectTime } from "../general";
 
 interface timePickerInput {
   textAbovePicker: string
@@ -40,19 +41,10 @@ const SelectTimeAndroid = ({textAbovePicker} : timePickerInput) => {
   // };
 
   return (
-      <View style={[SpacingStyles.selectTimeContainer,{backgroundColor: theme.colors.onSecondaryContainer, flexWrap: 'nowrap'}]}>
-          
-          <Text variant='bodyMedium'>
-            {textAbovePicker}
-          </Text>
+    <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={handleChangeTime}>
 
-         <Pressable onPress={handleChangeTime} style={[styles.picker]}>
-            <Text>
-              {time.getHours()} : {time.getMinutes()}
-            </Text>
-         </Pressable>
-
-      </View>
+    </SelectTime>
+      
   );
 };
 

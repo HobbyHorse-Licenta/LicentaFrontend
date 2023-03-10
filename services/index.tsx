@@ -1,2 +1,3 @@
 import Authentication from "./Authentication";
-export { Authentication }
+import Fetch from "./Fetch";
+export { Authentication, Fetch }

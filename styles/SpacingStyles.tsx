@@ -86,10 +86,31 @@ export const SpacingStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: scale(30),
-        margin: scale(15)
+        margin: scale(7),
+        flexWrap: 'nowrap'
+      },
+      icon: {
+        borderRadius: 10,
+        margin: scale(4),
+        width: scale(40),
+        height: scale(40),
+        padding: scale(3),
+      },
+      smallIcon: {
+        borderRadius: 10,
+        margin: scale(4),
+        width: scale(33),
+        height: scale(33),
+        padding: scale(3),
+      },
+      tinyIcon: {
+        borderRadius: 4,
+        margin: scale(2),
+        width: scale(20),
+        height: scale(20),
+        padding: scale(2),
       },
       primaryContainer: {
-        padding: verticalScale(15),
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
