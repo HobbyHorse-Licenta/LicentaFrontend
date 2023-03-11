@@ -115,6 +115,10 @@ export const SpacingStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
       },
+      goBackPosition: {
+        position: 'absolute',
+        left: scale(7)
+      },
       row: { flexDirection: "row" },
       timeContainer: { justifyContent: "center", flex: 1, alignItems: "center" },
       timeText: { fontSize: scale(80) },

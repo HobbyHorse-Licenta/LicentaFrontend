@@ -7,7 +7,7 @@ import { useTheme, Text } from 'react-native-paper';
 import Button from './Button';
 import { EventDescription, Event } from '../../types';
 import { SpacingStyles } from '../../styles';
-import EventInfoDisplay from '../allEvents/EventInfoDisplay';
+import EventInfoDisplay from '../events/EventInfoDisplay';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -22,10 +22,11 @@ const computeTextFontSize = (size: number) => {
 }
 
 interface EventInput {
+    onPress?: Function,
     event: Event
 }
 
-const EventCard = ({event}: EventInput) => {
+const EventCard = ({event, onPress}: EventInput) => {
 
     const [dimensions, setDimensions] = useState({
         window: windowDimensions,
@@ -53,6 +54,9 @@ const EventCard = ({event}: EventInput) => {
     const computeWidth = () => 80/100*dimensions.window.width;
     const computeHeight = () => 25/100*dimensions.window.height;
 
+    const openEventPage = () => {
+    
+    }
     function joinEvent(){
         console.log("join event");
 
@@ -66,7 +70,8 @@ const EventCard = ({event}: EventInput) => {
     }
 
     return(
-        <View style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight()}]}>
+        <View onTouchEnd={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")} 
+        style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight()}]}>
 
            <View style={{width:'40%', height:'100%'}}>
                 <Image source={image} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>

@@ -33,7 +33,8 @@ export type User = {
 }
 
 export type Event = {
-  id: number
+  id: number,
+  name: string,
   imageUrl: string,
   level: SportLevel,
   location: string,

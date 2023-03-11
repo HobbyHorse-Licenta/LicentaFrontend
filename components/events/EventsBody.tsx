@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, ScrollView} from 'react-native';
 
 import { Text, useTheme } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 import { Fetch } from '../../services';
 import { SpacingStyles } from '../../styles';
@@ -9,6 +10,8 @@ import { EventCard, TextImage } from '../general';
 import { Event } from '../../types';
 
 const EventsBody = () => {
+
+    const navigation = useNavigation();
 
     const [events, setEvents] = useState<Array<Event>>([]);
     const theme = useTheme();
@@ -32,7 +35,8 @@ const EventsBody = () => {
                     <ScrollView style={{margin: '3%'}}>
                         {events.map((evnt) => {
                             return(
-                                <EventCard key={evnt.id} event={evnt}></EventCard>
+                                <EventCard key={evnt.id} event={evnt}
+                                onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt} as never)}></EventCard>
                             );
                         })}
                     </ScrollView>

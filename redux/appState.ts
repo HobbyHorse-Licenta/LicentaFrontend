@@ -1,11 +1,13 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface AppState {
-    isLoggedIn: boolean
+    isLoggedIn: boolean,
+    currentRoute: string | undefined
 }
 
 const initialState: AppState = {
-    isLoggedIn: true
+    isLoggedIn: true,
+    currentRoute: undefined
 }
 
 export const appStateSlice = createSlice({
@@ -14,11 +16,14 @@ export const appStateSlice = createSlice({
     reducers: {
         setLoginState: (state, action: PayloadAction<boolean>) => {
             state.isLoggedIn = action.payload;
+        },
+        setCurrentRoute: (state, action: PayloadAction<string>) => {
+            state.currentRoute = action.payload;
         }
       
     }
 });
 
-export const {setLoginState} = appStateSlice.actions
+export const {setLoginState, setCurrentRoute} = appStateSlice.actions
 
 export default appStateSlice.reducer;

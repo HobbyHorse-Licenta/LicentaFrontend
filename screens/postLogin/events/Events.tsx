@@ -1,9 +1,9 @@
 import React from 'react';
 
 import { Layout2PieceForNavigator } from '../../layouts';
-import { EventsHeader, EventsBody } from '../../../components/allEvents'
+import { EventsHeader, EventsBody } from '../../../components/events'
 
-const AllEvents = () => {
+const Events = () => {
 
     return (
         <Layout2PieceForNavigator 
@@ -13,4 +13,4 @@ const AllEvents = () => {
     );
 };
 
-export default AllEvents;
+export default Events;

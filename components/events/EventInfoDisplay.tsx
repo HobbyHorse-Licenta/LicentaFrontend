@@ -12,25 +12,25 @@ import { BigLocationSvg, LevelSvg, LocationSvg } from "../svg/general";
 interface EventInput {
     event: Event
 }
-
 const EventInfoDisplay = ({event}: EventInput) => {
 
     const theme = useTheme();
     return(
             <View style={[ styles.descriptionView, SpacingStyles.centeredContainer]}>
                 
+                <Text variant='bodyLarge'>{event.name}</Text>
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                     <SmallSvgView>
                         <LevelSvg></LevelSvg>
                     </SmallSvgView>
-                    <Text style={styles.descriptiomText}>{event.level}</Text>
+                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.level}</Text>
                 </View>
                 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                     <SmallSvgView>
                         <BigLocationSvg color={theme.colors.onPrimary}></BigLocationSvg>
                     </SmallSvgView>
-                    <Text style={styles.descriptiomText}>{event.location}</Text>
+                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.location}</Text>
                 </View>
                 
                 {/* <Text style={styles.descriptiomText}>Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         flex: 3,
         alignItems: 'flex-end'
     },
-    descriptiomText: {
+    descriptionText: {
         fontSize: verticalScale(10) < 10 ? 10 : verticalScale(10),
     },
     rowContainer: {
@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
         margin: scale(4),
-        padding: scale(3)
+        paddingHorizontal: scale(7)
     }
 })

@@ -1,36 +1,44 @@
-import React, {useEffect, useState} from 'react'
-import {View, StyleSheet} from 'react-native'
+import React, {useRef, useEffect} from 'react'
+import {View} from 'react-native'
 
 import { SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { scale } from 'react-native-size-matters';
 import { useSelector } from 'react-redux';
 import { useTheme } from 'react-native-paper';
+import NotificationPopup from 'react-native-push-notification-popup';
 
-import { AllEvents, Maps, MyEvents, Schedule } from '../screens/postLogin/events';
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
-import { MyProfile } from '../screens/postLogin/profile';
 import { SpacingStyles } from '../styles';
+import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack } from './mainPages';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { navigationService } from '../utils';
+
 
 const AfterLogin = () => {
 
   const {windowHeight} = useSelector((state: any) => state.ui);
   const Tab = createBottomTabNavigator();
   const theme = useTheme();
+  const popUp = useRef<NotificationPopup | null>(null);
+
  
+  const {currentRoute} = useSelector((state: any) => state.appState);
+  const show = navigationService.ShouldHaveTabBar(currentRoute);
+
   return ( 
     <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
       <Tab.Navigator
-        initialRouteName="AllEvents"
+        initialRouteName="EventsStack"
         screenOptions={{
           tabBarActiveTintColor: theme.colors.tertiary,
-          headerShown: false
+          headerShown: false,
+          // tabBarStyle: {display: show ? "flex" : "none"}
         }}
         >
 
         <Tab.Screen
-          name="Schedule"
-          component={Schedule}
+          name="MySchedulesStack"
+          component={MySchedulesStack}
           options={{
           tabBarLabel: 'Schedules',
           tabBarIcon: () => (
@@ -42,8 +50,8 @@ const AfterLogin = () => {
         />
 
         <Tab.Screen
-          name="MyEvents"
-          component={MyEvents}
+          name="MyEventsStack"
+          component={MyEventsStack}
           options={{
             tabBarLabel: 'My events',
             tabBarIcon: () => (
@@ -55,8 +63,8 @@ const AfterLogin = () => {
         />
 
         <Tab.Screen
-          name="AllEvents"
-          component={AllEvents}
+          name="EventsStack"
+          component={EventsStack}
           options={{
             tabBarLabel: 'Events',
             tabBarIcon: () => (
@@ -69,8 +77,8 @@ const AfterLogin = () => {
         />
 
         <Tab.Screen
-          name="Maps"
-          component={Maps}
+          name="MapsStack"
+          component={MapsStack}
           options={{
           tabBarLabel: 'Maps',
           tabBarIcon: () => (
@@ -82,8 +90,8 @@ const AfterLogin = () => {
         />
 
         <Tab.Screen
-          name="MyProfile"
-          component={MyProfile}
+          name="MyProfileStack"
+          component={MyProfileStack}
           options={{
           tabBarLabel: 'Profile',
           tabBarIcon: () => (

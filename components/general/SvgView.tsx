@@ -8,7 +8,7 @@ import { SpacingStyles } from "../../styles";
 interface SvgViewInput {
     onTouchEnd?:  Function,
     children: ReactNode,
-    style: ViewStyle,
+    style?: ViewStyle,
 } 
 
 const SvgView = ({children, onTouchEnd, style}: SvgViewInput) => {

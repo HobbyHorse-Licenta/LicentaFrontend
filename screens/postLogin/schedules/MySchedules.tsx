@@ -9,7 +9,7 @@ import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange}
 // import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '@schedule';
 import { Layout2PieceForNavigator } from '../../layouts';
 
-const Schedule = () => {
+const MySchedules = () => {
 
   const getBody = () => {
     return(
@@ -38,4 +38,4 @@ const Schedule = () => {
   );
 };
 
-export default Schedule;
+export default MySchedules;
