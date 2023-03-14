@@ -9,20 +9,19 @@ import { SpacingStyles } from '../../styles'
 import { SelectTime } from "../general";
 
 interface timePickerInput {
-  textAbovePicker: string
+  textAbovePicker: string,
+  time: Date
+  setTime: Function
 }
 
-const SelectTimeAndroid = ({textAbovePicker} : timePickerInput) => {
+const SelectTimeAndroid = ({textAbovePicker, time, setTime} : timePickerInput) => {
 
-  //const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [time, setTime] = useState<Date>(new Date())
  
   const theme = useTheme();
 
   const onChangeDate = (event, selectedTime: Date | undefined) => {
     if (selectedTime) {
       setTime(selectedTime);
-     // setIsDatePickerVisible(false);
     }
   };
 
@@ -36,10 +35,6 @@ const SelectTimeAndroid = ({textAbovePicker} : timePickerInput) => {
     });
   };
 
-   // const hideDatePicker = () => {
-  //   setIsDatePickerVisible(false);
-  // };
-
   return (
     <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={handleChangeTime}>
 
@@ -49,14 +44,3 @@ const SelectTimeAndroid = ({textAbovePicker} : timePickerInput) => {
 };
 
 export default SelectTimeAndroid;
-
-const styles = StyleSheet.create({
-    picker: {
-      margin: scale(10),
-      borderRadius: 10,
-      shadowOffset: {width: -2, height: 4},  
-      shadowColor: '#DADADA',  
-      shadowOpacity: 0.2,  
-      shadowRadius: 3,  
-    }
-});

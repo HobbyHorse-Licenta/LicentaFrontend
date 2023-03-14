@@ -1,3 +1,4 @@
+import { useNavigation } from '@react-navigation/native';
 import React from 'react'
 import { View } from 'react-native';
 
@@ -7,7 +8,9 @@ import { Button, AppHeader } from '../general';
 
 const ScheduleHeader = () => {
 
-    const _goBack = () => console.log('Went back');
+    const navigation = useNavigation();
+
+    const _goBack = () => navigation.goBack();
 
     return(
         <AppHeader>

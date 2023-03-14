@@ -1,4 +1,4 @@
-import { Event, User } from "../types";
+import { Event, Schedule, User } from "../types";
 import {basketUrl, tennisUrl} from '../assets/imageUrls'
 const Fetch = {
 
@@ -23,6 +23,19 @@ const Fetch = {
         ];
         
         return events;
+    },
+
+    getSchedules: function(){
+        const schedules: Array<Schedule> =[
+            {
+                id: 1
+            },
+            {
+                id: 2
+            }
+        ];
+
+        return schedules;
     },
 
     // getUsers: function(){

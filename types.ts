@@ -5,6 +5,11 @@ export type Day = {
     index: number;
 };
 
+export type PairColor = {
+  main: string;
+  highlights: string;
+};
+
 export type EventDescription = {
   level: string;
   location: string;
@@ -13,10 +18,16 @@ export type EventDescription = {
 
 export type Sport = {
   sportName: SportName
-  imageIcon: ReactNode 
 }
 
-export type SportName = 'Basketball' | 'Tennis' | 'Bowling' | 'Biliard' | 'Ping-Pong' | 'Hiking'; 
+export enum SportName {
+  Basketball = 'Basketball',
+  Tennis = 'Tennis',
+  Bowling = 'Bowling',
+  Biliard = 'Biliard',
+  Ping_Pong = 'Ping-Pong',
+  Hiking = 'Hiking'
+}
 export type SportLevel = 'Healthy beginner' | 'Intermediate athlete' | 'Advanced athlete' | 'Elite athlete';
 
 export type Skill = {
@@ -30,6 +41,18 @@ export type User = {
   followers?: Array<User>[],
   following?: Array<User>[],
   skills: Array<Skill>
+}
+export type Zone = {
+  id: number,
+  fixedPoint: number;
+}
+
+export type Schedule = {
+  id: number,
+  startTime: Date,
+  endTIme: Date,
+  sports: Array<SportName>,
+  zone: Zone
 }
 
 export type Event = {

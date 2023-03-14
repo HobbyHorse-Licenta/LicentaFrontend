@@ -1,24 +1,28 @@
 import React from 'react'
-import { View } from 'react-native';
+import { TouchableOpacity, View} from 'react-native';
 
 import { useTheme } from 'react-native-paper';
-import { useSvg } from '../../hooks';
 
+import { useSvg } from '../../hooks';
 import { SpacingStyles } from '../../styles';
-import { Sport } from '../../types';
+import { TableTennisSVG } from '../svg/sports';
+import { Sport, SportName } from '../../types';
 
 interface SportTileParam {
-    sport: Sport,
-    color: string
+    sport: SportName,
+    color?: string,
+    onLongPress: Function
 }
 
-const SportTile = ({sport, color}: SportTileParam)  => {
+const SportTile = ({sport, color, onLongPress}: SportTileParam)  => {
 
     const theme = useTheme();
     const svg = useSvg(sport);
     return(
-        <View style={[SpacingStyles.tile, {backgroundColor: color}]}>
-            {svg}
+        <View>
+            <TouchableOpacity onLongPress={() => onLongPress()} style={[SpacingStyles.tile, {backgroundColor: color ? color : theme.colors.secondary}]}>
+                {svg}
+            </TouchableOpacity>
         </View>
    
     );

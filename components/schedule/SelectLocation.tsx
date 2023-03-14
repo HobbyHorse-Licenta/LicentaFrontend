@@ -15,6 +15,7 @@ interface Distance {
 }
 
 const SelectLocation = () => {
+
     const [rangeArray, setRangeArray] = useState<Distance[]>([
         {label: '+1', value: 1},
         {label: '+2', value: 2},
@@ -28,14 +29,11 @@ const SelectLocation = () => {
         {label: '+100', value: 100},
 
     ]);
+
     const [range, setRange] = useState<number>(0);
 
     const theme = useTheme();
 
-    useEffect(() => {
-      console.log("changed range");
-    }, [range])
-    
     const renderWheelPicker = (itemToRender) => {
         return(
             <Text style={{margin: verticalScale(3), alignSelf: 'center'}}>{itemToRender.label}</Text>

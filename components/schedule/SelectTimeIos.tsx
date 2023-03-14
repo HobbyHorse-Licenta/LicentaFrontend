@@ -12,19 +12,17 @@ import Strings from './../../assets/strings'
 import { SelectTime } from "../general";
 
 interface timePickerInput {
-  textAbovePicker: string
+  textAbovePicker: string,
+  time: Date
+  setTime: Function
 }
 
-const SelectTimeIos = ({textAbovePicker} : timePickerInput) => {
+const SelectTimeIos = ({textAbovePicker, time, setTime} : timePickerInput) => {
 
   const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [time, setTime] = useState<Date>(new Date())
  
   const onChangeDate = (selectedTime: Date | undefined) => {
     if (selectedTime) {
-      console.log("Time: " + time);
-      console.log("selected Time: " + selectedTime);
-
       setTime(selectedTime);
       setIsDatePickerVisible(false);
     }
@@ -37,12 +35,7 @@ const SelectTimeIos = ({textAbovePicker} : timePickerInput) => {
 
   const hideDatePicker = () => {
     setIsDatePickerVisible(false);
-  };
-
-  useEffect(() => {
-    console.log("visible: " + isDatePickerVisible);
-  }, [isDatePickerVisible])
-  
+  };  
 
   return (
         <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={handleChangeTime}>

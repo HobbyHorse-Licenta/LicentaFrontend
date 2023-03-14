@@ -32,7 +32,7 @@ const AfterLogin = () => {
         screenOptions={{
           tabBarActiveTintColor: theme.colors.tertiary,
           headerShown: false,
-          // tabBarStyle: {display: show ? "flex" : "none"}
+          tabBarStyle: {display: show ? "flex" : "none"}
         }}
         >
 

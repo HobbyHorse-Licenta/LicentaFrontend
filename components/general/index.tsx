@@ -10,5 +10,8 @@ import PrimaryContainer from "./PrimaryContainer";
 import SelectTime from "./SelectTime";
 import SvgView from "./SvgView";
 import SmallSvgView from "./SmallSvgView";
+import SelectedSportTile from "./SelectedSportTile";
+import GeneralModal from "./GeneralModal";
+import SportTileWithoutFeedback from "./SportTileWithoutFeedback";
 export {TextImage, Button, EventCard, ProfilePicList, SportTile, RoundPicUpload, PlusTile, AppHeader, PrimaryContainer, SelectTime,
-    SvgView, SmallSvgView}
+    SvgView, SmallSvgView, SelectedSportTile, GeneralModal, SportTileWithoutFeedback}

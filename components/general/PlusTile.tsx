@@ -1,19 +1,24 @@
 import React from 'react'
 import { View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import { useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 import { SpacingStyles } from '../../styles';
 import { PlusSvg } from '../svg/general';
 
-const PlusTile = () => {
+interface Input {
+    onPress: Function,
+    single: boolean
+}
+const PlusTile = ({onPress, single} : Input) => {
 
     const theme = useTheme();
 
     return(
-        <View style={[SpacingStyles.centeredContainer, SpacingStyles.tile, {backgroundColor: theme.colors.onSecondaryContainer}]}>
-            <PlusSvg></PlusSvg>
-        </View>
+        <TouchableOpacity onPress={() => onPress()} style={[single === true ? SpacingStyles.fullWidthTile : SpacingStyles.tile,SpacingStyles.centeredContainer, {backgroundColor: theme.colors.onSecondaryContainer}]}>
+            {(single === true) ? <Text>Add Sport</Text> : <PlusSvg></PlusSvg>}
+        </TouchableOpacity>
    
     );
 };

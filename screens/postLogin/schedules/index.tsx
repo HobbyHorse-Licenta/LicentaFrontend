@@ -1,2 +1,3 @@
 import MySchedules from "./MySchedules";
-export {MySchedules}
+import Schedule from "./Schedule";
+export {MySchedules, Schedule}

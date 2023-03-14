@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import { Provider as ReduxProvider } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Provider as PaperProvider} from 'react-native-paper'
+import { EventProvider } from 'react-native-outside-press';
 
 import WholeScreen from './WholeScreen';
 import store from './redux/store'
@@ -80,11 +81,14 @@ export default function App() {
   
 
   return (
-    <ReduxProvider store={store}>
-      <PaperProvider theme={theme}>
+    <EventProvider style={{ flex: 1 }}>
+      <ReduxProvider store={store}>
+        <PaperProvider theme={theme}>
           <WholeScreen></WholeScreen>
-      </PaperProvider>
-    </ReduxProvider>
+        </PaperProvider>
+      </ReduxProvider>
+    </EventProvider>
+   
   );
 }
 

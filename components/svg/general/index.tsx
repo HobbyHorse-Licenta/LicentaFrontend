@@ -8,4 +8,6 @@ import PlusSvg from "./PlusSvg";
 import LocationSvg from "./LocationSvg";
 import LevelSvg from "./LevelSvg";
 import BigLocationSvg from "./BigLocationSvg";
-export {ChatSvg, AllEventsSvg, MapsSvg, ScheduleSvg, MyEventsSvg, ProfileSvg, PlusSvg, LocationSvg, LevelSvg, BigLocationSvg}
+import DeleteSvg from "./DeleteSvg";
+export {ChatSvg, AllEventsSvg, MapsSvg, ScheduleSvg, MyEventsSvg, ProfileSvg,
+    PlusSvg, LocationSvg, LevelSvg, BigLocationSvg, DeleteSvg}

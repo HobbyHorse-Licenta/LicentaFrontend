@@ -1,7 +1,6 @@
-import React from "react";
+import { endOfToday } from "date-fns";
+import React, {useState} from "react";
 import { Platform, View } from "react-native";
-
-import { useTheme } from "react-native-paper";
 
 import { SpacingStyles } from "../../styles";
 import { PrimaryContainer } from "../general";
@@ -10,21 +9,34 @@ import SelectTimeIos from './SelectTimeIos';
 
 const SelectHourRange = () => {
 
-    const theme = useTheme()
+    const [startTime, setStartTime] = useState<Date>(new Date())
+    const [endTime, setEndTime] = useState<Date>(new Date())
+
+    const setEndTimeSchedule = (selectedEndTime: Date) => {
+      if(selectedEndTime > startTime)
+        setEndTime(selectedEndTime);
+    }
+
+    const setStartTimeSchedule = (selectedStartTime: Date) => {
+      setStartTime(selectedStartTime);
+      if(endTime < selectedStartTime)
+        setEndTime(selectedStartTime);
+    }
+
     return(
       <PrimaryContainer>
         {   
         Platform.OS === "android" ?
         ( 
           <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
-            <SelectTimeAndroid textAbovePicker="Start time"></SelectTimeAndroid>
-            <SelectTimeAndroid textAbovePicker="End time"></SelectTimeAndroid>
+            <SelectTimeAndroid time={startTime} setTime={setStartTimeSchedule} textAbovePicker="Start time"></SelectTimeAndroid>
+            <SelectTimeAndroid time={endTime} setTime={setEndTimeSchedule} textAbovePicker="End time"></SelectTimeAndroid>
           </View>
         ):
         (
           <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
-            <SelectTimeIos textAbovePicker="Start time"></SelectTimeIos>
-            <SelectTimeIos textAbovePicker="End time"></SelectTimeIos>
+            <SelectTimeIos time={startTime} setTime={setStartTimeSchedule} textAbovePicker="Start time"></SelectTimeIos>
+            <SelectTimeIos time={endTime} setTime={setEndTimeSchedule} textAbovePicker="End time"></SelectTimeIos>
           </View>
         )
         }

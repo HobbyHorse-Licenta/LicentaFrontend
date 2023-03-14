@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text } from 'react-native'
+import { MapsBody, MapsHeader } from "../../../components/maps";
 
 import { Layout2PieceForNavigator } from "../../layouts";
 
@@ -8,14 +9,14 @@ const Maps = () => {
   const getBody = () => {
     return(
       <View>
-        <Text>Maps</Text>
+        <MapsBody></MapsBody>
       </View>
     );
   };
   
   return (
     <Layout2PieceForNavigator 
-            header={ <View></View>}
+            header={<MapsHeader></MapsHeader>}
             body={getBody()}
     ></Layout2PieceForNavigator>
   );

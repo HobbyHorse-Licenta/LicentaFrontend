@@ -77,6 +77,18 @@ export const SpacingStyles = StyleSheet.create({
         justifyContent: 'center',
         margin: scale(7)
       },
+      fullWidthTile: {
+        width: scale(350),
+        height: scale(45),
+        borderRadius: 25, 
+        minHeight: 25,
+        minWidth: 25,
+        maxHeight: 120,
+        maxWidth: 120, 
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: scale(7)
+      },
       selectTimeContainer: {
         borderRadius: 15, 
         minHeight: 25,
