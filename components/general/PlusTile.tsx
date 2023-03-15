@@ -1,6 +1,6 @@
 import React from 'react'
 import { View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native';
 
 import { Text, useTheme } from 'react-native-paper';
 

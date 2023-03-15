@@ -55,7 +55,7 @@ const SelectLocation = () => {
                 width={scale(40)}
                 initialSelectedIndex={0}
                 items={rangeArray.map(range => ({ label: range.label, value: range.label}))}
-                onChange={( range ) => {console.log(range.item.label); setRange(range.item.value)}}
+                onChange={( range ) => {setRange(range.item.value)}}
                 selectedStyle={{borderColor: theme.colors.tertiary, borderWidth: 1}}
                 renderItem={(itemToRender) => renderWheelPicker(itemToRender)}
                 haptics={false}

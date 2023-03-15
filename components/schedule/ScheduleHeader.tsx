@@ -17,7 +17,7 @@ const ScheduleHeader = () => {
             <Appbar.BackAction onPress={_goBack} />
             <View style={{width: '50%'}}></View>
             <View style={{width: '30%'}}>
-                <Button text="SAVE" callBack={() => console.log("handle save")}/>
+                <Button text="SAVE" callBack={() => console.log("[ScheduleHeader]: handle save")}/>
             </View>
         </AppHeader>
        

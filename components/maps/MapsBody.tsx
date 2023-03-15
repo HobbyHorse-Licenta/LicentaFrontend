@@ -60,6 +60,8 @@ const MapsBody = () => {
                         key={1}
                         coordinate={myLocation.coords}
                         title={'Your location'}
+                        style={{width: 10, height: 10}}
+                        pinColor={'wheat'}
                     />
                     </MapView>
                 )

@@ -34,11 +34,11 @@ const SelectSportModal = ({visible, onDismiss, onSelect} : ModalInput) => {
               return SportName.Basketball;
         }
     }
+    
     const getOptions = () => {
         const keys = Object.values(SportName);
 
         return keys.map((sportName, index) => {
-            //const sport = getEnumFromString(sportName);
             return(
                 <View key={index}>
                     {index !== 0 ? <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View> : <View></View>}
