@@ -16,7 +16,7 @@ const ScheduleContainer = ({children, styleInput, onPress, index} : PrimaryConta
 
     const theme = useTheme();
     return(
-        <View style={[styles.wrapContainer]} onTouchEnd={() => onPress()}>
+        <View style={[SpacingStyles.scheduleContainer]} onTouchEnd={() => onPress()}>
             <View style={[styles.textContainer, { backgroundColor: PAIRCOLORS[index % 5].main}, 
             styleInput ? styleInput : {padding: verticalScale(15)}]}>
                     {children}
@@ -40,16 +40,8 @@ const styles = StyleSheet.create({
     },
     coloredLine: {
         height: '100%', 
-        width: '4%',
+        width: '2%',
         position: 'absolute',
         left: 0
-    },
-    wrapContainer: {
-        flexDirection: 'row',
-        width: '100%',
-        height: verticalScale(130),
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: scale(10)
     }
 })

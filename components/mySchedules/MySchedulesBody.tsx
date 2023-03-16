@@ -8,6 +8,7 @@ import { Fetch } from '../../services';
 import { SpacingStyles } from '../../styles';
 import { Schedule } from '../../types';
 import ScheduleElement from './ScheduleElement';
+import AddScheduleElement from './AddScheduleElement';
 
 const MySchedulesBody = () => {
 
@@ -18,12 +19,13 @@ const MySchedulesBody = () => {
     const theme = useTheme();
 
     useEffect(() => {
-      setSchedules(Fetch.getSchedules()); 
+    //   setSchedules(Fetch.getSchedules()); 
     }, [])
     
     
     return(
         <View style={[SpacingStyles.fullSizeContainer, SpacingStyles.centeredContainer, {padding: '5%', backgroundColor: theme.colors.background}]}>
+            <AddScheduleElement onPress={() => navigation.navigate('Schedule' as never)}/>
             {
                 schedules.length > 0 ? (
                     <ScrollView style={{margin: '3%'}}>

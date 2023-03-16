@@ -1,11 +1,17 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import {Day, Zone} from '../types'
+
 interface CreateScheduleState {
+    selectedDays: Day[],
+    zone: Zone | undefined,
+    
     
 }
 
 const initialState: CreateScheduleState = {
-    
+    selectedDays: [],
+    zone: undefined
 }
 
 export const createScheduleStateSlice = createSlice({

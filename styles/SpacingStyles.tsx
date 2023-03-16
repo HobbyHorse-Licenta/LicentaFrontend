@@ -101,6 +101,14 @@ export const SpacingStyles = StyleSheet.create({
         margin: scale(7),
         flexWrap: 'nowrap'
       },
+      scheduleContainer: {
+        flexDirection: 'row',
+        width: '100%',
+        height: verticalScale(130),
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: scale(10)
+      },
       icon: {
         borderRadius: 10,
         margin: scale(4),

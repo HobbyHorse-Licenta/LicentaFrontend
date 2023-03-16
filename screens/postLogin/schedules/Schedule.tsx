@@ -43,7 +43,7 @@ const Schedule = () => {
         <View style={[SpacingStyles.centeredContainer, {flex: 0.7}]}>
          <AddSports selectedSports={selectedSports} onDelete={deleteFromSelectedSports} onAddPress={() => setSportPickerVisible(true)}></AddSports>
         </View>
-        <View style={[SpacingStyles.centeredContainer, {flex: 0.8}]}>
+        <View style={[SpacingStyles.centeredContainer, {flex: 1.2}]}>
          <SelectLocation></SelectLocation>
         </View>
         {

@@ -2,6 +2,7 @@ import React, { useState, useEffect} from 'react'
 import { TouchableOpacity, StyleSheet } from 'react-native';
 
 import { useTheme, Text } from 'react-native-paper';
+import { scale } from 'react-native-size-matters';
 
 interface Params {
     text: string,
@@ -39,7 +40,7 @@ const Button = ({text, callBack} : Params) => {
 
     return(
     <TouchableOpacity style={[styles.button, {backgroundColor: theme.colors.secondary}]} onLayout={(event) => handleOnLayout(event.nativeEvent.layout)}  onPress={() => callBack()}>
-        <Text style={{fontSize: fontDimension, color: theme.colors.onSecondary}}>{text}</Text>
+        <Text style={{fontSize: scale(10), color: theme.colors.onSecondary}}>{text}</Text>
     </TouchableOpacity>
    
     );

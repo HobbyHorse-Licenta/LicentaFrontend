@@ -5,18 +5,18 @@ import { useTheme, Text } from "react-native-paper";
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { SpacingStyles } from '../../styles'
-import {Day} from '../../types';
+import {Day, WeekDays} from '../../types';
 import { scale } from "react-native-size-matters";
 import { PrimaryContainer } from "../general";
 
-const days: Day[] = [{name : 'S', index: 1}, 
-{name : 'M', index: 2},
-{name : 'T', index: 3},
-{name : 'W', index: 4},
-{name : 'T', index: 5},
-{name : 'F', index: 6},
-{name : 'S', index: 7},
-];
+// const days: typeof WeekDays[] = [{name : 'S', index: 1}, 
+// {name : 'M', index: 2},
+// {name : 'T', index: 3},
+// {name : 'W', index: 4},
+// {name : 'T', index: 5},
+// {name : 'F', index: 6},
+// {name : 'S', index: 7},
+// ];
 
 const SelectDays = () => {
 
@@ -38,6 +38,7 @@ const SelectDays = () => {
     } else {
       setSelectedDays((prev) => [...prev, day]);
     }
+    Object.keys(WeekDays).forEach(e => console.log(`key=${e}  value=${WeekDays[e]}`));
   };
 
   return (
@@ -46,7 +47,7 @@ const SelectDays = () => {
       <View style={[styles.selectDaysContainer,{
         backgroundColor: 'purple'}]}>
         <View style={[SpacingStyles.daysContainer, {backgroundColor: theme.colors.primary}]}>
-            {days.map((day) => {
+            {WeekDays.map((day) => {
               return (
                 <Pressable key={day.index} onPress={() => selectDay(day)}>
                   <View
@@ -57,7 +58,7 @@ const SelectDays = () => {
                     ]}
                   >
                     <Text style={isActiveDay(day, selectedDays) ? {color: theme.colors.onPrimary} : {color: 'black'}}>
-                      {day.name}
+                      {day.name.minimumForm}
                     </Text>
                   </View>
                 </Pressable>

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 
-import MapView, {Marker} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import { useTheme } from 'react-native-paper';
 import * as Location from 'expo-location';
 
@@ -45,6 +45,8 @@ const MapsBody = () => {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                         }}
+                        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                        
                     />
                 ):
                 (
@@ -55,6 +57,7 @@ const MapsBody = () => {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                         }}
+                        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
                     >
                     <Marker
                         key={1}
