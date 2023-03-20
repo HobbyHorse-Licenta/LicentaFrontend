@@ -1,4 +1,4 @@
-import { Event, Location, Schedule, User } from "../types";
+import { Event, Location, Schedule, SportName, User } from "../types";
 import {basketUrl, tennisUrl} from '../assets/imageUrls'
 const Fetch = {
 
@@ -22,6 +22,7 @@ const Fetch = {
                 name: "Basket Practice",
                 imageUrl: basketUrl,
                 description: {
+                    sport: SportName.Basketball,
                     sportLevel: 'Healthy beginner',
                     location: {
                         id: '342jkg',
@@ -39,6 +40,7 @@ const Fetch = {
                 name: "Tennis Game",
                 imageUrl: tennisUrl,
                 description: {
+                    sport: SportName.Tennis,
                     sportLevel: 'Elite athlete',
                     location: {
                         id: '342jkg',

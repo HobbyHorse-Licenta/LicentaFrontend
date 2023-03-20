@@ -5,9 +5,11 @@ import { verticalScale } from 'react-native-size-matters';
 import { useTheme, Text } from 'react-native-paper';
 
 import Button from './Button';
-import { EventDescription, Event } from '../../types';
+import { EventDescription, Event, SportName } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
+import {basketUrl, tennisUrl} from '../../assets/imageUrls'
+import { resourceAccess } from '../../utils';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -33,13 +35,30 @@ const EventCard = ({event, onPress}: EventInput) => {
         screen: screenDimensions,
       });
 
+    const [imageUrl, setImageUrl] = useState<string>('');
+
+    useEffect(() => {
+      if(event.imageUrl == undefined)
+        setImageUrl(resourceAccess.getDefaultEventImage(event.description.sport))
+      else setImageUrl(event.imageUrl);
+    }, [])
+    
+
+
     const image = {uri: 'https://i.postimg.cc/tR26nKb9/basket.jpg'};
     const theme = useTheme();
-    const basketEventDescription: EventDescription = {
-        level: "Begginer",
-        location: "Gheorgheni nr. 2",
-        note: ""
-    };
+    // const basketEventDescription: EventDescription = {
+    //     sportLevel: "Begginer",
+    //     location: {
+    //         id: 'wewq',
+    //         name: "Gheorgheni nr. 2",
+    //         gpsPoint: {
+    //             lat: 43,
+    //             long: 23
+    //         }
+    //     },
+    //     note: ""
+    // };
 
     useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -60,7 +79,7 @@ const EventCard = ({event, onPress}: EventInput) => {
     function joinEvent(){
         console.log("join event");
 
-        console.log(propertiesOf<EventDescription>(basketEventDescription))
+        // console.log(propertiesOf<EventDescription>(basketEventDescription))
     }
 
     function propertiesOf<TObj>(_obj: (TObj | undefined) = undefined) {
@@ -69,12 +88,14 @@ const EventCard = ({event, onPress}: EventInput) => {
         }
     }
 
+    const im = 'https://i.postimg.cc/B6sZN7XT/Hiking.jpg';
+    
     return(
         <View onTouchEnd={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")} 
         style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight()}]}>
 
            <View style={{width:'40%', height:'100%'}}>
-                <Image source={image} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
+                <Image source={im} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
            </View>
 
            <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>

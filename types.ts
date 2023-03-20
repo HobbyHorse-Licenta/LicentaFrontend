@@ -120,11 +120,12 @@ export type TimeRange = {
 export type Event = {
   id: number,
   name: string,
-  imageUrl: string,
+  imageUrl?: string,
   description: EventDescription,
   users?: Array<User>[]
 }
 export type EventDescription = {
+  sport: SportName
   sportLevel: string;
   location: Location;
   note?: string;

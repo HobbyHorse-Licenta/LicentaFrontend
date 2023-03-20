@@ -1,2 +1,3 @@
 import navigationService from "./NavigationService";
-export {navigationService}
+import resourceAccess from "./ResourceAccess";
+export {navigationService, resourceAccess}
