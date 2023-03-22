@@ -23,14 +23,14 @@ const EventInfoDisplay = ({event}: EventInput) => {
                     <SmallSvgView>
                         <LevelSvg></LevelSvg>
                     </SmallSvgView>
-                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.level}</Text>
+                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.description.sportLevel}</Text>
                 </View>
                 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                     <SmallSvgView>
                         <BigLocationSvg color={theme.colors.onPrimary}></BigLocationSvg>
                     </SmallSvgView>
-                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.location}</Text>
+                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.description.location.name}</Text>
                 </View>
                 
                 {/* <Text style={styles.descriptiomText}>Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5

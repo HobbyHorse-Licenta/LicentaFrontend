@@ -1,13 +1,15 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Pressable, View, StyleSheet} from "react-native";
 
 import { useTheme, Text } from "react-native-paper";
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { useDispatch } from 'react-redux';
 
 import { SpacingStyles } from '../../styles'
 import {Day, WeekDays} from '../../types';
 import { scale } from "react-native-size-matters";
 import { PrimaryContainer } from "../general";
+import { setSelectedDaysState } from "../../redux/createScheduleState";
 
 // const days: typeof WeekDays[] = [{name : 'S', index: 1}, 
 // {name : 'M', index: 2},
@@ -21,8 +23,12 @@ import { PrimaryContainer } from "../general";
 const SelectDays = () => {
 
   const [selectedDays, setSelectedDays] = useState<Array<Day>>([]);
-
+  const dispatch = useDispatch();
   const theme = useTheme();
+
+  useEffect(() => {
+    dispatch(setSelectedDaysState(selectedDays));
+  }, [selectedDays])
 
   const isActiveDay = useCallback(
     (thisDay: Day, days: Array<Day>) => {

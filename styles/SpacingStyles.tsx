@@ -107,7 +107,8 @@ export const SpacingStyles = StyleSheet.create({
         height: verticalScale(130),
         alignItems: 'center',
         justifyContent: 'center',
-        marginVertical: scale(10)
+        marginVertical: scale(10),
+        padding: scale(10)
       },
       icon: {
         borderRadius: 10,

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {View, StyleSheet, Platform} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Text, useTheme} from 'react-native-paper'
+import * as ExpoLocation from 'expo-location';
+import uuid from 'react-native-uuid';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
 import { SpacingStyles } from "../../styles";
@@ -20,14 +22,13 @@ interface Distance {
 const SelectLocation = () => {
 
     const [initialLocation, setInitialLocation] = useState<Location>({
-        id: '321fdh',
+        id: uuid.v4().toString(),
         name: 'Cluj-Napoca',
         gpsPoint: {
             lat:  46.771069, 
             long: 23.596883,
         }
     });
-
     const [rangeArray, setRangeArray] = useState<Distance[]>([
         {label: '+1', value: 1},
         {label: '+2', value: 2},
@@ -41,8 +42,37 @@ const SelectLocation = () => {
         {label: '+100', value: 100},
 
     ]);
-
     const [range, setRange] = useState<number>(0);
+    const [myLocation, setMyLocation] = useState<ExpoLocation.LocationObject>();
+    let location = undefined;
+    const theme = useTheme();
+    const mapRef = useRef<MapView | null>(null);
+
+    useEffect(() => {
+        (async () => {
+          
+          let { status } = await ExpoLocation.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+            console.log('Permission to access location was denied');
+            return;
+          }
+    
+          location = await ExpoLocation.getCurrentPositionAsync({});
+          if(mapRef.current != null)
+            mapRef.current.animateToRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.002,
+                longitudeDelta: 0.002,
+              }, 1000)
+          setMyLocation(location);
+        })();
+    }, []);
+
+    // useEffect(() => {
+     
+    // }, [location])
+    
 
     useEffect(() => {
         const variable = Fetch.getLocation('Cluj-Napoca');
@@ -52,14 +82,12 @@ const SelectLocation = () => {
         }
     }, [])
     
-
-    const theme = useTheme();
-
     const renderWheelPicker = (itemToRender) => {
         return(
             <Text style={{margin: verticalScale(3), alignSelf: 'center'}}>{itemToRender.label}</Text>
         );
     }
+
     return(
         <PrimaryContainer styleInput={{padding: scale(10)}}>
             <View style={{flexDirection: 'row', paddingBottom: verticalScale(5)}}>
@@ -85,16 +113,36 @@ const SelectLocation = () => {
                     <Text>km</Text>
                 </View>
             </View>
-            <MapView style={styles.mapFraction}
+            <MapView ref={mapRef} style={styles.mapFraction}
                         initialRegion={{
                         latitude: initialLocation.gpsPoint.lat,
                         longitude: initialLocation.gpsPoint.long,
-                        latitudeDelta: 0.0922,
-                        longitudeDelta: 0.0421,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
                         }}
                         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
                         
-            />
+            >
+            {
+                (location != undefined) ? (
+                    <Marker
+                        key={1}
+                        coordinate={location.coords}
+                        title={'Your location'}
+                        style={{width: 10, height: 10}}
+                        pinColor={'wheat'}
+                    />
+                ):(
+                    <Marker
+                        key={1}
+                        coordinate={initialLocation}
+                        title={'Your location'}
+                        style={{width: 10, height: 10}}
+                        pinColor={'wheat'}
+                    />
+                )
+            }
+            </MapView>
         </PrimaryContainer>
       
     );

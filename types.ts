@@ -65,12 +65,6 @@ export type Skill = {
 
 
 
-
-
-
-
-
-
 export type User = {
   id: string
   profileImageUrl: string,
@@ -79,9 +73,6 @@ export type User = {
   following?: Array<User>[],
   skills: Array<Skill>
 }
-
-
-
 
 export type Zone = {
   id: number,
@@ -112,9 +103,14 @@ export type Schedule = {
 }
 
 export type TimeRange = {
-  id: number,
+  id: string,
   startTime: Date,
-  endTIme: Date,
+  endTime: Date,
+}
+
+export type StateTimeRange = {
+  startTime: number,
+  endTime: number,
 }
 
 export type Event = {
@@ -122,12 +118,12 @@ export type Event = {
   name: string,
   imageUrl?: string,
   description: EventDescription,
-  users?: Array<User>[]
+  users?: Array<User>[],
+  note?: string;
 }
 export type EventDescription = {
-  sport: SportName
-  sportLevel: string;
+  sportName: SportName
+  sportLevel: SportLevel;
   location: Location;
-  note?: string;
 };
 

@@ -1,30 +1,35 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import {Day, Zone} from '../types'
+import {Day, StateTimeRange, TimeRange, Zone} from '../types'
 
 interface CreateScheduleState {
-    selectedDays: Day[],
+    selectedDays: Day[] | undefined,
     zone: Zone | undefined,
+    timeRange: StateTimeRange | undefined
     
     
 }
 
 const initialState: CreateScheduleState = {
-    selectedDays: [],
-    zone: undefined
+    selectedDays: undefined,
+    zone: undefined,
+    timeRange: undefined
 }
 
 export const createScheduleStateSlice = createSlice({
     name: 'createScheduleState',
     initialState,
     reducers: {
-        // setLoginState: (state, action: PayloadAction<boolean>) => {
-        //     state.isLoggedIn = action.payload;
-        // },
+        setSelectedDaysState: (state, action: PayloadAction<Array<Day>>) => {
+            state.selectedDays = action.payload;
+        },
+        setTimeRange: (state, action: PayloadAction<StateTimeRange>) => {
+            state.timeRange = action.payload;
+        },
       
     }
 });
 
-export const {} = createScheduleStateSlice.actions
+export const {setSelectedDaysState, setTimeRange} = createScheduleStateSlice.actions
 
 export default createScheduleStateSlice.reducer;

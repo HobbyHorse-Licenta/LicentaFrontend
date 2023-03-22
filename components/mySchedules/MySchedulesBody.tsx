@@ -9,6 +9,7 @@ import { SpacingStyles } from '../../styles';
 import { Schedule } from '../../types';
 import ScheduleElement from './ScheduleElement';
 import AddScheduleElement from './AddScheduleElement';
+import { useSelector } from 'react-redux';
 
 const MySchedulesBody = () => {
 
@@ -18,16 +19,17 @@ const MySchedulesBody = () => {
 
     const theme = useTheme();
 
+    const {mySchedules} = useSelector((state: any) => state.appState);
+
     useEffect(() => {
-    //   setSchedules(Fetch.getSchedules()); 
-    }, [])
-    
+     setSchedules(mySchedules); 
+    }, [mySchedules])
     
     return(
         <View style={[SpacingStyles.fullSizeContainer, SpacingStyles.centeredContainer, {padding: '5%', backgroundColor: theme.colors.background}]}>
             <AddScheduleElement onPress={() => navigation.navigate('Schedule' as never)}/>
             {
-                schedules.length > 0 ? (
+                (schedules != undefined && schedules.length > 0) ? (
                     <ScrollView style={{margin: '3%'}}>
                         {schedules.map((sch, index) => {
                             return(
@@ -37,7 +39,6 @@ const MySchedulesBody = () => {
                     </ScrollView>
                 ):(
                     <View>
-                        <Text>No Schedules</Text>
                     </View>
                 )
             }

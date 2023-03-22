@@ -8,7 +8,7 @@ import Button from './Button';
 import { EventDescription, Event, SportName } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
-import {basketUrl, tennisUrl} from '../../assets/imageUrls'
+import {basketUrl, defaultEventUrl, tennisUrl} from '../../assets/imageUrls'
 import { resourceAccess } from '../../utils';
 
 const windowDimensions = Dimensions.get('window');
@@ -35,7 +35,7 @@ const EventCard = ({event, onPress}: EventInput) => {
         screen: screenDimensions,
       });
 
-    const [imageUrl, setImageUrl] = useState<string>('');
+    const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
 
     useEffect(() => {
       if(event.imageUrl == undefined)
@@ -87,15 +87,13 @@ const EventCard = ({event, onPress}: EventInput) => {
             return name;
         }
     }
-
-    const im = 'https://i.postimg.cc/B6sZN7XT/Hiking.jpg';
     
     return(
         <View onTouchEnd={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")} 
         style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight()}]}>
 
            <View style={{width:'40%', height:'100%'}}>
-                <Image source={im} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
+                <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
            </View>
 
            <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
