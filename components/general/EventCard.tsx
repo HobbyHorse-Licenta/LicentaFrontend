@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import { View, StyleSheet, Dimensions, Image} from 'react-native';
+import { View, StyleSheet, Dimensions, Image, Pressable} from 'react-native';
 
 import { verticalScale } from 'react-native-size-matters';
 import { useTheme, Text } from 'react-native-paper';
@@ -39,10 +39,10 @@ const EventCard = ({event, onPress}: EventInput) => {
 
     useEffect(() => {
       if(event.imageUrl == undefined)
-        setImageUrl(resourceAccess.getDefaultEventImage(event.description.sport))
+        setImageUrl(resourceAccess.getDefaultEventImage(event.description.sportName))
       else setImageUrl(event.imageUrl);
     }, [])
-    
+
 
 
     const image = {uri: 'https://i.postimg.cc/tR26nKb9/basket.jpg'};
@@ -74,7 +74,7 @@ const EventCard = ({event, onPress}: EventInput) => {
     const computeHeight = () => 25/100*dimensions.window.height;
 
     const openEventPage = () => {
-    
+
     }
     function joinEvent(){
         console.log("join event");
@@ -87,23 +87,21 @@ const EventCard = ({event, onPress}: EventInput) => {
             return name;
         }
     }
-    
+
     return(
-        <View onTouchEnd={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")} 
-        style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight()}]}>
-
-           <View style={{width:'40%', height:'100%'}}>
+        <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}
+        style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight(), alignSelf: 'center'}]}>
+            <View style={{width:'40%', height:'100%'}}>
                 <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
-           </View>
+            </View>
 
-           <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
+            <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
                 <EventInfoDisplay event={event}></EventInfoDisplay>
                 <View style={{width:'80%', flex: 1, margin: '5%'}}>
                     <Button text='Join' callBack={joinEvent}></Button>
                 </View>
-           </View>
-
-        </View>
+            </View>
+        </Pressable>
     );
 };
 
@@ -113,10 +111,10 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         flexDirection: 'row',
-        
+
         margin: '2%',
         backgroundColor: 'white'
-       
+
     },
     roundness: {
         borderTopRightRadius: 15,

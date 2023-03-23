@@ -1,5 +1,5 @@
 import React from 'react';
-import {View} from 'react-native';
+import {Platform, View, StyleSheet} from 'react-native';
 
 import { SafeAreaView } from 'react-navigation';
 import { useSelector } from 'react-redux';
@@ -14,15 +14,17 @@ interface Params{
 const Layout2PieceForNavigator = ({header, body} : Params) => {
     
     const {windowHeight} = useSelector((state: any) => state.ui)
+    const bottomTabBarHeight = useBottomTabBarHeight();
+   
+    const windowHeightWithoutBar = windowHeight - bottomTabBarHeight;
 
-    const windowHeightWithoutBar = windowHeight - useBottomTabBarHeight();
-    
+    const headerHeight = verticalScale(50);
     return (
-        <SafeAreaView style={{width: '100%', height: windowHeightWithoutBar, display: 'flex', flex: 1}}>
-            <View style={{height: verticalScale(50), width: '100%'}}>
+        <SafeAreaView style={[StyleSheet.absoluteFill]}>
+            <View style={{height: headerHeight, width: '100%', position: 'absolute', top: 0}}>
                 {header}
             </View>
-            <View style={{height: windowHeightWithoutBar - verticalScale(50), width: '100%'}}>
+            <View style={{height: windowHeightWithoutBar - headerHeight, width: '100%', position: 'absolute', top: headerHeight}}>
                 {body}
             </View>
         </SafeAreaView>

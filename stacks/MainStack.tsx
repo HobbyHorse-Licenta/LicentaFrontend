@@ -21,7 +21,7 @@ const MainStack = () => {
   const dispatch = useDispatch();
 
   return ( 
-    <View style={[SpacingStyles.fullSizeContainer]}>
+    <View style={[SpacingStyles.fullSizeContainer, {backgroundColor: 'orange'}]}> 
       <NavigationContainer ref={navigationRef}
       onReady={() => setRouteName(navigationRef.getCurrentRoute()?.name)}
       onStateChange={async () => {

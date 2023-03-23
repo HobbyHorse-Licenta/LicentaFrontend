@@ -17,6 +17,7 @@ import {setMySchedules} from '../redux/appState';
 import { Fetch } from '../services';
 import { SelectSport } from '../screens/postLogin/profileConfig';
 import { Schedule } from '../screens/postLogin/schedules';
+import { LoadingScreen } from '../screens/preLogin';
 
 
 const AfterLogin = () => {

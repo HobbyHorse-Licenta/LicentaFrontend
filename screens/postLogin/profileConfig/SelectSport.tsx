@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 
 import { AppHeader } from "../../../components/general";
 import { setInitialProfileConfigured } from "../../../redux/appState";
-import { Layout2Piece } from "../../layouts";
+import { Layout2Piece, Layout2PieceForNavigator } from "../../layouts";
 
 const SelectSport = () => {
 
@@ -38,11 +38,13 @@ const SelectSport = () => {
     const getBody = () => 
     {
         return(
-            <View style={{flex: 1, backgroundColor: 'green'}}></View>
+            <View style={{flex: 1, width: '100%'}}>
+                
+            </View>
         );
     }
     return(
-        <Layout2Piece 
+        <Layout2Piece
             header={ getHeader()}
             body={getBody()}
         ></Layout2Piece>
