@@ -29,6 +29,7 @@ const SelectLocation = () => {
             long: 23.596883,
         }
     });
+    const [myLocation, setMyLocation] = useState<Location>();
     const [rangeArray, setRangeArray] = useState<Distance[]>([
         {label: '+1', value: 1},
         {label: '+2', value: 2},
@@ -43,8 +44,7 @@ const SelectLocation = () => {
 
     ]);
     const [range, setRange] = useState<number>(0);
-    const [myLocation, setMyLocation] = useState<ExpoLocation.LocationObject>();
-    let location = undefined;
+
     const theme = useTheme();
     const mapRef = useRef<MapView | null>(null);
 
@@ -57,7 +57,8 @@ const SelectLocation = () => {
             return;
           }
     
-          location = await ExpoLocation.getCurrentPositionAsync({});
+          let location = await ExpoLocation.getCurrentPositionAsync({});
+
           if(mapRef.current != null)
             mapRef.current.animateToRegion({
                 latitude: location.coords.latitude,
@@ -65,7 +66,12 @@ const SelectLocation = () => {
                 latitudeDelta: 0.002,
                 longitudeDelta: 0.002,
               }, 1000)
-          setMyLocation(location);
+
+          setMyLocation({id: uuid.v4().toString(), name: 'Your Location', gpsPoint: {
+            lat: location.coords.latitude,
+            long: location.coords.longitude,
+          }});
+
         })();
     }, []);
 
@@ -124,23 +130,17 @@ const SelectLocation = () => {
                         
             >
             {
-                (location != undefined) ? (
-                    <Marker
-                        key={1}
-                        coordinate={location.coords}
-                        title={'Your location'}
-                        style={{width: 10, height: 10}}
-                        pinColor={'wheat'}
-                    />
-                ):(
-                    <Marker
-                        key={1}
-                        coordinate={initialLocation}
-                        title={'Your location'}
-                        style={{width: 10, height: 10}}
-                        pinColor={'wheat'}
-                    />
-                )
+                myLocation != undefined &&
+                <Marker
+                    key={1}
+                    coordinate={{
+                        latitude: myLocation.gpsPoint.lat,
+                        longitude: myLocation.gpsPoint.long
+                    }}
+                    title={'Your location'}
+                    style={{width: 10, height: 10}}
+                    pinColor={'wheat'}
+                />
             }
             </MapView>
         </PrimaryContainer>

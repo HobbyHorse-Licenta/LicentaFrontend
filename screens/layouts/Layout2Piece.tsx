@@ -1,10 +1,10 @@
 import React from 'react';
 import {View} from 'react-native';
+import { verticalScale } from 'react-native-size-matters';
 
 import { SafeAreaView } from 'react-navigation';
 import { useSelector } from 'react-redux';
 
-import { SizeUtil } from '../../utils'
 
 interface Params{
     header: any,
@@ -17,10 +17,10 @@ const Layout2Piece = ({header, body} : Params) => {
     
     return (
         <SafeAreaView style={{width: '100%', height: windowHeight, display: 'flex'}}>
-            <View style={{flex: 1.3, width: '100%'}}>
+            <View style={{height: verticalScale(50), width: '100%'}}>
             {header}
             </View>
-            <View style={{flex: 12, width: '100%'}}>
+            <View style={{height: windowHeight - verticalScale(50), width: '100%'}}>
                 {body}
             </View>
         </SafeAreaView>

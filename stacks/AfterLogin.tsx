@@ -1,11 +1,12 @@
 import React, {useRef, useEffect} from 'react'
-import {View} from 'react-native'
+import {View, StyleSheet} from 'react-native'
 
 import { SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme } from 'react-native-paper';
 import NotificationPopup from 'react-native-push-notification-popup';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
 import { SpacingStyles } from '../styles';
@@ -14,6 +15,8 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { navigationService } from '../utils';
 import {setMySchedules} from '../redux/appState';
 import { Fetch } from '../services';
+import { SelectSport } from '../screens/postLogin/profileConfig';
+import { Schedule } from '../screens/postLogin/schedules';
 
 
 const AfterLogin = () => {
@@ -24,8 +27,9 @@ const AfterLogin = () => {
   const dispatch = useDispatch();
   const popUp = useRef<NotificationPopup | null>(null);
 
+  const Stack = createNativeStackNavigator();
  
-  const {currentRoute} = useSelector((state: any) => state.appState);
+  const {currentRoute, initialProfileConfigured} = useSelector((state: any) => state.appState);
   const show = navigationService.ShouldHaveTabBar(currentRoute);
 
   useEffect(() => {
@@ -36,14 +40,22 @@ const AfterLogin = () => {
 
   return ( 
     <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
+    { 
+      (initialProfileConfigured == false) ?
+      (
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SignIn'>
+          <Stack.Screen name="SelectSport" component={SelectSport} />
+        </Stack.Navigator>
+      ):
+      (
       <Tab.Navigator
         initialRouteName="EventsStack"
         screenOptions={{
           tabBarActiveTintColor: theme.colors.tertiary,
           headerShown: false,
-          tabBarStyle: {display: show ? "flex" : "none"}
+          tabBarStyle: show ? {display: 'flex'} : {display: "flex", position: 'absolute', bottom: -200},
         }}
-        >
+      >
 
         <Tab.Screen
           name="MySchedulesStack"
@@ -112,6 +124,8 @@ const AfterLogin = () => {
         />
 
       </Tab.Navigator>
+      )
+    }
     </SafeAreaView>
    
   );

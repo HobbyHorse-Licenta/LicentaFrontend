@@ -19,10 +19,10 @@ const Layout2PieceForNavigator = ({header, body} : Params) => {
     
     return (
         <SafeAreaView style={{width: '100%', height: windowHeightWithoutBar, display: 'flex', flex: 1}}>
-            <View style={{flex: 1.2, width: '100%'}}>
+            <View style={{height: verticalScale(50), width: '100%'}}>
                 {header}
             </View>
-            <View style={{flex: 15, width: '100%'}}>
+            <View style={{height: windowHeightWithoutBar - verticalScale(50), width: '100%'}}>
                 {body}
             </View>
         </SafeAreaView>

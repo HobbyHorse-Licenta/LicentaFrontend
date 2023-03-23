@@ -24,7 +24,7 @@ const EventDisplay = ({route, navigation}) => {
   };
   
   return (
-    <Layout2Piece 
+    <Layout2Piece
             header={ <EventHeader>{event.name}</EventHeader>}
             body={getBody()}
     ></Layout2Piece>

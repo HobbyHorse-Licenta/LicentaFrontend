@@ -6,7 +6,7 @@ import { scale } from "react-native-size-matters";
 import { SpacingStyles } from '../../../styles';
 import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange, SelectSportModal} from '../../../components/schedule';
 // import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '@schedule';
-import { Layout2PieceForNavigator } from '../../layouts';
+import { Layout2Piece } from '../../layouts';
 import { SportName } from "../../../types";
 
 
@@ -33,7 +33,7 @@ const Schedule = () => {
 
   const getBody = () => {
     return(
-      <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {flex: 1, padding: scale(14)}]}>
+      <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {padding: scale(14)}]}>
         <View style={[SpacingStyles.centeredContainer, {flex: 0.8}]}>
           <SelectDays></SelectDays>
         </View>
@@ -58,10 +58,10 @@ const Schedule = () => {
   }
 
   return (
-     <Layout2PieceForNavigator 
+     <Layout2Piece
         header={<ScheduleHeader></ScheduleHeader>}
         body={getBody()}
-     ></Layout2PieceForNavigator>
+     ></Layout2Piece>
   );
 };
 

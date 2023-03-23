@@ -5,13 +5,15 @@ import { Schedule } from '../types';
 interface AppState {
     isLoggedIn: boolean,
     currentRoute: string | undefined,
-    mySchedules: Array<Schedule> | undefined
+    mySchedules: Array<Schedule> | undefined,
+    initialProfileConfigured: boolean
 }
 
 const initialState: AppState = {
-    isLoggedIn: true,
+    isLoggedIn: false,
     currentRoute: undefined,
-    mySchedules: undefined
+    mySchedules: undefined,
+    initialProfileConfigured: false
 }
 
 export const appStateSlice = createSlice({
@@ -27,11 +29,13 @@ export const appStateSlice = createSlice({
         setMySchedules: (state, action: PayloadAction<Array<Schedule>>) => {
             state.mySchedules = action.payload;
         },
-        
+        setInitialProfileConfigured: (state, action: PayloadAction<boolean>) => {
+            state.initialProfileConfigured = action.payload;
+        }
       
     }
 });
 
-export const {setLoginState, setCurrentRoute, setMySchedules} = appStateSlice.actions
+export const {setLoginState, setCurrentRoute, setMySchedules, setInitialProfileConfigured} = appStateSlice.actions
 
 export default appStateSlice.reducer;
