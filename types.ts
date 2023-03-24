@@ -49,11 +49,18 @@ export enum SportName {
   Bowling = 'Bowling',
   Biliard = 'Biliard',
   Ping_Pong = 'Ping-Pong',
-  Hiking = 'Hiking'
+  Hiking = 'Hiking',
+  InlineSkating = 'InlineSkating'
 }
 
 export type Sport = {
   sportName: SportName
+}
+
+export enum SkateType {
+  AggressiveSkates = 'Aggressive Skates',
+  CasualSkates = 'Casual Skates',
+  SpeedSkates = 'Speed Skates'
 }
 
 export type SportLevel = 'Healthy beginner' | 'Intermediate athlete' | 'Advanced athlete' | 'Elite athlete';

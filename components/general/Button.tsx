@@ -1,12 +1,14 @@
 import React, { useState, useEffect} from 'react'
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
 
 import { useTheme, Text } from 'react-native-paper';
-import { scale } from 'react-native-size-matters';
+import { scale, verticalScale } from 'react-native-size-matters';
 
 interface Params {
     text: string,
-    callBack: Function
+    callBack: Function,
+    style?: ViewStyle,
+    disabled?: boolean
 }
 
 interface ButtonSize {
@@ -14,7 +16,7 @@ interface ButtonSize {
     height: number
 }
 
-const Button = ({text, callBack} : Params) => {
+const Button = ({text, callBack, style, disabled} : Params) => {
     
     const [buttonSize, setButtonSize] = useState<ButtonSize>({width: 36, height: 154});
     const [fontDimension, setFontDimension] = useState<number>(12);
@@ -38,22 +40,36 @@ const Button = ({text, callBack} : Params) => {
         setButtonSize({width, height});
     }
 
+    const getStyle = () => {
+        if (style) return {...styles.button, ...style}
+        else return styles.button;
+    }
+
+    const getTextColor = () =>{
+        if(disabled === true)
+            return theme.colors.onSurfaceDisabled
+        else return theme.colors.onSecondary
+    }
+
+    const getButtonColor = () =>{
+        if(disabled === true)
+            return theme.colors.surfaceDisabled
+        else return theme.colors.secondary
+    }
+
+
     return(
-    <TouchableOpacity style={[styles.button, {backgroundColor: theme.colors.secondary}]} onLayout={(event) => handleOnLayout(event.nativeEvent.layout)}  onPress={() => callBack()}>
-        <Text style={{fontSize: scale(10), color: theme.colors.onSecondary}}>{text}</Text>
-    </TouchableOpacity>
-   
+        <TouchableOpacity style={[getStyle(), {backgroundColor: getButtonColor()}]} onLayout={(event) => handleOnLayout(event.nativeEvent.layout)} 
+        onPress={() => !disabled && callBack()}>
+            <Text style={{fontSize: scale(10), color: getTextColor()}}>{text}</Text>
+        </TouchableOpacity>
     );
 };
 
 const styles = StyleSheet.create({
     button: {
         borderRadius: 50, 
-        minHeight: 25,
-        minWidth: 40,
-        maxHeight: 80,
-        maxWidth: 300, 
-        padding: '3%',
+        paddingHorizontal: verticalScale(13),
         alignItems: 'center',
         justifyContent: 'center',
         margin: '3%'

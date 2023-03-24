@@ -61,8 +61,9 @@ const theme = {
       "level4": "rgb(238, 232, 224)",
       "level5": "rgb(235, 229, 219)"
     },
-    "surfaceDisabled": "rgba(30, 27, 22, 0.12)",
-    "onSurfaceDisabled": "rgba(30, 27, 22, 0.38)",
+    "surfaceDisabled": COLORS.aDisabledContainer,
+    "onSurfaceDisabled": COLORS.aDisabledContainerText,
+    
     "backdrop": "rgba(53, 48, 36, 0.4)"
   }
   

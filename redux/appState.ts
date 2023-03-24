@@ -13,7 +13,7 @@ const initialState: AppState = {
     isLoggedIn: true,
     currentRoute: undefined,
     mySchedules: undefined,
-    initialProfileConfigured: true
+    initialProfileConfigured: false
 }
 
 export const appStateSlice = createSlice({

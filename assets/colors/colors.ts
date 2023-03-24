@@ -19,7 +19,9 @@ export const COLORS = {
     aComponenySecondary: '#F5F9FA',
     aTextPrimary: '#1C3152',
     aTextSecondary: '#B1B3B5',
-    aPrimaryColorOverall: '#F85F60'
+    aPrimaryColorOverall: '#F85F60',
+    aDisabledContainer: '#CCCCCC',
+    aDisabledContainerText: '#838383',
 
 }
 

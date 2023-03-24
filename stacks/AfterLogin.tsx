@@ -1,5 +1,5 @@
 import React, {useRef, useEffect} from 'react'
-import {View, StyleSheet} from 'react-native'
+import {View} from 'react-native'
 
 import { SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,13 +11,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
 import { SpacingStyles } from '../styles';
 import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack } from './mainPages';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { navigationService } from '../utils';
-import {setMySchedules} from '../redux/appState';
-import { Fetch } from '../services';
-import { SelectSport } from '../screens/postLogin/profileConfig';
-import { Schedule } from '../screens/postLogin/schedules';
-import { LoadingScreen } from '../screens/preLogin';
+import { SelectSkates, SelectSport } from '../screens/postLogin/profileConfig';
 
 
 const AfterLogin = () => {
@@ -46,6 +41,7 @@ const AfterLogin = () => {
       (
         <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SignIn'>
           <Stack.Screen name="SelectSport" component={SelectSport} />
+          <Stack.Screen name="SelectSkates" component={SelectSkates} />
         </Stack.Navigator>
       ):
       (
