@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 
-import { Appbar, Text, RadioButton, useTheme } from "react-native-paper";
+import { Appbar, Text } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
+import * as Animatable from 'react-native-animatable';
+
 
 import { AppHeader, PrimaryContainer, Button, SelectionCard } from "../../../components/general";
-import { setInitialProfileConfigured } from "../../../redux/appState";
 import { Layout2Piece } from "../../layouts";
 import { SpacingStyles } from "../../../styles";
 import { SportName } from "../../../types";
@@ -70,11 +71,27 @@ const SelectSport = () => {
                             <Text>Sport</Text>
                         </PrimaryContainer>
                     </Pressable>
-                    <SelectionCard selectState={selectedSport != undefined}
-                                    flipSelectState={() => flipSelectState()}
-                                   text={'Inline Skates'}>
-                        <InlineSkatesSvg></InlineSkatesSvg>
-                    </SelectionCard>
+                    {
+                        (selectedSport != undefined) ?
+                        (
+                            <SelectionCard selectState={selectedSport != undefined}
+                                        flipSelectState={() => flipSelectState()}
+                                    text={'Inline Skates'}>
+                                <InlineSkatesSvg></InlineSkatesSvg>
+                            </SelectionCard>
+                        ):
+                        (
+                            <Animatable.View animation='pulse' iterationCount={Infinity} easing='ease-in'>
+                                <SelectionCard selectState={selectedSport != undefined}
+                                                flipSelectState={() => flipSelectState()}
+                                            text={'Inline Skates'}>
+                                    <InlineSkatesSvg></InlineSkatesSvg>
+                                </SelectionCard>
+                            </Animatable.View>
+                        )
+                    }
+                    
+                   
                 </View>
             </View>
         );
