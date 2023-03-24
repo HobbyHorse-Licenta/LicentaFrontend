@@ -51,6 +51,12 @@ const SelectSport = () => {
         );
     }
 
+    const flipSelectState = () =>
+    {
+        if(selectedSport != undefined)
+            setSelectedSport(undefined);
+        else setSelectedSport(SportName.InlineSkating);
+    }
     const getBody = () => 
     {
         return(
@@ -64,8 +70,8 @@ const SelectSport = () => {
                             <Text>Sport</Text>
                         </PrimaryContainer>
                     </Pressable>
-                    <SelectionCard onSelect={() => setSelectedSport(SportName.InlineSkating)}
-                                   onDeselect={() => setSelectedSport(undefined)}
+                    <SelectionCard selectState={selectedSport != undefined}
+                                    flipSelectState={() => flipSelectState()}
                                    text={'Inline Skates'}>
                         <InlineSkatesSvg></InlineSkatesSvg>
                     </SelectionCard>

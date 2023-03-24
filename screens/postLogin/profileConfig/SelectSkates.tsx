@@ -21,11 +21,15 @@ const SelectSkates = () => {
 
     const [selectedSkateType, setSelectedSkateType] = useState<SkateType | undefined>(skateType);
     const [goNextDisabled, setGoNextDisabled] = useState(true);
-    const [deselectTrigger, setDeselectTrigger] = useState<Array<number>>([0,0,0]);
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
     
+    useEffect(() => {
+     console.log("SKATE TYPE: " + selectedSkateType);
+    }, [])
+    
+
     useEffect(() => {
        console.log("value from state: " + skateType);
     }, [selectedSkateType])
@@ -34,26 +38,11 @@ const SelectSkates = () => {
         //new skate type selected, update in configState
         dispatch(setSkateType(selectedSkateType));
 
-      if(selectedSkateType != undefined)
-        setGoNextDisabled(false);
-      else setGoNextDisabled(true);
+        if(selectedSkateType != undefined)
+            setGoNextDisabled(false);
+        else setGoNextDisabled(true);
     }, [selectedSkateType])
     
-    const setSkateTypeAndResetOthers = (selectedType: SkateType) => 
-    {
-        if(selectedSkateType == undefined)
-        {
-            setSelectedSkateType(selectedType);
-        }
-        else {
-            const skateTypes = Object.values(SkateType);
-            const arr: Array<number> = deselectTrigger.map((triggerValue, skateToTriggerIndex) =>
-             (skateTypes[skateToTriggerIndex] == selectedSkateType) ? triggerValue + 1 : triggerValue)
-            setDeselectTrigger(arr);
-            setSelectedSkateType(selectedType);
-        }
-    }
-
     const getCards = () => {
         const keys = Object.values(SkateType);
 
@@ -74,16 +63,23 @@ const SelectSkates = () => {
                 break;
             }
         }
+
+
+        const flipSelectedSkateType = (skateType : SkateType) =>{
+            if(selectedSkateType != undefined && selectedSkateType === skateType)
+                setSelectedSkateType(undefined);
+            else setSelectedSkateType(skateType);
+        }
+
         return(
             
             keys.map((skateType, index) => {
                 return(
                     <SelectionCard key={index}
-                                   onSelect={() => setSkateTypeAndResetOthers(skateType)}
-                                   onDeselect={() => setSelectedSkateType(undefined)}
                                    text={skateType}
-                                   style={styles.optionTile}
-                                   deselectTrigger={deselectTrigger[index]}>
+                                   selectState={selectedSkateType === skateType}
+                                   flipSelectState={() => flipSelectedSkateType(skateType)}
+                                   style={styles.optionTile}>
                         <Image style={styles.image} resizeMode='center' source={{uri: getImageUri(skateType)}}></Image>
                     </SelectionCard>
                 );

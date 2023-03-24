@@ -10,33 +10,29 @@ import PrimaryContainer from './PrimaryContainer';
 interface Input {
     children: ReactNode,
     text?: string,
-    onSelect: Function,
-    onDeselect: Function,
+    selectState: boolean
+    onSelect?: Function,
+    onDeselect?: Function,
     style?: ViewStyle,
-    deselectTrigger?: number
+    flipSelectState: Function
 }
 
-const SelectionCard = ({children, onSelect, onDeselect, text, style, deselectTrigger}: Input) => {
-
-    const [checked, setChecked] = useState(false);
+const SelectionCard = ({children, onSelect, onDeselect, text, style, flipSelectState, selectState}: Input) => {
 
     const theme = useTheme();
-
-    useEffect(() => {
-      setChecked(false);
-    }, [deselectTrigger])
     
     const flipChecked = () => 
     {
-        if(checked)
+        if(selectState == true)
         {
-            setChecked(false);
-            onDeselect();
+            if(onDeselect != undefined)
+                onDeselect();
         }
         else {
-            setChecked(true);
-            onSelect();
+            if(onSelect != undefined)
+                onSelect();
         }
+        flipSelectState();
     }
 
     const getStyle = () => {
@@ -50,11 +46,11 @@ const SelectionCard = ({children, onSelect, onDeselect, text, style, deselectTri
             <PrimaryContainer styleInput={getStyle()}>
                 {children}
                 <View style={styles.radioButtonContainer}>
-                    {checked && 
+                    {selectState && 
                         <RadioButton
                             value="smth"
                             onPress={flipChecked}
-                            status={ checked ? 'checked' : 'unchecked'}
+                            status={ selectState ? 'checked' : 'unchecked'}
                             color={theme.colors.tertiary}
                             uncheckedColor={theme.colors.tertiary}    
                         />
