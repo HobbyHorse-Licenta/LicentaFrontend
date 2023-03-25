@@ -1,38 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Image } from "react-native";
 
-import { Appbar, Text, RadioButton, useTheme } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
-import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 
-import { AppHeader, PrimaryContainer, Button, SelectionCard } from "../../../components/general";
-import { setInitialProfileConfigured } from "../../../redux/appState";
+import { SelectionCard } from "../../../components/general";
 import { Layout2Piece } from "../../layouts";
 import { SpacingStyles } from "../../../styles";
-import { SkateType, SportName } from "../../../types";
-import { InlineSkatesSvg } from "../../../components/svg/sports";
+import { SkatesType } from "../../../types";
 import { aggresiveSkatesUrl, casualSkatesUrl, speedSkatesUrl } from "../../../assets/imageUrls";
 import { setSkateType } from "../../../redux/configProfileState";
+import SelectStyleAndExperience from "./SelectStyleAndExperience";
+import { ProfileConfigHeader } from "../../../components/profileConfig";
 
 const SelectSkates = () => {
 
     const {skateType} = useSelector((state: any) => state.configProfile)
 
-    const [selectedSkateType, setSelectedSkateType] = useState<SkateType | undefined>(skateType);
+    const [selectedSkateType, setSelectedSkateType] = useState<SkatesType | undefined>(skateType);
     const [goNextDisabled, setGoNextDisabled] = useState(true);
 
-    const navigation = useNavigation();
     const dispatch = useDispatch();
-    
-    useEffect(() => {
-     console.log("SKATE TYPE: " + selectedSkateType);
-    }, [])
-    
-
-    useEffect(() => {
-       console.log("value from state: " + skateType);
-    }, [selectedSkateType])
 
     useEffect(() => {
         //new skate type selected, update in configState
@@ -44,18 +33,18 @@ const SelectSkates = () => {
     }, [selectedSkateType])
     
     const getCards = () => {
-        const keys = Object.values(SkateType);
+        const keys = Object.values(SkatesType);
 
-        const getImageUri = (skateType: SkateType) =>
+        const getImageUri = (skateType: SkatesType) =>
         {
             switch (skateType) {
-                case SkateType.AggressiveSkates:
+                case SkatesType.AggressiveSkates:
                     return aggresiveSkatesUrl;
                 break;
-                case SkateType.CasualSkates:
+                case SkatesType.CasualSkates:
                     return casualSkatesUrl;
                 break;
-                case SkateType.SpeedSkates:
+                case SkatesType.SpeedSkates:
                     return speedSkatesUrl;
                 break;
                 default:
@@ -65,7 +54,7 @@ const SelectSkates = () => {
         }
 
 
-        const flipSelectedSkateType = (skateType : SkateType) =>{
+        const flipSelectedSkateType = (skateType : SkatesType) =>{
             if(selectedSkateType != undefined && selectedSkateType === skateType)
                 setSelectedSkateType(undefined);
             else setSelectedSkateType(skateType);
@@ -80,36 +69,12 @@ const SelectSkates = () => {
                                    selectState={selectedSkateType === skateType}
                                    flipSelectState={() => flipSelectedSkateType(skateType)}
                                    style={styles.optionTile}>
-                        <Image style={styles.image} resizeMode='center' source={{uri: getImageUri(skateType)}}></Image>
+                        <Image style={styles.image} resizeMode='contain' source={{uri: getImageUri(skateType)}}></Image>
                     </SelectionCard>
                 );
             })
         );
         
-    }
-
-    const getHeader = () => 
-    {
-        const _goBack = () => {
-            console.log("[SelectSkates]: go back in config")
-            navigation.goBack();
-        }
-
-        const _goNext = () => {
-            if(selectedSkateType != undefined)
-            {
-               
-                // navigation.navigate("")
-                // dispatch(setInitialProfileConfigured(true));
-            }
-        }
-
-        return(
-            <AppHeader>
-                <Appbar.BackAction style={{left: scale(20), position: 'absolute'}} onPress={_goBack} />
-                <Button disabled={goNextDisabled} text="NEXT" callBack={_goNext} style={{position: 'absolute', right: scale(20)}}/>
-            </AppHeader>
-        );
     }
 
     const getBody = () => 
@@ -124,7 +89,7 @@ const SelectSkates = () => {
 
     return(
         <Layout2Piece
-            header={ getHeader()}
+            header={ <ProfileConfigHeader backButton={true} disabled={goNextDisabled}  nextScreen={'SelectStyleAndExperience'}></ProfileConfigHeader>}
             body={getBody()}
         ></Layout2Piece>
     );

@@ -10,7 +10,7 @@ interface AppState {
 }
 
 const initialState: AppState = {
-    isLoggedIn: true,
+    isLoggedIn: false,
     currentRoute: undefined,
     mySchedules: undefined,
     initialProfileConfigured: false

@@ -9,5 +9,8 @@ import LocationSvg from "./LocationSvg";
 import LevelSvg from "./LevelSvg";
 import BigLocationSvg from "./BigLocationSvg";
 import DeleteSvg from "./DeleteSvg";
+import HandDownSvg from "./HandDownSvg";
+import MaleSvg from "./MaleSvg";
+import FemaleSvg from "./FemaleSvg";
 export {ChatSvg, AllEventsSvg, MapsSvg, ScheduleSvg, MyEventsSvg, ProfileSvg,
-    PlusSvg, LocationSvg, LevelSvg, BigLocationSvg, DeleteSvg}
+    PlusSvg, LocationSvg, LevelSvg, BigLocationSvg, DeleteSvg, HandDownSvg, MaleSvg, FemaleSvg}

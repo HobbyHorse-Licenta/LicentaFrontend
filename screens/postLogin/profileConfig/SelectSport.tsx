@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable } from "react-native";
 
-import { Appbar, Text } from "react-native-paper";
+import { Text } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
-import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import * as Animatable from 'react-native-animatable';
 
 
-import { AppHeader, PrimaryContainer, Button, SelectionCard } from "../../../components/general";
+import { PrimaryContainer, SelectionCard } from "../../../components/general";
 import { Layout2Piece } from "../../layouts";
 import { SpacingStyles } from "../../../styles";
 import { SportName } from "../../../types";
 import { InlineSkatesSvg } from "../../../components/svg/sports";
 import SelectSkates from "./SelectSkates";
 import { setSport } from "../../../redux/configProfileState";
+import { ProfileConfigHeader } from "../../../components/profileConfig";
 
 const SelectSport = () => {
 
@@ -23,7 +23,6 @@ const SelectSport = () => {
     const [selectedSport, setSelectedSport] = useState<SportName | undefined>(sport);
     const [goNextDisabled, setGoNextDisabled] = useState(true);
 
-    const navigation = useNavigation();
     const dispatch = useDispatch();
     
     useEffect(() => {
@@ -33,24 +32,6 @@ const SelectSport = () => {
         else setGoNextDisabled(true);
     }, [selectedSport])
     
-    const getHeader = () => 
-    {
-        const _goBack = () => {
-            console.log("[SelectSport]: go back in config")
-        }
-
-        const _goNext = () => {
-            console.log("[SelectSport]: advance in config");
-            navigation.navigate(SelectSkates as never);
-        }
-
-        return(
-            <AppHeader>
-                <Appbar.BackAction style={{left: scale(20), position: 'absolute'}} onPress={_goBack} />
-                <Button disabled={goNextDisabled} text="NEXT" callBack={_goNext} style={{position: 'absolute', right: scale(20)}}/>
-            </AppHeader>
-        );
-    }
 
     const flipSelectState = () =>
     {
@@ -58,6 +39,7 @@ const SelectSport = () => {
             setSelectedSport(undefined);
         else setSelectedSport(SportName.InlineSkating);
     }
+    
     const getBody = () => 
     {
         return(
@@ -89,16 +71,15 @@ const SelectSport = () => {
                                 </SelectionCard>
                             </Animatable.View>
                         )
-                    }
-                    
-                   
+                    } 
                 </View>
             </View>
         );
     }
+
     return(
         <Layout2Piece
-            header={ getHeader()}
+            header={ <ProfileConfigHeader backButton={true} disabled={goNextDisabled}  nextScreen={'SelectSkates'}></ProfileConfigHeader>}
             body={getBody()}
         ></Layout2Piece>
     );

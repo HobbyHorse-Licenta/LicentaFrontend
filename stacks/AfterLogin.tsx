@@ -12,7 +12,7 @@ import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../
 import { SpacingStyles } from '../styles';
 import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack } from './mainPages';
 import { navigationService } from '../utils';
-import { SelectSkates, SelectSport } from '../screens/postLogin/profileConfig';
+import { PersonalInfo, SelectSkates, SelectSport, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
 
 
 const AfterLogin = () => {
@@ -39,9 +39,12 @@ const AfterLogin = () => {
     { 
       (initialProfileConfigured == false) ?
       (
-        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SignIn'>
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SelectSport'>
           <Stack.Screen name="SelectSport" component={SelectSport} />
           <Stack.Screen name="SelectSkates" component={SelectSkates} />
+          <Stack.Screen name="SelectStyleAndExperience" component={SelectStyleAndExperience} />
+          <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+
         </Stack.Navigator>
       ):
       (

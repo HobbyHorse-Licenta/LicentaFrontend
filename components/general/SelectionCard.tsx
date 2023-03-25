@@ -46,15 +46,13 @@ const SelectionCard = ({children, onSelect, onDeselect, text, style, flipSelectS
             <PrimaryContainer styleInput={getStyle()}>
                 {children}
                 <View style={styles.radioButtonContainer}>
-                    {selectState && 
-                        <RadioButton
-                            value="smth"
-                            onPress={flipChecked}
-                            status={ selectState ? 'checked' : 'unchecked'}
-                            color={theme.colors.tertiary}
-                            uncheckedColor={theme.colors.tertiary}    
-                        />
-                    }
+                    <RadioButton
+                        value="smth"
+                        onPress={flipChecked}
+                        status={ selectState ? 'checked' : 'unchecked'}
+                        color={theme.colors.tertiary }
+                        uncheckedColor={'white'}    
+                    />
                     {text != undefined && <Text variant='bodyMedium'>{text}</Text>}
                 </View>
             </PrimaryContainer>

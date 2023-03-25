@@ -1,3 +1,5 @@
 import SelectSport from "./SelectSport";
 import SelectSkates from "./SelectSkates";
-export {SelectSport, SelectSkates}
+import SelectStyleAndExperience from "./SelectStyleAndExperience";
+import PersonalInfo from "./PersonalInfo";
+export {SelectSport, SelectSkates, SelectStyleAndExperience, PersonalInfo}

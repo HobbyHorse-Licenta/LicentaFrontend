@@ -5,7 +5,7 @@
     "description": "App to meet friends by playing sports.",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/randomPics/hobbyhorseIcon.png",
+    "icon": "./assets/randomPics/smallSizeHobbyHorseIcon.png",
     "userInterfaceStyle": "light",
     "plugins": [
       [
