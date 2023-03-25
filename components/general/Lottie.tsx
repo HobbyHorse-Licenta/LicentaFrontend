@@ -9,10 +9,11 @@ interface LottieInput {
     width: number,
     height: number
     setup?: boolean,
-    adjustMask?: number
+    adjustMask?: number,
+    maskColor?: string
 }
 
-const Lottie = ({lottieRequire, setup, adjustMask, width, height} : LottieInput) => {
+const Lottie = ({lottieRequire, setup, adjustMask, width, height, maskColor} : LottieInput) => {
     const adjust = (adjustMask != undefined) ? adjustMask : 0;
     return(
         <View>
@@ -25,7 +26,7 @@ const Lottie = ({lottieRequire, setup, adjustMask, width, height} : LottieInput)
         { (setup == true) ? (
             <View style={{width: width, height: (scale(height)/3), marginTop: -(scale(height)/3) + adjust, borderWidth: 2, borderColor: 'red'}}></View>
             ):(
-                <View style={{width: width, height: (scale(height)/3), marginTop: -(scale(height)/3) + adjust, backgroundColor: 'white'}}></View>
+                <View style={{width: width, height: (scale(height)/3), marginTop: -(scale(height)/3) + adjust, backgroundColor: (maskColor !== undefined) ? maskColor : 'white'}}></View>
                 )}
         </View>
     );

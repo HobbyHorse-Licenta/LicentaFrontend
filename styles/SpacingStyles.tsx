@@ -153,9 +153,4 @@ export const SpacingStyles = StyleSheet.create({
       row: { flexDirection: "row" },
       timeContainer: { justifyContent: "center", flex: 1, alignItems: "center" },
       timeText: { fontSize: scale(80) },
-      popUpContainer: {
-        alignSelf: 'flex-start',
-        position: 'absolute',
-        top: -verticalScale(40)
-      }
 })

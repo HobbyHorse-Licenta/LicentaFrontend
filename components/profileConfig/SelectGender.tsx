@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {StyleSheet, View, Pressable} from 'react-native'
 
 import {Text, useTheme} from 'react-native-paper'
@@ -8,11 +8,18 @@ import { Gender } from '../../types';
 import { PrimaryContainer } from '../general';
 import { FemaleSvg, MaleSvg } from '../svg/general';
 
-const SelectGender = () => {
+interface SelectGenderInput{
+    onChange: Function
+}
+const SelectGender = ({onChange} : SelectGenderInput) => {
     const theme = useTheme();
 
     const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
 
+    useEffect(() => {
+        onChange(selectedGender);
+    }, [selectedGender])
+    
     const selectedFemale = () => {
         if(selectedGender === Gender.Female)
             setSelectedGender(undefined)
@@ -25,7 +32,7 @@ const SelectGender = () => {
         else setSelectedGender(Gender.Male)
     }
     return(
-        <PrimaryContainer styleInput={{...styles.container,  backgroundColor: theme.colors.secondary}}>
+        <PrimaryContainer styleInput={{...styles.container,  backgroundColor: theme.colors.background}}>
                         <Text>Gender:</Text>
                         <View style={{flexDirection: 'row'}}>
                             <Pressable onPress={selectedFemale}>

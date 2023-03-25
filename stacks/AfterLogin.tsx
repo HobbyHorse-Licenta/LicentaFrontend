@@ -39,7 +39,7 @@ const AfterLogin = () => {
     { 
       (initialProfileConfigured == false) ?
       (
-        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SelectSport'>
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='PersonalInfo'>
           <Stack.Screen name="SelectSport" component={SelectSport} />
           <Stack.Screen name="SelectSkates" component={SelectSkates} />
           <Stack.Screen name="SelectStyleAndExperience" component={SelectStyleAndExperience} />

@@ -1,43 +1,57 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet } from "react-native";
 
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
-import * as Animatable from 'react-native-animatable';
-import LottieView from 'lottie-react-native';
 
 
-import { Lottie, PrimaryContainer, SelectionCard } from "../../../components/general";
+import { GeneralModal, Lottie, PrimaryContainer, SelectionCard } from "../../../components/general";
 import { Layout2Piece } from "../../layouts";
-import { SpacingStyles } from "../../../styles";
-import { SportName } from "../../../types";
-import { InlineSkatesSvg } from "../../../components/svg/sports";
-import { setSport } from "../../../redux/configProfileState";
-import { ProfileConfigHeader, SelectGender } from "../../../components/profileConfig";
-import { FemaleSvg, MaleSvg } from "../../../components/svg/general";
+import { Gender, SportName } from "../../../types";
+import { ProfileConfigHeader, SelectAge, SelectGender } from "../../../components/profileConfig";
+import WheelPickerExpo from "react-native-wheel-picker-expo";
+import { setAge, setGender } from "../../../redux/configProfileState";
 
 const PersonalInfo = () => {
 
-    const {sport} = useSelector((state: any) => state.configProfile)
+    const {age, gender} = useSelector((state: any) => state.configProfile)
 
-    const [selectedSport, setSelectedSport] = useState<SportName | undefined>(sport);
-    const [finishDisabled, setFinishDisabled] = useState(false);
+    const [finishDisabled, setFinishDisabled] = useState(true);
+    const [selectedAge, setSelectedAge] = useState(age);
+    const [selectedGender, setSelectedGender] = useState<Gender>(gender);
+
 
     const dispatch = useDispatch();
-    
+    const theme = useTheme();
+
+    useEffect(() => {
+        if(selectedGender != undefined && selectedAge != undefined)
+            setFinishDisabled(false);
+        else setFinishDisabled(true);
+    }, [selectedGender, selectedAge])
+
+    useEffect(() => {
+        dispatch(setGender(selectedGender));
+    }, [selectedGender])
+
+    useEffect(() => {
+        dispatch(setAge(selectedAge));
+    }, [selectedAge])
     
     
     const getBody = () => 
     {
         return(
-            <View style={[StyleSheet.absoluteFill, {justifyContent: 'center', alignItems: 'center'}]}>
-                <PrimaryContainer styleInput={{...SpacingStyles.shadow, ...styles.mainContainer}}>
+            <View style={[StyleSheet.absoluteFill, {justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.primary}]}>
                     <Lottie lottieRequire={require('../../../assets/lottieAnimations/fingerprint.json')}
-                    width={100} height={100} adjustMask={22}/>
-                    <SelectGender></SelectGender>
-                    
-                </PrimaryContainer>
+                    width={100} height={100} adjustMask={22} maskColor={theme.colors.primary}/>
+                    <Text variant="headlineLarge" >Make it about you</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <SelectAge onChange={(age => setSelectedAge(age))}></SelectAge>
+                        <SelectGender onChange={(gender => setSelectedGender(gender))}></SelectGender>
+                    </View>
+                   
             </View>
             
         );
