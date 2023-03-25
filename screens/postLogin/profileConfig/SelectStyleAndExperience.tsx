@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {TouchableWithoutFeedback, View, StyleSheet} from 'react-native'
+import {TouchableWithoutFeedback, View, StyleSheet, Pressable} from 'react-native'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -47,41 +47,31 @@ const SelectStyleAndExperience = () => {
         switch (skateType) {
             case SkatesType.AggressiveSkates:
                 return (
-                    <View style={[StyleSheet.absoluteFill, styles.optionView]} >
-                        <TouchableWithoutFeedback onPress={() => setSelectedSkateStyle(SkatePracticeStyles.AggresiveSkating)}>
-                            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center', marginVertical: verticalScale(5)}}>   
-                                <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.AggresiveSkating)}>{SkatePracticeStyles.AggresiveSkating}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                    <View style={[StyleSheet.absoluteFill, styles.optionView]}>
+                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.AggresiveSkating)} style={styles.skateStylesPressable}>
+                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.AggresiveSkating)}>{SkatePracticeStyles.AggresiveSkating}</Text>
+                        </Pressable>
                         <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <TouchableWithoutFeedback onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)}>
-                            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center', marginVertical: verticalScale(5)}}>   
-                                <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)} style={styles.skateStylesPressable}>
+                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
+                        </Pressable>
                     </View>
                 )
                 break;
             case SkatesType.CasualSkates:
                 return(
                     <View style={[StyleSheet.absoluteFill, styles.optionView]} >
-                        <TouchableWithoutFeedback onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)}>
-                            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center', marginVertical: verticalScale(5)}}>   
-                                <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)} style={styles.skateStylesPressable}>
+                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
+                        </Pressable>
                         <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <TouchableWithoutFeedback onPress={() => setSelectedSkateStyle(SkatePracticeStyles.AggresiveSkating)}>
-                            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center', marginVertical: verticalScale(5)}}>   
-                                <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.AggresiveSkating)}>{SkatePracticeStyles.AggresiveSkating}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.AggresiveSkating)} style={styles.skateStylesPressable}>
+                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.AggresiveSkating)}>{SkatePracticeStyles.AggresiveSkating}</Text>
+                        </Pressable>
                         <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <TouchableWithoutFeedback onPress={() => setSelectedSkateStyle(SkatePracticeStyles.SpeedSkating)}>
-                            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-evenly', alignItems: 'center', marginVertical: verticalScale(5)}}>   
-                                <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.SpeedSkating)}>{SkatePracticeStyles.SpeedSkating}</Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.SpeedSkating)} style={styles.skateStylesPressable}>
+                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.SpeedSkating)}>{SkatePracticeStyles.SpeedSkating}</Text>
+                        </Pressable>
                     </View>
                     
                 )
@@ -89,13 +79,13 @@ const SelectStyleAndExperience = () => {
             case SkatesType.SpeedSkates:
                 return (
                     <View style={[StyleSheet.absoluteFill, styles.optionView]} >
-                        <TouchableWithoutFeedback onPress={() => setSelectedSkateStyle(SkatePracticeStyles.SpeedSkating)}>
-                                <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.SpeedSkating)}>{SkatePracticeStyles.SpeedSkating}</Text>
-                        </TouchableWithoutFeedback>
+                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.SpeedSkating)} style={styles.skateStylesPressable}>
+                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.SpeedSkating)}>{SkatePracticeStyles.SpeedSkating}</Text>
+                        </Pressable>
                         <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <TouchableWithoutFeedback onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)}>
-                                <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
-                        </TouchableWithoutFeedback>
+                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)} style={styles.skateStylesPressable}>
+                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
+                        </Pressable>
                     </View>
                 )
                 break;
@@ -124,13 +114,11 @@ const SelectStyleAndExperience = () => {
                 {
                     experienceValues.map((experienceLevel, index) => {
                         return(
-                            <View key={index}>
+                            <View key={index} style={[{width: '100%', flex: 1}, SpacingStyles.centeredContainer]}>
                                 {(index != 0) && <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>}
-                                <TouchableWithoutFeedback onPress={() => setSelectedExperience(experienceLevel)}>
-                                    <View style={styles.experinceTextView}>
-                                        <Text style={getExperinceTextStyle(experienceLevel)}>{experienceLevel}</Text>
-                                    </View>
-                                </TouchableWithoutFeedback>
+                                <Pressable  onPress={() => setSelectedExperience(experienceLevel)} style={styles.experinceTextView}>
+                                    <Text style={getExperinceTextStyle(experienceLevel)}>{experienceLevel}</Text>
+                                </Pressable>
                             </View>
                         );
                     }) 
@@ -174,7 +162,7 @@ const styles = StyleSheet.create({
         padding: scale(20),
     },
     experienceOptions: {
-        height: verticalScale(160),
+        height: verticalScale(200),
         width: scale(210),
         margin: scale(10),
         padding: scale(20),
@@ -185,10 +173,21 @@ const styles = StyleSheet.create({
         margin: scale(10),
     },
     experinceTextView: {
-        padding: scale(10)
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100%',
+        width: '100%'
+    },
+    skateStylesPressable: {
+        paddingHorizontal: scale(5),
+        width: '100%',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     optionView: {
         justifyContent: 'space-evenly',
         alignItems: 'center',
+        flex: 1
     }
 });

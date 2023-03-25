@@ -63,7 +63,7 @@ const SelectSport = () => {
                             </SelectionCard>
                         ):
                         (
-                            <Animatable.View animation='pulse' iterationCount={Infinity} easing='ease-in'>
+                            <Animatable.View animation='pulse' iterationCount={Infinity} duration={3000}>
                                 <SelectionCard selectState={selectedSport != undefined}
                                                 flipSelectState={() => flipSelectState()}
                                             text={'Inline Skates'}>
