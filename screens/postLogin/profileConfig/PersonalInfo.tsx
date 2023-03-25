@@ -15,7 +15,7 @@ import { setAge, setGender } from "../../../redux/configProfileState";
 
 const PersonalInfo = () => {
 
-    const {age, gender} = useSelector((state: any) => state.configProfile)
+    const {age, gender } = useSelector((state: any) => state.configProfile)
 
     const [finishDisabled, setFinishDisabled] = useState(true);
     const [selectedAge, setSelectedAge] = useState(age);
@@ -48,8 +48,8 @@ const PersonalInfo = () => {
                     width={100} height={100} adjustMask={22} maskColor={theme.colors.primary}/>
                     <Text variant="headlineLarge" >Make it about you</Text>
                     <View style={{flexDirection: 'row'}}>
-                        <SelectAge onChange={(age => setSelectedAge(age))}></SelectAge>
-                        <SelectGender onChange={(gender => setSelectedGender(gender))}></SelectGender>
+                        <SelectAge initialValue={age} onChange={(age => setSelectedAge(age))}></SelectAge>
+                        <SelectGender initialValue={gender} onChange={(gender => setSelectedGender(gender))}></SelectGender>
                     </View>
                    
             </View>

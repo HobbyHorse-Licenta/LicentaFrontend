@@ -9,17 +9,17 @@ import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { PrimaryContainer } from '../general';
 
 interface Input {
+    initialValue: number,
     onChange: Function
 }
 
-const SelectAge = ({onChange} : Input) => {
+const SelectAge = ({onChange, initialValue} : Input) => {
     const theme = useTheme();
     const minimumAge = 12;
     const maximumAge = 90;
-    const ageValues = Array.from({length: maximumAge - minimumAge + 1}, (_, i) => { return {label: i + minimumAge, value: i + minimumAge}});
-    const [selectedAge, setSelectedAge] = useState<number>(minimumAge);
 
     const [open, setOpen] = useState(false);
+    //const [value, setValue] = useState((initialValue <= maximumAge && initialValue >= minimumAge) ? {label: initialValue.toString(), value: initialValue.toString()} : null);
     const [value, setValue] = useState(null);
    const [items, setItems] = useState(Array.from({length: maximumAge - minimumAge + 1}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge).toString()}}));
 

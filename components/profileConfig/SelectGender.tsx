@@ -9,12 +9,13 @@ import { PrimaryContainer } from '../general';
 import { FemaleSvg, MaleSvg } from '../svg/general';
 
 interface SelectGenderInput{
+    initialValue: Gender,
     onChange: Function
 }
-const SelectGender = ({onChange} : SelectGenderInput) => {
+const SelectGender = ({onChange, initialValue} : SelectGenderInput) => {
     const theme = useTheme();
 
-    const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
+    const [selectedGender, setSelectedGender] = useState<Gender | undefined>(initialValue);
 
     useEffect(() => {
         onChange(selectedGender);
