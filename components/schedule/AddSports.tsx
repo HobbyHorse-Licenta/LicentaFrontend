@@ -2,13 +2,15 @@ import React, {useState, useEffect, ReactNode} from 'react'
 import { View, FlatList, StyleSheet } from 'react-native';
 
 import {Text, useTheme} from 'react-native-paper'
-import { verticalScale } from 'react-native-size-matters';
+import { scale, verticalScale } from 'react-native-size-matters';
 
 import { SpacingStyles } from '../../styles'
 import { SportName } from '../../types';
 import { PrimaryContainer, SelectedSportTile, SportTile } from '../general';
 import SelectSportModal from './SelectSportModal'
 import PlusTile from '../general/PlusTile';
+import { SafeAreaView } from 'react-navigation';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 interface AddSportsInput {
@@ -57,22 +59,29 @@ const AddSports = ({onAddPress, onDelete, selectedSports} : AddSportsInput) => {
     }
 
     return(
-        <PrimaryContainer>
+        <PrimaryContainer styleInput={{marginVertical: scale(10)}}>
             <Text>Sports</Text>
-            <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
+            <View style={[SpacingStyles.centeredContainer]}>
                 {
                     (selectedSports.length > 0) ? 
                     (
-                        <FlatList   data={sportTiles}
-                                renderItem = {
-                                    ({item}) => (<View>{item}</View>)
-                                }
-                        horizontal={true}
-                        />
-                    ):(
-                        <PlusTile single={true} onPress={() => onAddPress()}></PlusTile>
-                    )
-                } 
+                        // <FlatList   data={sportTiles}
+                        // renderItem = {
+                        //             ({item}) => (<View>{item}</View>)
+                        //         }
+                        // horizontal={true}
+                        // />
+                        <ScrollView horizontal= {true}>
+                            {sportTiles?.map((item) => {
+                                return(
+                                    <View>{item}</View>
+                                )
+                            })}
+                        </ScrollView>
+                        ):(
+                            <PlusTile single={true} onPress={() => onAddPress()}></PlusTile>
+                            )
+                        } 
             </View>
         </PrimaryContainer>
     );

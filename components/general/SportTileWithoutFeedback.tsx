@@ -17,6 +17,7 @@ const SportTileWithoutFeedback = ({sport, color, onLongPress}: SportTileParam)  
 
     const theme = useTheme();
     const svg = useSvg(sport);
+    
     return(
         <View style={[SpacingStyles.tile, {backgroundColor: color ? color : theme.colors.secondary}]}>
                 {svg}

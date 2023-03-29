@@ -21,7 +21,7 @@ const SelectAge = ({onChange, initialValue} : Input) => {
     const [open, setOpen] = useState(false);
     //const [value, setValue] = useState((initialValue <= maximumAge && initialValue >= minimumAge) ? {label: initialValue.toString(), value: initialValue.toString()} : null);
     const [value, setValue] = useState(null);
-   const [items, setItems] = useState(Array.from({length: maximumAge - minimumAge + 1}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge).toString()}}));
+   const [items, setItems] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge).toString()}}));
 
     useEffect(() => {
       onChange(value);
@@ -31,7 +31,7 @@ const SelectAge = ({onChange, initialValue} : Input) => {
         <PrimaryContainer styleInput={{backgroundColor: theme.colors.background, padding: scale(5)}}>
             <Text style={{margin: scale(5)}}>Select Age</Text>
                 <DropDownPicker
-                listMode='FLATLIST'
+                listMode='SCROLLVIEW'
                 style={{
                     width: scale(100)
                   }}
@@ -49,7 +49,6 @@ const SelectAge = ({onChange, initialValue} : Input) => {
                 setValue={setValue}
                 setItems={setItems}
                 />
-             
         </PrimaryContainer>
     );
 };

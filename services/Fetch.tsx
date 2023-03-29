@@ -1,4 +1,4 @@
-import { Event, Location, Schedule, SportName, User } from "../types";
+import { Event, Location, Schedule, SkateExperience, SkatePracticeStyles, SkateProfile, SkatesType, SportName, User } from "../types";
 import {basketUrl, tennisUrl} from '../assets/imageUrls'
 const Fetch = {
 
@@ -11,8 +11,36 @@ const Fetch = {
                     lat: 46.77159014009401, 
                     long: 23.635888336315503,
                 }
+            },
+            {
+                id:  '3342434',
+                name: 'Parcul Rozelor',
+                gpsPoint: {
+                    lat: 46.7649101022356, 
+                    long: 23.552784857259145,
+                }
             }
         ]
+    },
+    getSkateProfiles: function(){
+        const skateProfiles: Array<SkateProfile> = [
+            {
+                skateType: SkatesType.SpeedSkates,
+                skatePracticeStyle: SkatePracticeStyles.CasualSkating,
+                skateExperience: SkateExperience.Intermediate
+            },
+            {
+                skateType: SkatesType.SpeedSkates,
+                skatePracticeStyle: SkatePracticeStyles.SpeedSkating,
+                skateExperience: SkateExperience.Advanced
+            },
+            {
+                skateType: SkatesType.AggressiveSkates,
+                skatePracticeStyle: SkatePracticeStyles.AggresiveSkating,
+                skateExperience: SkateExperience.Begginer
+            }
+        ];
+        return skateProfiles;
     },
     
     getEvents: function(){

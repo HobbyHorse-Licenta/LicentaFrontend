@@ -10,6 +10,7 @@ import { PrimaryContainer } from "../general";
 import SelectTimeAndroid from './SelectTimeAndroid';
 import SelectTimeIos from './SelectTimeIos';
 import { StateTimeRange, TimeRange } from "../../types";
+import { scale } from "react-native-size-matters";
 
 const SelectHourRange = () => {
 
@@ -37,7 +38,7 @@ const SelectHourRange = () => {
     }
 
     return(
-      <PrimaryContainer>
+      <PrimaryContainer styleInput={{marginVertical: scale(10)}}>
         {   
         Platform.OS === "android" ?
         ( 

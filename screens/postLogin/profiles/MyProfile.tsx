@@ -1,8 +1,10 @@
 import React from "react";
-import { View, Text } from 'react-native'
-import MySchedulesBody from "../../../components/mySchedules/MySchedulesBody";
+import { View, Text, StyleSheet} from 'react-native'
 
-import { MyProfileHeader } from "../../../components/profile";
+import { scale } from "react-native-size-matters";
+
+import { PrimaryContainer } from "../../../components/general";
+import { EditProfilePicture, MyProfileHeader, SkateProfiles } from "../../../components/profile";
 import { Layout2PieceForNavigator } from "../../layouts";
 
 const MyProfile = () => {
@@ -10,7 +12,10 @@ const MyProfile = () => {
   const getBody = () => {
     return(
       <View>
-        <MySchedulesBody></MySchedulesBody>
+        <PrimaryContainer styleInput={styles.profileContainer}>
+          <EditProfilePicture></EditProfilePicture>
+        </PrimaryContainer>
+        <SkateProfiles></SkateProfiles>
       </View>
     );
   };
@@ -24,3 +29,11 @@ const MyProfile = () => {
 };
 
 export default MyProfile;
+
+const styles = StyleSheet.create({
+    profileContainer: {
+        width: scale(100),
+        height: scale(100),
+        padding: scale(1)
+    }
+})

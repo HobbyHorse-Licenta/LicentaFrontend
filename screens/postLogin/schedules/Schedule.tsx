@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { scale } from "react-native-size-matters";
 
 import { SpacingStyles } from '../../../styles';
-import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange, SelectSportModal} from '../../../components/schedule';
+import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange, SelectSportModal, SelectCompanion} from '../../../components/schedule';
 // import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '@schedule';
 import { Layout2Piece } from '../../layouts';
 import { SportName } from "../../../types";
@@ -31,9 +31,10 @@ const Schedule = () => {
     setSportPickerVisible(false);
   }
 
-  const getBody = () => {
-    return(
-      <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {padding: scale(14)}]}>
+
+  const getcreateScheduleContainer = () => {
+      return(
+        <ScrollView contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={[SpacingStyles.centeredContainer, {flex: 0.8}]}>
           <SelectDays></SelectDays>
         </View>
@@ -41,11 +42,23 @@ const Schedule = () => {
           <SelectHourRange></SelectHourRange>
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 0.7}]}>
-         <AddSports selectedSports={selectedSports} onDelete={deleteFromSelectedSports} onAddPress={() => setSportPickerVisible(true)}></AddSports>
+          <AddSports selectedSports={selectedSports} onDelete={deleteFromSelectedSports} onAddPress={() => setSportPickerVisible(true)}></AddSports>
         </View>
-        <View style={[SpacingStyles.centeredContainer, {flex: 1.2}]}>
-         <SelectLocation></SelectLocation>
+        <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
+          <SelectLocation></SelectLocation>
         </View>
+        <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
+          <SelectCompanion></SelectCompanion>
+        </View>
+      </ScrollView>
+      );
+  }
+  
+
+  const getBody = () => {
+    return(
+      <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {padding: scale(14)}]}>
+        {getcreateScheduleContainer()}
         {
           (sportPickerVisible === true) ? (
               <SelectSportModal onSelect={addSport} onDismiss={() =>  setSportPickerVisible(false)} visible={sportPickerVisible}></SelectSportModal>

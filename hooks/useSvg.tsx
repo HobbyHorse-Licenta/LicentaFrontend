@@ -21,7 +21,7 @@ export default function useSvg(sportName : SportName){
     case SportName.Tennis:
         return <TennisSvg></TennisSvg>;
     default:
-      return SportName.Basketball;
+      return <TennisSvg></TennisSvg>;
   }
     // switch(sportName) {
     //     case 'Ping-Pong':

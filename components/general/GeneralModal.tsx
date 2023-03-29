@@ -16,8 +16,8 @@ interface ModalInput {
     children: ReactNode
 }
 
-const ModalHeight = verticalScale(400);
-const ModalWidth = verticalScale(230);
+// const ModalHeight = verticalScale(400);
+// const ModalWidth = verticalScale(230);
 
 const GeneralModal = ({visible, onDismiss, backgroundColor, children} : ModalInput) => {
 
@@ -71,8 +71,6 @@ export default GeneralModal;
 
 const styles = StyleSheet.create({
     modal: {
-        width: ModalWidth,
-        height: ModalHeight,
         borderRadius: 20,
         position: 'absolute'
     },
@@ -83,8 +81,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     modalView: {
-        width: ModalWidth,
-        maxHeight: ModalHeight,
+        padding: scale(20),
         margin: 20,
         backgroundColor: 'white',
         borderRadius: 20,

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
-import {View} from 'react-native'
+import {View, StyleSheet} from 'react-native'
 
-import { Appbar, Text } from "react-native-paper";
+import { Appbar, Text, useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { scale, verticalScale } from "react-native-size-matters";
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
@@ -22,8 +22,9 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const theme = useTheme();
     const [infoModalVisible, setInfoModalVisible] = useState(false);
-    const displayModalForSeconds = 10;
+    const displayModalForSeconds = 13;
 
     useEffect(() => {
         if(infoModalVisible === true)
@@ -45,6 +46,7 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
     }
 
     const closeModalAndAdvance = () => {
+        //createProfile();
         setInfoModalVisible(false);
         dispatch(setInitialProfileConfigured(true));
     }
@@ -55,12 +57,32 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
     const getModalInfo = () => {
         return(
             <View>
-                <Text>Sport selected: {sport}</Text>
-                <Text>Skates selected: {skateType}</Text>
-                <Text>Want to practice: {skatePracticeStyle}</Text>
-                <Text>Your experince level: {skateExperience}</Text>
-                {(gender != undefined) && <Text>Gender: {gender}</Text>}
-                {(age != undefined) && <Text>Age: {age}</Text>}
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.textCategory}>Sport selected: </Text>
+                    <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{sport}</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.textCategory}>Skates selected: </Text>
+                    <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{skateType}</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.textCategory}>Want to practice: </Text>
+                    <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{skatePracticeStyle}</Text>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.textCategory}>Your experince level: </Text>
+                    <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{skateExperience}</Text>
+                </View>
+                {(gender != undefined) && 
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.textCategory}>Gender: </Text>
+                    <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{gender}</Text>
+                </View>}
+                {(age != undefined) &&
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.textCategory}>Age: </Text>
+                    <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{age}</Text>
+                </View>}
             </View>
            
         );
@@ -71,14 +93,19 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
             {(nextScreen !== undefined) && <Button disabled={disabled} text="NEXT" callBack={goNext} style={{position: 'absolute', right: scale(20)}}/>}
             {(doneConfig === true) && <Button disabled={disabled} text="DONE" callBack={endProfileConfiguration} style={{position: 'absolute', right: scale(20)}}/>}
             <GeneralModal visible={infoModalVisible} onDismiss={closeModalAndAdvance}>
-                <CountdownCircleTimer
-                    isPlaying
-                    duration={displayModalForSeconds}
-                    colors={['#000000', '#000000']}
-                    colorsTime={[displayModalForSeconds, 1]}
-                >
-                    {({ remainingTime }) => <Text>{remainingTime}</Text>}
-                </CountdownCircleTimer>
+                <View style={styles.timer}>
+                    <CountdownCircleTimer
+                        strokeWidth={4}
+                        isPlaying
+                        duration={displayModalForSeconds}
+                        colors={['#000000', '#000000']}
+                        colorsTime={[displayModalForSeconds, 1]}
+                        size={scale(60)}
+                    >
+                        {({ remainingTime }) => <Text>{remainingTime}</Text>}
+                    </CountdownCircleTimer>
+                </View>
+                
                 {getModalInfo()}
             </GeneralModal>
         </AppHeader>
@@ -86,3 +113,20 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
 }
 
 export default ProfileConfigHeader;
+
+const styles = StyleSheet.create({
+    timer: {
+       margin: scale(20)
+    },
+    textCategory: {
+        marginLeft: scale(5),
+        marginTop: scale(5),
+        marginBottom: scale(5),
+    },
+    textValue: {
+        marginRight: scale(5),
+        marginTop: scale(5),
+        marginBottom: scale(5),
+        fontWeight: 'bold'
+    }
+});

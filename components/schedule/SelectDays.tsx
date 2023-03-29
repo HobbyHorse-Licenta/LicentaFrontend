@@ -48,7 +48,7 @@ const SelectDays = () => {
   };
 
   return (
-    <PrimaryContainer>
+    <PrimaryContainer styleInput={{marginVertical: scale(10)}}>
       <Text>Days</Text>
       <View style={[styles.selectDaysContainer,{
         backgroundColor: 'purple'}]}>

@@ -85,6 +85,12 @@ export enum Gender {
 
 export type SportLevel = 'Healthy beginner' | 'Intermediate athlete' | 'Advanced athlete' | 'Elite athlete';
 
+export type SkateProfile = {
+  skateType: SkatesType,
+  skatePracticeStyle: SkatePracticeStyles,
+  skateExperience: SkateExperience
+}
+
 export type Skill = {
   sport: Sport,
   level: SportLevel,

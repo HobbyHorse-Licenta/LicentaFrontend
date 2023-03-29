@@ -6,8 +6,13 @@ import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles';
 
-const RoundPicUpload = () => {
-    const [image, setImage] = useState<string | undefined>(undefined);
+
+interface Input {
+    initialImage?: string
+}
+
+const RoundPicUpload = ({initialImage} : Input) => {
+    const [image, setImage] = useState<string | undefined>(initialImage);
     const [imageSize, setImageSize] = useState<number>(0);
 
     const handlePickPicture = async () => {
