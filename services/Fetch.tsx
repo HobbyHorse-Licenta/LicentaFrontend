@@ -22,6 +22,11 @@ const Fetch = {
             }
         ]
     },
+    getSkills: function(){
+        const skills: Array<Skill> = [
+            
+        ]
+    },
     getSkateProfiles: function(){
         const skateProfiles: Array<SkateProfile> = [
             {

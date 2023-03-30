@@ -1,16 +1,9 @@
-import { ReactNode } from "react";
-
-
-
 export type PairColor = {
   main: string;
   highlights: string;
 };
 
-
-
-
-
+/////////////////////////////////////////////////
 
 export type Day = {
   name: DayName;
@@ -35,7 +28,7 @@ export const WeekDays: Day[] =
 ]
 
 
-
+/////////////////////////////////////////////////
 
 
 
@@ -92,8 +85,14 @@ export type SkateProfile = {
 }
 
 export type Skill = {
-  sport: Sport,
-  level: SportLevel,
+  id: string
+  name: string,
+}
+
+export type SkillRecomadation = {
+  id: string,
+  skilld: string,
+  skateExperience: SportLevel,
 }
 
 
