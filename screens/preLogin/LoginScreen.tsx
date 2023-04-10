@@ -12,6 +12,7 @@ import { Authentication } from '../../services';
 import { useDispatch, useSelector } from 'react-redux';
 import {setLoginState} from '../../redux/appState'
 import { NotifRefProvider } from '../../WholeScreen';
+import { useNavigation } from '@react-navigation/native';
 
 const LoginScreen = () => {
 
@@ -21,6 +22,7 @@ const LoginScreen = () => {
     const popUp = useRef<NotificationPopup | null>(null);
     const theme = useTheme();
     const dispatch = useDispatch();
+    const navigation = useNavigation();
 
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
@@ -48,7 +50,7 @@ const LoginScreen = () => {
 
     const getBody = () =>  {
         return (
-            <KeyboardAvoidingView style={[StyleSheet.absoluteFill, styles.mainContainer, { backgroundColor: theme.colors.background}]} behavior='position'>
+            <KeyboardAvoidingView style={[StyleSheet.absoluteFill, styles.mainContainer, { backgroundColor: theme.colors.background}]} behavior='padding'>
                 <View style={{alignItems: 'center'}}>
                     <Animatable.Image animation="swing" iterationCount={Infinity} iterationDelay={4000} style={[styles.logoView, {resizeMode:'contain'}]}
                     source={require('../../assets/randomPics/hobby_horse.png')}></Animatable.Image>
@@ -78,15 +80,17 @@ const LoginScreen = () => {
                                     handleLogin()}}>
                                 Login
                             </Button>
-                            <View style={{flexDirection: 'row'}}>
-                                <Text style={styles.actionText} variant='labelSmall'>Don't have an account?</Text>
-                                <TouchableOpacity onPress={() => console.log("[LoginScreen]: create new account")}>
-                                    <Text style={[styles.actionText, {fontWeight: 'bold'}]} variant='labelSmall'>Sign Up</Text>
+                            <View style={{alignItems: 'flex-start', width: '100%', marginBottom: scale(4)}}>
+                                <View style={{flexDirection: 'row'}}>
+                                    <Text style={styles.actionText} variant='labelSmall'>Don't have an account?</Text>
+                                    <TouchableOpacity onPress={() => navigation.navigate('SignUp' as never)}>
+                                        <Text style={[{fontWeight: 'bold', color: theme.colors.tertiary}]} variant='labelSmall'> Sign Up</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <TouchableOpacity onPress={() => console.log("[LoginScreen]: reset password")}>
+                                        <Text style={[styles.actionText, {fontWeight: 'bold', color: theme.colors.tertiary}]} variant='labelSmall'>Forgot password?</Text>
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity onPress={() => console.log("[LoginScreen]: reset password")}>
-                                    <Text style={[styles.actionText, {fontWeight: 'bold'}]} variant='labelSmall'>Forgot password?</Text>
-                            </TouchableOpacity>
                         </View>
                         
                     </View>
@@ -137,6 +141,6 @@ const styles = StyleSheet.create({
         marginVertical: scale(10)
     },
     actionText: {
-        marginHorizontal: scale(10)
+        marginLeft: scale(10)
     }
 });

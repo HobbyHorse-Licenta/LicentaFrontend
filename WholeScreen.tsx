@@ -5,12 +5,15 @@ import { useDispatch } from 'react-redux';
 import NotificationPopup from 'react-native-push-notification-popup';
 import { useTheme } from 'react-native-paper';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import * as Network from 'expo-network';
 
 import { setWindowHeight } from './redux/ui';
 import MainStack from './stacks/MainStack';
 import { SafeAreaView } from 'react-navigation';
 import { SpacingStyles } from './styles';
 import { verticalScale } from 'react-native-size-matters';
+import { Fetch } from './services';
+import { Skill } from './types';
 
 const windowH = Dimensions.get("window").height;
 
@@ -34,8 +37,25 @@ const WholeScreen = () => {
     const theme = useTheme();
     const popUp = useRef<NotificationPopup | null>(null);
 
+    const [skills, setSkills] = useState<Array<Skill>>();
 
     const windowHeight = useMemo(() => getWindowHeight(), []);
+    
+
+    useEffect(() => {
+      const fetchData = async () => {
+        //phone ip: 192.168.1.157
+        // const promise = await Network.getIpAddressAsync();
+        // console.log(promise)
+        Fetch.getSkills((infoo) => console.log(infoo));
+       // Fetch.postSkill(setSkills)
+      };
+      fetchData();
+    }, []);
+
+    useEffect(() => {
+      console.log("INFO FROM FETCH: " + skills);
+    }, [skills]);
 
     useEffect(() => {
       if(windowHeight != undefined)

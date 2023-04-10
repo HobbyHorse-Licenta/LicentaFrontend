@@ -30,25 +30,14 @@ export const WeekDays: Day[] =
 
 /////////////////////////////////////////////////
 
-
-
-
-
-
-
 export enum SportName {
-  Basketball = 'Basketball',
-  Tennis = 'Tennis',
-  Bowling = 'Bowling',
-  Biliard = 'Biliard',
-  Ping_Pong = 'Ping-Pong',
-  Hiking = 'Hiking',
   InlineSkating = 'InlineSkating'
 }
 
-export type Sport = {
-  sportName: SportName
+export enum MasteringLevel {
+  InlineSkating = 'InlineSkating'
 }
+
 
 export enum SkatesType {
   AggressiveSkates = 'Aggressive Skates',
@@ -75,36 +64,62 @@ export enum Gender {
   Female = 'Female'
 }
 
+//////////////////////////////////////////////////
 
-export type SportLevel = 'Healthy beginner' | 'Intermediate athlete' | 'Advanced athlete' | 'Elite athlete';
 
 export type SkateProfile = {
+  id: string
   skateType: SkatesType,
   skatePracticeStyle: SkatePracticeStyles,
   skateExperience: SkateExperience
+  assignedSkills: Array<AssignedSkill>
 }
 
 export type Skill = {
   id: string
   name: string,
+  skillRecomadations: Array<SkillRecommendation>
 }
 
-export type SkillRecomadation = {
+export type SkillRecommendation = {
   id: string,
-  skilld: string,
-  skateExperience: SportLevel,
+  skatePracticeStyle: SkatePracticeStyles,
+  skateExperience: SkateExperience
 }
 
+export type AssignedSkill = {
+  id: string,
+  masteringLevel: MasteringLevel
+}
 
+///////////////////////////////////////////////////
 
 export type User = {
   id: string
-  profileImageUrl: string,
+  profileImageUrl?: string,
   shortDescription: string,
-  followers?: Array<User>[],
-  following?: Array<User>[],
-  skills: Array<Skill>
+  followers?: Array<User>, //??
+  following?: Array<User>, //??
+  skateProfiles: Array<SkateProfile>
 }
+
+export type Event = {
+  id: number,
+  name: string,
+  imageUrl?: string,
+  note: string,
+  description?: string,
+  users?: Array<User>[],
+  note?: string;
+}
+export type EventDescription = {
+  sportName: SportName
+  sportLevel: SportLevel;
+  location: Location;
+};
+
+
+
 
 export type Zone = {
   id: number,
@@ -145,17 +160,4 @@ export type StateTimeRange = {
   endTime: number,
 }
 
-export type Event = {
-  id: number,
-  name: string,
-  imageUrl?: string,
-  description: EventDescription,
-  users?: Array<User>[],
-  note?: string;
-}
-export type EventDescription = {
-  sportName: SportName
-  sportLevel: SportLevel;
-  location: Location;
-};
 

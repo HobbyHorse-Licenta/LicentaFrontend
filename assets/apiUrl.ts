@@ -1,0 +1,1 @@
+export const apiUrl = 'https://e400-188-24-66-80.ngrok-free.app'
