@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react'
 
+import { persistor, store } from './redux/store';
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Provider as PaperProvider} from 'react-native-paper'
 import { EventProvider } from 'react-native-outside-press';
 
 import WholeScreen from './WholeScreen';
-import store from './redux/store'
 import { COLORS } from './assets/colors/colors';
 import useFonts from './hooks/useFonts';
 
@@ -84,9 +85,11 @@ export default function App() {
   return (
     <EventProvider style={{ flex: 1 }}>
       <ReduxProvider store={store}>
-        <PaperProvider theme={theme}>
-          <WholeScreen></WholeScreen>
-        </PaperProvider>
+        <PersistGate loading={null} persistor={persistor}>
+          <PaperProvider theme={theme}>
+            <WholeScreen></WholeScreen>
+          </PaperProvider>
+        </PersistGate>
       </ReduxProvider>
     </EventProvider>
    

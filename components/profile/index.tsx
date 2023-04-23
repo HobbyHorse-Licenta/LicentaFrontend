@@ -1,4 +1,6 @@
-import EditProfilePicture from "./EditProfilePicture";
 import MyProfileHeader from "./MyProfileHeader";
 import SkateProfiles from "./SkateProfiles";
-export {EditProfilePicture, MyProfileHeader, SkateProfiles}
+import SkateProfileSummary from "./SkateProfileSummary";
+import EditProfileHeader from "./EditProfileHeader";
+import SkateProfileSummaryWithSkills from "./SkateProfileSummaryWithSkills";
+export { MyProfileHeader, SkateProfiles, SkateProfileSummaryWithSkills, EditProfileHeader}

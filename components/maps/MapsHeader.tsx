@@ -11,7 +11,7 @@ const MapsHeader = () => {
     return(
         <AppHeader>
             <Text variant='headlineMedium' style={{position: 'absolute', alignSelf: 'center', color: 'white'}}>Maps</Text>
-            <SvgView onTouchEnd={() => console.log("[MyEventsHeader]: open chat")} style={{position: 'absolute', right: 0, backgroundColor: theme.colors.primary}}>
+            <SvgView size='small' onPress={() => console.log("[MyEventsHeader]: open chat")} style={{position: 'absolute', right: 0, backgroundColor: theme.colors.primary}}>
                 <ChatSvg></ChatSvg>
             </SvgView>
         </AppHeader>

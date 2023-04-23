@@ -1,29 +1,58 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { MySchedules } from '../screens/postLogin/schedules';
-import { Schedule } from '../types';
+import { Schedule, SkateProfile, Skill, User } from '../types';
 
-interface AppState {
-    isLoggedIn: boolean,
+export interface AppState {
+    isLoading: boolean,
+    user: User | undefined,
+    userId: string | undefined,
+    JWTToken: string | undefined,
     currentRoute: string | undefined,
+    currentSkateProfile: SkateProfile | undefined,
     mySchedules: Array<Schedule> | undefined,
-    initialProfileConfigured: boolean
+    addingSkateProfile:  boolean,
+    initialProfileConfigured: boolean,
+    allSkills: Array<Skill> | undefined,
 }
 
 const initialState: AppState = {
-    isLoggedIn: false,
+    isLoading: false,
+    user: undefined,
+    userId: undefined,
+    JWTToken: undefined,
     currentRoute: undefined,
+    currentSkateProfile: undefined,
     mySchedules: undefined,
-    initialProfileConfigured: true
+    addingSkateProfile: false,
+    initialProfileConfigured: true,
+    allSkills: undefined,
 }
 
 export const appStateSlice = createSlice({
     name: 'appState',
     initialState,
     reducers: {
-        setLoginState: (state, action: PayloadAction<boolean>) => {
-            state.isLoggedIn = action.payload;
+        setAllSkills: (state, action: PayloadAction<Array<Skill> | undefined>) => {
+            state.allSkills = action.payload;
         },
-        setCurrentRoute: (state, action: PayloadAction<string>) => {
+        setAddingSkateProfile: (state, action: PayloadAction<boolean>) => {
+            state.addingSkateProfile = action.payload;
+        },
+        setCurrentSkateProfile: (state, action: PayloadAction<SkateProfile>) => {
+            state.currentSkateProfile = action.payload;
+        },
+        setIsLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
+        },
+        setUser: (state, action: PayloadAction<User | undefined>) => {
+            state.user = action.payload;
+        },
+        setUserId:(state, action: PayloadAction<string | undefined>) => {
+            state.userId = action.payload;
+        },
+        setJWTToken: (state, action: PayloadAction<string | undefined>) => {
+            state.JWTToken = action.payload;
+        },
+        setCurrentRoute: (state, action: PayloadAction<string | undefined>) => {
             state.currentRoute = action.payload;
         },
         setMySchedules: (state, action: PayloadAction<Array<Schedule>>) => {
@@ -31,11 +60,14 @@ export const appStateSlice = createSlice({
         },
         setInitialProfileConfigured: (state, action: PayloadAction<boolean>) => {
             state.initialProfileConfigured = action.payload;
-        }
+        },
+        resetAppState: state => initialState
       
     }
 });
 
-export const {setLoginState, setCurrentRoute, setMySchedules, setInitialProfileConfigured} = appStateSlice.actions
+export const {setCurrentRoute, setMySchedules, setUserId, setCurrentSkateProfile,
+    setInitialProfileConfigured, setUser, setJWTToken, resetAppState, setIsLoading,
+    setAddingSkateProfile, setAllSkills} = appStateSlice.actions
 
 export default appStateSlice.reducer;

@@ -11,13 +11,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
 import { SpacingStyles } from '../styles';
 import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack } from './mainPages';
-import { navigationService } from '../utils';
+import { navigationUtils } from '../utils';
 import { PersonalInfo, SelectSkates, SelectSport, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
+import { SvgView } from '../components/general';
 
 
 const AfterLogin = () => {
 
   const {windowHeight} = useSelector((state: any) => state.ui);
+  const {currentRoute, user, addingSkateProfile} = useSelector((state: any) => state.appState);
+
   const Tab = createBottomTabNavigator();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -25,8 +28,7 @@ const AfterLogin = () => {
 
   const Stack = createNativeStackNavigator();
  
-  const {currentRoute, initialProfileConfigured} = useSelector((state: any) => state.appState);
-  const show = navigationService.ShouldHaveTabBar(currentRoute);
+  const show = navigationUtils.ShouldHaveTabBar(currentRoute);
 
   useEffect(() => {
     //dispatch(setMySchedules(Fetch.getSchedules()));
@@ -37,14 +39,13 @@ const AfterLogin = () => {
   return ( 
     <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
     { 
-      (initialProfileConfigured == false) ?
+      (user === undefined || addingSkateProfile === true) ?
       (
         <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SelectSport'>
           <Stack.Screen name="SelectSport" component={SelectSport} />
           <Stack.Screen name="SelectSkates" component={SelectSkates} />
           <Stack.Screen name="SelectStyleAndExperience" component={SelectStyleAndExperience} />
           <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
-
         </Stack.Navigator>
       ):
       (
@@ -63,9 +64,9 @@ const AfterLogin = () => {
           options={{
           tabBarLabel: 'Schedules',
           tabBarIcon: () => (
-            <View style={SpacingStyles.icon}>
+            <SvgView size='medium'>
               <ScheduleSvg></ScheduleSvg>
-            </View>
+            </SvgView>
           ),
           }}
         />
@@ -76,9 +77,9 @@ const AfterLogin = () => {
           options={{
             tabBarLabel: 'My events',
             tabBarIcon: () => (
-              <View style={SpacingStyles.icon}>
+              <SvgView size='medium'>
                 <MyEventsSvg></MyEventsSvg>
-              </View>
+              </SvgView>
             ),
           }}
         />
@@ -89,9 +90,9 @@ const AfterLogin = () => {
           options={{
             tabBarLabel: 'Events',
             tabBarIcon: () => (
-              <View style={SpacingStyles.icon}>
-                  <AllEventsSvg></AllEventsSvg>
-              </View>
+              <SvgView size='medium'>
+               <AllEventsSvg></AllEventsSvg>
+              </SvgView>
             ),
             tabBarBadge: 3,
           }}
@@ -103,9 +104,9 @@ const AfterLogin = () => {
           options={{
           tabBarLabel: 'Maps',
           tabBarIcon: () => (
-            <View style={SpacingStyles.icon}>
-                <MapsSvg></MapsSvg>
-            </View>
+            <SvgView size='medium'>
+              <MapsSvg></MapsSvg>
+            </SvgView>
           ),
           }}
         />
@@ -116,9 +117,9 @@ const AfterLogin = () => {
           options={{
           tabBarLabel: 'Profile',
           tabBarIcon: () => (
-            <View style={SpacingStyles.icon}>
-                <ProfileSvg></ProfileSvg>
-            </View>
+            <SvgView size='medium'>
+              <ProfileSvg></ProfileSvg>
+            </SvgView>
           ),
           }}
         />

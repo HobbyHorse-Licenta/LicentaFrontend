@@ -1,19 +1,27 @@
 import React, { createContext, MutableRefObject, useEffect, useMemo, useRef, useState} from 'react'
-import { StyleSheet, View, StatusBar, Dimensions, Platform } from 'react-native';
+import { View, StatusBar, Dimensions, Platform } from 'react-native';
 
-import { useDispatch } from 'react-redux';
+import Loading from 'react-loading';
+import { useDispatch, useSelector } from 'react-redux';
 import NotificationPopup from 'react-native-push-notification-popup';
 import { useTheme } from 'react-native-paper';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
-import * as Network from 'expo-network';
+import { initializeApp } from 'firebase/app';
+import { verticalScale } from 'react-native-size-matters';
+import 'firebase/auth';
+import { getAuth, onAuthStateChanged, Auth } from "firebase/auth";
+import type { FirebaseApp } from 'firebase/app';
+
 
 import { setWindowHeight } from './redux/ui';
 import MainStack from './stacks/MainStack';
-import { SafeAreaView } from 'react-navigation';
-import { SpacingStyles } from './styles';
-import { verticalScale } from 'react-native-size-matters';
 import { Fetch } from './services';
-import { Skill } from './types';
+import {authenticationUtils, uiUtils} from './utils';
+import { firebaseConfig } from './firebaseConfig';
+import { resetAppState, setIsLoading, setJWTToken, setUser, setUserId } from './redux/appState';
+import { User } from './types';
+import LoadingScreen from './screens/preLogin/LoadingScreen';
+import { RootState } from './redux/store';
 
 const windowH = Dimensions.get("window").height;
 
@@ -28,69 +36,95 @@ const getWindowHeight = () => {
     return windowH - getStatusBarHeight(); 
   }  
 }
+
 export const NotifRefProvider = createContext<MutableRefObject<NotificationPopup | null> | null>(null);
+
+export const firebaseApp : FirebaseApp = initializeApp(firebaseConfig);
+export const firebaseAuth : Auth  = getAuth(firebaseApp);
+
 
 const WholeScreen = () => {
   
-    
     const dispatch = useDispatch();
     const theme = useTheme();
     const popUp = useRef<NotificationPopup | null>(null);
-
-    const [skills, setSkills] = useState<Array<Skill>>();
-
     const windowHeight = useMemo(() => getWindowHeight(), []);
+    const {isLoading, JWTToken} = useSelector((state: any) => state.appState);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+      console.log("isloading: " + isLoading);
+      setLoading(isLoading);
+    }, [isLoading])
     
 
-    useEffect(() => {
-      const fetchData = async () => {
-        //phone ip: 192.168.1.157
-        // const promise = await Network.getIpAddressAsync();
-        // console.log(promise)
-        Fetch.getSkills((infoo) => console.log(infoo));
-       // Fetch.postSkill(setSkills)
-      };
-      fetchData();
-    }, []);
+    const currentUserJWTTokenValid = (user) => {
+      if (user) {
+        console.log("USER: " + user.email);
+        user.getIdTokenResult().then((idTokenResult) => {
+          dispatch(setJWTToken(idTokenResult.token))
+          const now = new Date().getTime();
+          if (idTokenResult.expirationTime < now) {
+            console.error('Token is expired');
+            dispatch(resetAppState());
+          } else {
+            console.log('Token is valid');
+            if(user.uid !== undefined)
+            {
+              console.log("urmeaza sa incerc databaseul pentru userul cu id => " + user.uid);
+              dispatch(setUserId(user.uid));
+              dispatch(setJWTToken(idTokenResult.token));
+              Fetch.getUser(user.uid, (fetchedUser: User) => {
+                                  console.log("Fetched user with id: " + fetchedUser.id);
+                                  dispatch(setUser(fetchedUser)); setLoading(false);}
+                                  , () => setLoading(false))
+            }
+          }
+        }).catch((err) => {
+          console.error('Error occurred while checking token:', err);
+          dispatch(resetAppState());
+        });
+      }
+    }
 
+ ///////////SETTING THINGS UP AND VERIFYING LOGIN///////////
     useEffect(() => {
-      console.log("INFO FROM FETCH: " + skills);
-    }, [skills]);
+      setLoading(true);
+      const user = firebaseAuth.currentUser;
+      checkUser(user);
+      authenticationUtils.setDispatch(dispatch);
+
+
+      onAuthStateChanged(firebaseAuth, (firebaseUser) => {
+        setLoading(true);
+        checkUser(firebaseUser);
+      });
+    }, []);
 
     useEffect(() => {
       if(windowHeight != undefined)
         dispatch(setWindowHeight(windowHeight));
     }, [windowHeight]);
 
-    // const getBody = () => {
-    //   if(Platform.OS === 'ios')
-    //     return(
-    //       <View>
-
-    //       <MainStack></MainStack>
-    //       <View style={SpacingStyles.popUpContainer}></View>
-    //       </View>
-
-    //     );
-    //   else return (
-    //   <SafeAreaView style={[StyleSheet.absoluteFill, {backgroundColor: 'theme.colors.background'}]}>
-
-    //     <StatusBar
-    //       animated={true}
-    //       backgroundColor={theme.colors.primary}
-    //       barStyle={'dark-content'}
-    //       showHideTransition={undefined}
-    //       hidden={false}
-    //       />
-    //       <MainStack></MainStack>
-    //       {/* <View style={{ width:'100%', height: windowHeight, justifyContent:'center', alignItems: 'center'}}>
-            
-    //       </View> */}
-    //       <View style={SpacingStyles.popUpContainer}></View>
-    //     </SafeAreaView>
-    //   );
-    // }
-
+    useEffect(() => {
+      if(popUp !== null)
+        uiUtils.setNotificationRef(popUp);
+    }, [popUp])
+    
+    const checkUser = (user) => {
+      if (user !== null && user !== undefined) 
+      {
+        
+        currentUserJWTTokenValid(user);
+      }
+      else{
+        console.log("No user logged in, reseting app state");
+        dispatch(resetAppState());
+        setLoading(false);
+      } 
+    }
+    ///////////////////////////////////////////
+   
     const getBody = () => {
       return (
       <View>
@@ -102,7 +136,8 @@ const WholeScreen = () => {
           hidden={false}
         />
         <NotifRefProvider.Provider value={popUp}>
-          <MainStack></MainStack>
+          {loading === true && <LoadingScreen></LoadingScreen>}
+          {loading === false && <MainStack></MainStack>}
         </NotifRefProvider.Provider>
         <View style={{width: '100%', height: 9, position: "absolute", top: Platform.OS === 'ios' ? 0 : -verticalScale(30)}}>
           <NotificationPopup
@@ -111,7 +146,6 @@ const WholeScreen = () => {
           shouldChildHandleResponderMove={true} />
         </View>
       </View>
-     
       );
     }
     
@@ -121,11 +155,3 @@ const WholeScreen = () => {
 };
 
 export default WholeScreen;
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      width: '100%',
-      height: '100%'
-    },
-  });

@@ -8,7 +8,14 @@ import { SpacingStyles } from '../../styles';
 
 const imageSize = scale(30);
 
-const ProfilePicList = () => {
+interface ProfilePicListInput {
+    imagePathArray: Array<string>
+}
+
+/**
+ * Should be wrapped in a View of desired size
+ */
+const ProfilePicList = ({imagePathArray} : ProfilePicListInput) => {
 
     const [viewWidth, setViewWidth] = useState(0);
 
@@ -30,40 +37,45 @@ const ProfilePicList = () => {
         
         const freeSpace = Dimensions.get('window').width - totalImageLength();
         const offset = (freeSpace/4) + totalImageLength() - imageSize;
-        console.log("offset: " + offset)
         const value = - (index * (imageSize * 1.5)) + offset;
-        console.log(value + " -> idx: " + index);
         return value;
     }
 
-    const [imageArray, setImageArray] = useState([
-        <Image source={require('../../assets/profilePics/1.jpg')} style={[{left: computeImageOffset(0)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/2.jpeg')} style={[{left: computeImageOffset(1)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/3.jpeg')} style={[{left: computeImageOffset(2)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/4.jpg')} style={[{left: computeImageOffset(3)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/5.jpg')} style={[{left: computeImageOffset(4)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/6.jpg')} style={[{left: computeImageOffset(5)}, styles.profileImage]}/>,
-    ]);
+    // const [imageArray, setImageArray] = useState([
+    //     <Image source={require('../../assets/profilePics/1.jpg')} style={[{left: computeImageOffset(0)}, styles.profileImage]}/>,
+    //     <Image source={require('../../assets/profilePics/2.jpeg')} style={[{left: computeImageOffset(1)}, styles.profileImage]}/>,
+    //     <Image source={require('../../assets/profilePics/3.jpeg')} style={[{left: computeImageOffset(2)}, styles.profileImage]}/>,
+    //     <Image source={require('../../assets/profilePics/4.jpg')} style={[{left: computeImageOffset(3)}, styles.profileImage]}/>,
+    //     <Image source={require('../../assets/profilePics/5.jpg')} style={[{left: computeImageOffset(4)}, styles.profileImage]}/>,
+    //     <Image source={require('../../assets/profilePics/6.jpg')} style={[{left: computeImageOffset(5)}, styles.profileImage]}/>,
+    // ]);
+
+    const images: Array<string> = [
+        '../../assets/profilePics/1.jpg',
+        '../../assets/profilePics/2.jpeg',
+        '../../assets/profilePics/3.jpeg',
+        '../../assets/profilePics/4.jpeg',
+        '../../assets/profilePics/5.jpeg',
+        '../../assets/profilePics/6.jpeg',
+      ]
     
     return(
-        <View style={[SpacingStyles.centeredContainer, {width: '100%', height: '100%', backgroundColor: 'purple'}]}>
-
-            <View style={[SpacingStyles.centeredContainer, {backgroundColor: 'red'}]}>
+            <View style={[SpacingStyles.centeredContainer, {margin: scale(20)}]}>
                 <View style={[{flexDirection: 'row'}, SpacingStyles.centeredContainer]} onLayout={(event) => handleViewChange(event.nativeEvent.layout)}>  
-                {imageArray.map((image) => {
+                {images.map((imagePath, index) => {
                         return(
-                            <View style={[styles.imageContainer, {width: imageSize, height: imageSize}]}>
-                                {image}
+                            <View key={index} style={[styles.imageContainer, {width: imageSize, height: imageSize}]}>
+                                <Image source={require('../../assets/profilePics/1.jpg')} style={[{left: computeImageOffset(index)}, styles.profileImage]}/>
+                                {/* <View style={[{left: computeImageOffset(index)}, styles.profileImage]}>
+                                    {image}
+                                </View> */}
                             </View>
                         )
                 })}
                 
                 </View>
-                <Text>{imageArray.length} people</Text> 
+                <Text>{imagePathArray.length} people</Text> 
             </View>
-        </View>
-
-        
     );
 };
 

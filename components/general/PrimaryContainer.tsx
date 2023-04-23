@@ -8,9 +8,10 @@ import { SpacingStyles } from "../../styles/SpacingStyles";
 
 interface PrimaryContainerInput {
     children: ReactNode,
-    styleInput?: ViewStyle
+    styleInput?: ViewStyle,
+    onPress?: Function
 }
-const PrimaryContainer = ({children, styleInput} : PrimaryContainerInput) => {
+const PrimaryContainer = ({children, styleInput, onPress} : PrimaryContainerInput) => {
 
     const getStyle = () => {
         if(styleInput != undefined)
@@ -19,11 +20,7 @@ const PrimaryContainer = ({children, styleInput} : PrimaryContainerInput) => {
     }
     const theme = useTheme();
     return(
-        // <View style={[SpacingStyles.primaryContainer, { backgroundColor: theme.colors.primary}, 
-        //                                         styleInput ? styleInput : {padding: verticalScale(15)}]}>
-        //     {children}
-        // </View>
-        <View style={getStyle()}>
+        <View style={getStyle()} onTouchEnd={() => onPress !== undefined && onPress()}>
             {children}
         </View>
     );

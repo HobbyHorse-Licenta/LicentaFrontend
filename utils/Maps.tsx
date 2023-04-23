@@ -25,8 +25,8 @@ class Maps {
     }
 
 }
-    const maps = new Maps();
-    export default maps;
+    const mapsUtils = new Maps();
+    export default mapsUtils;
   
   
   

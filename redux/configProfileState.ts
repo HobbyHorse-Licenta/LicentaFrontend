@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Gender, SkateExperience, SkatePracticeStyles, SkatesType, SportName } from '../types';
+import { Gender, SkateExperience, SkatePracticeStyles, SkatesType, SportName, User } from '../types';
 
 interface ConfigProfileState {
     sport: SportName | undefined,
@@ -7,7 +7,10 @@ interface ConfigProfileState {
     skatePracticeStyle: SkatePracticeStyles | undefined
     skateExperience: SkateExperience | undefined,
     age: number | undefined,
-    gender: Gender | undefined
+    gender: Gender | undefined,
+    name: string | undefined,
+    shortDescription: string | undefined
+
 }
 
 const initialState: ConfigProfileState = {
@@ -16,7 +19,9 @@ const initialState: ConfigProfileState = {
     skatePracticeStyle: undefined,
     skateExperience: undefined,
     age: undefined,
-    gender: undefined
+    gender: undefined,
+    name: undefined,
+    shortDescription: undefined
 }
 
 export const configProfileStateSlice = createSlice({
@@ -40,12 +45,20 @@ export const configProfileStateSlice = createSlice({
         },
         setGender: (state, action: PayloadAction<Gender | undefined>) => {
             state.gender = action.payload;
-        }
+        },
+        setName: (state, action: PayloadAction<string | undefined>) => {
+            state.name = action.payload;
+        },
+        setShortDescription: (state, action: PayloadAction<string | undefined>) => {
+            state.shortDescription = action.payload;
+        },
+        resetConfigProfileState: state => initialState
 
       
     }
 });
 
-export const {setSport, setSkateType, setSkatePracticeStyle, setSkateExperience, setAge, setGender} = configProfileStateSlice.actions
+export const {setSport, setSkateType, setSkatePracticeStyle, setSkateExperience,
+     setAge, setGender, setName, setShortDescription, resetConfigProfileState} = configProfileStateSlice.actions
 
 export default configProfileStateSlice.reducer;

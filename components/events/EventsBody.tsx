@@ -22,7 +22,7 @@ const EventsBody = () => {
     }
 
     useEffect(() => {
-      setEvents(Fetch.getEvents()); 
+     // setEvents(Fetch.getEvents()); 
     }, [])
     
     

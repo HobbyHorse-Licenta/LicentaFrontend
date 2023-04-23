@@ -6,8 +6,8 @@ import { scale, verticalScale } from "react-native-size-matters";
 
 import { SpacingStyles } from "../../styles";
 import { Event } from "../../types";
-import SmallSvgView from "../general/SmallSvgView";
-import { BigLocationSvg, LevelSvg, LocationSvg } from "../svg/general";
+import { SvgView } from "../general";
+import { BigLocationSvg, LevelSvg } from "../svg/general";
 
 interface EventInput {
     event: Event
@@ -20,22 +20,18 @@ const EventInfoDisplay = ({event}: EventInput) => {
                 
                 <Text variant='bodyLarge'>{event.name}</Text>
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
-                    <SmallSvgView>
+                    <SvgView size='small'>
                         <LevelSvg></LevelSvg>
-                    </SmallSvgView>
+                    </SvgView>
                     <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.description.sportLevel}</Text>
                 </View>
                 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
-                    <SmallSvgView>
+                    <SvgView size='tiny'>
                         <BigLocationSvg color={theme.colors.onPrimary}></BigLocationSvg>
-                    </SmallSvgView>
+                    </SvgView>
                     <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.description.location.name}</Text>
                 </View>
-                
-                {/* <Text style={styles.descriptiomText}>Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5
-                Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5 dsadsadas
-                </Text> */}
             </View>
     );
 };

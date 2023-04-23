@@ -1,3 +1,4 @@
 import Authentication from "./Authentication";
 import Fetch from "./Fetch";
-export { Authentication, Fetch }
+import ImageService from "./ImageService";
+export { Authentication, Fetch, ImageService}

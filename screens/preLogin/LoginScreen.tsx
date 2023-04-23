@@ -3,16 +3,21 @@ import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-n
 
 import * as Animatable from 'react-native-animatable';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { Text, TextInput, Button, useTheme } from 'react-native-paper';
+import { Text, TextInput, useTheme } from 'react-native-paper';
 import NotificationPopup from 'react-native-push-notification-popup';
+import {onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
 
+
+import { Button } from '../../components/general';
 import { SpacingStyles } from '../../styles';
 import { Layout1Piece } from '../layouts';
-import { Authentication } from '../../services';
+import { Authentication, Fetch } from '../../services';
 import { useDispatch, useSelector } from 'react-redux';
-import {setLoginState} from '../../redux/appState'
+import {setIsLoading, setJWTToken, setUser} from '../../redux/appState'
 import { NotifRefProvider } from '../../WholeScreen';
 import { useNavigation } from '@react-navigation/native';
+import { firebaseAuth } from '../../WholeScreen';
+import { uiUtils, validation } from '../../utils';
 
 const LoginScreen = () => {
 
@@ -27,25 +32,55 @@ const LoginScreen = () => {
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
 
-    const showErrorPopUp = () => {
-        if(notificationRef != null)
-            notificationRef.current?.show({
-                onPress: function() {console.log('[LoginScreen]: Popup Pressed')},
-                appTitle: 'Notification',
-                timeText: 'Now',
-                title: 'Error',
-                body: '[LoginScreen]: credentials are incorrect.\nTry again 😀',
-                slideOutTime: 2000
-            });
-    }
+   
+    // onAuthStateChanged(firebaseAuth, (user) => {
+    // if (user) {
+    //     // User is signed in, see docs for a list of available properties
+    //     // https://firebase.google.com/docs/reference/js/firebase.User
+    //     const uid = user.uid;
+    //     // ...
+    //     console.log("[LoginScreen]: user is singed in");
+    // } else {
+    //     // User is signed out
+    //     // ...
+    //     console.log("[LoginScreen]: user is singed out");
+    // }
+    // });
+
     const handleLogin = async () => {
-        const res = Authentication.loginCredentialsValid(email, password);
-        if(res)
+        if(email !== undefined && password !== undefined)
         {
-            console.log("[LoginScreen]: go to 'AfterLogin' stack");
-            dispatch(setLoginState(true));
+            if(validation.validateEmailAndPassword(email, password, false) === true)
+            {
+                signInWithEmailAndPassword(firebaseAuth, email, password)
+                .then((userCredential) => {
+                    // Signed in 
+                    userCredential.user.getIdToken().then((jwtToken) => {
+                        dispatch(setJWTToken(jwtToken));
+                    })
+                    try {
+                        dispatch(setIsLoading(true));
+                        console.log("set is loading to true");
+                        Fetch.getUser(userCredential.user.uid, (user) => {
+                            dispatch(setUser(user)); dispatch(setIsLoading(false))}, () =>{console.log("nu am oprit loadingul");   dispatch(setIsLoading(false))});
+                    } catch (error) {
+                        console.error("No user in database corresponding to this firebase user");
+                    }
+                    
+
+                    //TODO: add access token and refresh token to appState;
+                })
+                .catch((error) => {
+                    if(error.code = 'auth/user-not-found')
+                    {
+                        uiUtils.showPopUp("Error","Incorrect credentials");
+                    }
+                    else console.error(error.code);
+                });
+            }
         }
-        else showErrorPopUp();
+        else uiUtils.showPopUp("Warning", "Not all credentials provided");
+        
     };
 
     const getBody = () =>  {
@@ -64,6 +99,7 @@ const LoginScreen = () => {
                         style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
                         label="Email"
                         value={email}
+                        autoCapitalize={"none"}
                         onChangeText={handleEmailInput}
                         />
                         <TextInput
@@ -75,11 +111,9 @@ const LoginScreen = () => {
                         />
                         <View style={styles.buttonAndText}>
                             <Button style={styles.button} 
-                                mode="contained"
-                                onPress={() => {
-                                    handleLogin()}}>
-                                Login
-                            </Button>
+                            mode="contained"
+                            onPress={() => {
+                            handleLogin()}} text={'Login'}/>
                             <View style={{alignItems: 'flex-start', width: '100%', marginBottom: scale(4)}}>
                                 <View style={{flexDirection: 'row'}}>
                                     <Text style={styles.actionText} variant='labelSmall'>Don't have an account?</Text>

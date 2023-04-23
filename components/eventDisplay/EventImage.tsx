@@ -6,7 +6,7 @@ import { Text } from 'react-native-paper';
 
 import { LocationSvg } from '../svg/general';
 import { Event } from '../../types';
-import { white } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+
 import { SvgView } from '../general';
 
 interface Input {
@@ -20,7 +20,7 @@ const EventImage = ({event}: Input) => {
         <View>
             <ImageBackground source={{uri: event.imageUrl}} resizeMode="cover" style={styles.image}>
                 <View style={styles.locationView}>
-                    <SvgView>
+                    <SvgView size={'small'}>
                         <LocationSvg color='white'></LocationSvg>
                     </SvgView>
                     <Text variant='bodyLarge' style={{color: 'white'}}>{event.location}</Text>

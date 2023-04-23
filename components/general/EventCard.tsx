@@ -5,7 +5,7 @@ import { verticalScale } from 'react-native-size-matters';
 import { useTheme, Text } from 'react-native-paper';
 
 import Button from './Button';
-import { EventDescription, Event, SportName } from '../../types';
+import { Event, SportName } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
 import {basketUrl, defaultEventUrl, tennisUrl} from '../../assets/imageUrls'
@@ -98,7 +98,7 @@ const EventCard = ({event, onPress}: EventInput) => {
             <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
                 <EventInfoDisplay event={event}></EventInfoDisplay>
                 <View style={{width:'80%', flex: 1, margin: '5%'}}>
-                    <Button text='Join' callBack={joinEvent}></Button>
+                    <Button text='Join' onPress={joinEvent}></Button>
                 </View>
             </View>
         </Pressable>

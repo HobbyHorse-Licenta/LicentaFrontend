@@ -4,15 +4,17 @@ import { ScrollView, View } from 'react-native';
 import { scale } from "react-native-size-matters";
 
 import { SpacingStyles } from '../../../styles';
-import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange, SelectSportModal, SelectCompanion} from '../../../components/schedule';
-// import { AddSports, ScheduleHeader, SelectDays, SelectTime } from '@schedule';
+import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange, SelectCompanion} from '../../../components/schedule';
 import { Layout2Piece } from '../../layouts';
 import { SportName } from "../../../types";
+import { GeneralHeader } from "../../../components/general";
+import { useNavigation } from "@react-navigation/native";
 
 
 
 const Schedule = () => {
 
+  const navigation = useNavigation();
   const [sportPickerVisible, setSportPickerVisible] =  useState<boolean>(false);
   const [selectedSports, setSelectedSports] = useState<Array<SportName>>([]);
 
@@ -61,7 +63,8 @@ const Schedule = () => {
         {getcreateScheduleContainer()}
         {
           (sportPickerVisible === true) ? (
-              <SelectSportModal onSelect={addSport} onDismiss={() =>  setSportPickerVisible(false)} visible={sportPickerVisible}></SelectSportModal>
+            <View></View>
+              // <SelectSportModal onSelect={addSport} onDismiss={() =>  setSportPickerVisible(false)} visible={sportPickerVisible}></SelectSportModal>
           ) : (
             <View></View>
           )
@@ -72,7 +75,7 @@ const Schedule = () => {
 
   return (
      <Layout2Piece
-        header={<ScheduleHeader></ScheduleHeader>}
+        header={<GeneralHeader onBack={() => navigation.goBack()}/>}
         body={getBody()}
      ></Layout2Piece>
   );

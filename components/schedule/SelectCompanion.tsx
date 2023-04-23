@@ -6,7 +6,7 @@ import {Text, useTheme} from 'react-native-paper'
 
 import { FemaleSvg, MaleAndFemaleSvg, MaleSvg } from '../svg/general';
 import { Gender } from '../../types';
-import { PrimaryContainer } from '../general';
+import { PrimaryContainer, SvgView } from '../general';
 import SelectAgeGap from './SelectAgeGap';
 import SelectNumberOfPeople from './SelectNumberOfPeople';
 
@@ -46,25 +46,25 @@ const SelectCompanion = () => {
             <View style={{flexDirection: 'row'}}>
                 <Pressable onPress={selectedFemale}>
                 <View style={[styles.iconWithLabel, selectedGender === Gender.Female && {backgroundColor: theme.colors.tertiary}]}>
-                    <View style={styles.genderIcon}>
+                    <SvgView size='big'>
                         <FemaleSvg></FemaleSvg>
-                    </View>
+                    </SvgView>
                     <Text>Female</Text>
                 </View>
                 </Pressable>
                 <Pressable onPress={selectedMale}>
-                    <View style={[styles.iconWithLabel, selectedGender === Gender.Male && {backgroundColor: theme.colors.tertiary}]}>
-                        <View style={styles.genderIcon}>
+                    <View style={[styles.iconWithLabel, selectedGender === Gender.Male && {backgroundColor: theme.colors.tertiary}]}>                     
+                        <SvgView size='big'>
                             <MaleSvg></MaleSvg>
-                        </View>
+                        </SvgView>
                         <Text>Male</Text>
                     </View>
                 </Pressable>
                 <Pressable onPress={selectedMixed}>
                     <View style={[styles.iconWithLabel, selectedGender === undefined && {backgroundColor: theme.colors.tertiary}]}>
-                        <View style={styles.genderIcon}>
+                        <SvgView size='big'>
                             <MaleAndFemaleSvg></MaleAndFemaleSvg>
-                        </View>
+                        </SvgView>
                         <Text>Mixed</Text>
                     </View>
                 </Pressable>

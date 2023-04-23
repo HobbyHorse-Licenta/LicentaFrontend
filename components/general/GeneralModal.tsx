@@ -22,27 +22,19 @@ interface ModalInput {
 const GeneralModal = ({visible, onDismiss, backgroundColor, children} : ModalInput) => {
 
 
-    const returnLeftAlignValue = (value: number) => {
-        const shiftsToLeftMargin = -(screenWidth/2) //shift the modal so that it touches the left screen margin
-        return value + shiftsToLeftMargin;
-    }
+    // const returnLeftAlignValue = (value: number) => {
+    //     const shiftsToLeftMargin = -(screenWidth/2) //shift the modal so that it touches the left screen margin
+    //     return value + shiftsToLeftMargin;
+    // }
 
-    const returnTopAlignValue = (value: number) => {
-        const shiftsToLeftMargin = -(screenWidth/2) //shift the modal so that it touches the left screen margin
-        return 0;
-    }
+    // const returnTopAlignValue = (value: number) => {
+    //     const shiftsToLeftMargin = -(screenWidth/2) //shift the modal so that it touches the left screen margin
+    //     return 0;
+    // }
 
-    const containerStyle = {backgroundColor: backgroundColor ? backgroundColor : 'white', padding: scale(20)};
+    // const containerStyle = {backgroundColor: backgroundColor ? backgroundColor : 'white', padding: scale(20)};
 
     return(
-        // <Provider>
-        //     <Portal>
-        //         <Modal visible={visible} onDismiss={() => console.log("INCHEIEM")} contentContainerStyle={containerStyle} 
-        //         style={[styles.modal, {left: returnLeftAlignValue((screenWidth- ModalWidth)/2), top: returnTopAlignValue((screenWidth- ModalHeight)/2)}]}>
-        //             {children}
-        //         </Modal>
-        //     </Portal>
-        // </Provider>
         <Modal
         animationType="slide"
         transparent={true}

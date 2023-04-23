@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { Layout2PieceForNavigator } from '../../layouts';
 import MySchedulesBody from "../../../components/mySchedules/MySchedulesBody";
-import { HeaderChatIcon } from "../../../components/general/headers";
+import { GeneralHeader } from "../../../components/general";
 
 const MySchedules = () => {
 
@@ -17,7 +17,7 @@ const MySchedules = () => {
 
   return (
      <Layout2PieceForNavigator 
-        header={<HeaderChatIcon></HeaderChatIcon>}
+        header={<GeneralHeader onChat={() => console.log("[MySchedules]: go to chat")}></GeneralHeader>}
         body={getBody()}
      ></Layout2PieceForNavigator>
   );

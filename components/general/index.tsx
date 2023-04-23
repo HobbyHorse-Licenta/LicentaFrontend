@@ -2,20 +2,22 @@ import TextImage from "./TextImage";
 import Button from "./Button";
 import EventCard from "./EventCard";
 import ProfilePicList from "./ProfilePicList";
-import SportTile from "./SportTile";
-import RoundPicUpload from './RoundPicUpload';
+import RoundPicture from './RoundPicture';
 import PlusTile from "./PlusTile";
 import AppHeader from "./AppHeader";
 import PrimaryContainer from "./PrimaryContainer";
 import SelectTime from "./SelectTime";
 import SvgView from "./SvgView";
-import SmallSvgView from "./SmallSvgView";
-import SelectedSportTile from "./SelectedSportTile";
 import GeneralModal from "./GeneralModal";
-import SportTileWithoutFeedback from "./SportTileWithoutFeedback";
 import SelectionCard from "./SelectionCard";
 import Lottie from "./Lottie";
-export {TextImage, Button, EventCard, ProfilePicList, SportTile, RoundPicUpload, PlusTile,
+import Tile from "./Tile";
+import TileList from "./TileList";
+import SelectionListModal from "./SelectionListModal";
+import GeneralHeader from "./GeneralHeader";
+import PopupMenu from "./PopupMenu";
+import SelectNumber from "./SelectNumber";
+export {TextImage, Button, EventCard, ProfilePicList, RoundPicture, PlusTile,
      AppHeader, PrimaryContainer, SelectTime,
-    SvgView, SmallSvgView, SelectedSportTile, GeneralModal, 
-    SportTileWithoutFeedback, SelectionCard, Lottie}
+    SvgView, GeneralModal, SelectionListModal, 
+    SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu, SelectNumber}

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { scale, verticalScale } from 'react-native-size-matters';
 import {Text, useTheme} from 'react-native-paper'
 
-import { PrimaryContainer } from '../../../components/general';
+import { PrimaryContainer, SvgView } from '../../../components/general';
 import { SkateExperience, SkatePracticeStyles, SkatesType } from '../../../types';
 import { SpacingStyles } from '../../../styles';
 import { Layout2Piece } from '../../layouts';
@@ -13,10 +13,12 @@ import { ProfileConfigHeader } from '../../../components/profileConfig';
 import { setSkatePracticeStyle, setSkateExperience } from '../../../redux/configProfileState';
 import { HandDownSvg } from '../../../components/svg/general';
 import PersonalInfo from './PersonalInfo';
+import { RootState } from '../../../redux/store';
 
 
 const SelectStyleAndExperience = () => {
 
+    const {addingSkateProfile} = useSelector((state: RootState) => state.appState);
     const {skateType} = useSelector((state: any) => state.configProfile)
     const {skatePracticeStyle} = useSelector((state: any) => state.configProfile)
     const {skateExperience} = useSelector((state: any) => state.configProfile)
@@ -132,8 +134,11 @@ const SelectStyleAndExperience = () => {
             <View style={[StyleSheet.absoluteFill, {justifyContent: 'center', alignItems: 'center'}]}>
                 <Text variant='headlineSmall' >What do you want to pratice?</Text>
                 <View style={styles.handIcon}>
-                    <HandDownSvg></HandDownSvg>
+                    
                 </View>
+                <SvgView size='big'>
+                    <HandDownSvg></HandDownSvg>
+                </SvgView>
                 <PrimaryContainer styleInput={{...SpacingStyles.shadow, ...styles.skateStyleOptions}}>
                     {getPracticeStyleOptions()}
                 </PrimaryContainer>
@@ -145,10 +150,23 @@ const SelectStyleAndExperience = () => {
     }
 
     return(
-        <Layout2Piece
-        header={ <ProfileConfigHeader disabled={goNextDisabled} backButton={true} nextScreen={'PersonalInfo'}/>}
-        body={getBody()}
-        ></Layout2Piece>     
+        <View>
+        {
+            addingSkateProfile === true ?
+            (
+                <Layout2Piece
+                header={ <ProfileConfigHeader disabled={goNextDisabled} backButton={true} doneConfig={true}/>}
+                body={getBody()}
+                ></Layout2Piece>     
+            ):
+            (
+                <Layout2Piece
+                header={ <ProfileConfigHeader disabled={goNextDisabled} backButton={true}  nextScreen={'PersonalInfo'}/>}
+                body={getBody()}
+                ></Layout2Piece>     
+            )
+        }
+        </View>
     );
 }
 

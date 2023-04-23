@@ -1,43 +1,63 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { KeyboardAvoidingView, View, StyleSheet, ScrollView} from 'react-native';
+
+import { Text, TextInput, useTheme } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable';
-
-import { SafeAreaView } from 'react-navigation';
-
-import { Text, TextInput, Button, useTheme } from 'react-native-paper';
-import { Layout1Piece } from '../layouts';
+import {createUserWithEmailAndPassword } from "firebase/auth";
 import { scale, verticalScale } from 'react-native-size-matters';
 
+import { Button } from '../../components/general';
+import { Layout1Piece } from '../layouts';
+import {validation} from '../../utils';
+import {firebaseAuth} from '../../WholeScreen';
+import {uiUtils} from '../../utils';
+import { useDispatch } from 'react-redux';
+import { setJWTToken } from '../../redux/appState';
+import { User } from '../../types';
 
 const SignUpScreen = () => {
 
     const theme = useTheme();
+    const dispatch = useDispatch();
 
     const [email, setEmail] = useState<string | undefined>(undefined);
     const [password, setPassword] = useState<string | undefined>(undefined);
-    const [description, setDescription] = useState<string>();
-    const [descriptionHeight, setDescriptionHeight] = useState(scale(20));
+    const [confirmationPassword, setConfirmationPassword] = useState<string | undefined>(undefined);
 
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
 
 
-    const handleLogin = async () => {
-        // try{
-        //     await loginAccountWrapper(email,password);
-        // }
-        // catch (err) {
-        //     console.log(err.message)
-        // }
-    };
-
+   
+    
     const createAccount = async () => {
-        // try{
-        //     await loginAccountWrapper(email,password);
-        // }
-        // catch (err) {
-        //     console.log(err.message)
-        // }
+        if(email !== undefined && password !== undefined && confirmationPassword !== undefined)
+        {
+            if(validation.validateEmailAndPassword(email, password, true) === true)
+            {
+                if(password === confirmationPassword)
+                {
+                    console.log("CREATING ACCOUNT");
+                    createUserWithEmailAndPassword(firebaseAuth, email, password)
+                    .then((userCredential) => {
+                    // Signed in 
+                    userCredential.user.getIdToken().then((jwtToken) => {
+                    dispatch(setJWTToken(jwtToken))
+                    });
+                    })
+                    .catch((error) => {
+                        if(error.code = 'auth/email-already-in-use')
+                        {
+                            uiUtils.showPopUp("Error","There is already an account with this email");
+                        }
+                        else console.error(error.code);
+                    });
+                }
+                else uiUtils.showPopUp("Error","Passwords don't match");
+                
+            }
+        }
+        else uiUtils.showPopUp("Warning", "Please input all fields😀");
     };
 
  
@@ -55,6 +75,7 @@ const SignUpScreen = () => {
                 <ScrollView style={styles.form}>
                         <TextInput
                         style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
+                        autoCapitalize={"none"}
                         label="Email"
                         value={email}
                         onChangeText={handleEmailInput}
@@ -69,27 +90,15 @@ const SignUpScreen = () => {
                         <TextInput
                         style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
                         label="Confirm Password"
-                        value={password}
+                        value={confirmationPassword}
                         secureTextEntry={true}
-                        onChangeText={handlePasswordInput}
-                        />
-                        <TextInput
-                        style={[styles.descriptionInput, {height: descriptionHeight, backgroundColor: theme.colors.primary}]}
-                        multiline={true}
-                        label="Give a short description of yourself"
-                        value={description}
-                        onContentSizeChange={(event) => {
-                            setDescriptionHeight(event.nativeEvent.contentSize.height);
-                          }}
-                        onChangeText={setDescription}
+                        onChangeText={(typedText: string) => setConfirmationPassword(typedText)}
                         />
                         <View style={styles.buttonAndText}>
                             <Button style={styles.button} 
-                                mode="contained"
-                                onPress={() => {
-                                    createAccount()}}>
-                                Create Account
-                            </Button>
+                            mode="contained"
+                            onPress={() => {
+                            createAccount()}} text={'Create Account'}/>
                         </View>
                         
                 </ScrollView>

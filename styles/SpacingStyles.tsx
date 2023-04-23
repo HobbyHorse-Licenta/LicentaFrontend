@@ -127,6 +127,20 @@ export const SpacingStyles = StyleSheet.create({
         height: scale(40),
         padding: scale(3),
       },
+      mediumIcon: {
+        borderRadius: 10,
+        margin: scale(4),
+        width: scale(40),
+        height: scale(40),
+        padding: scale(3),
+      },
+      bigIcon: {
+        borderRadius: 10,
+        margin: scale(4),
+        width: scale(50),
+        height: scale(50),
+        padding: scale(3),
+      },
       smallIcon: {
         borderRadius: 10,
         margin: scale(4),
@@ -141,6 +155,12 @@ export const SpacingStyles = StyleSheet.create({
         height: scale(20),
         padding: scale(2),
       },
+      profilePicContainer: {
+        margin: scale(10),
+        width: scale(100),
+        height: scale(100),
+        padding: scale(1)
+      },
       primaryContainer: {
         borderRadius: 15,
         alignItems: 'center',
@@ -153,4 +173,11 @@ export const SpacingStyles = StyleSheet.create({
       row: { flexDirection: "row" },
       timeContainer: { justifyContent: "center", flex: 1, alignItems: "center" },
       timeText: { fontSize: scale(80) },
+      skateProfileSummary: {
+        padding: scale(3),
+        margin: scale(2),
+        height: verticalScale(70),
+        width: scale(120),
+        borderWidth: 2
+    }
 })

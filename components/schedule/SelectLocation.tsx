@@ -11,10 +11,10 @@ import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import { SpacingStyles } from "../../styles";
 import { FemaleSvg, LocationSvg } from '../svg/general';
 import { Location } from '../../types';
-import { PrimaryContainer } from '../general';
+import { PrimaryContainer, SvgView } from '../general';
 import Fetch from '../../services/Fetch';
 import { SafeAreaView } from 'react-navigation';
-import maps from '../../utils/Maps';
+import {mapsUtils} from '../../utils';
 import { TennisSvg } from '../svg/sports';
 
 interface Distance {
@@ -24,7 +24,8 @@ interface Distance {
 
 const SelectLocation = () => {
 
-  
+    //TODO: fix WheelPickerExpo not working when in ScrollView
+
     const [myLocation, setMyLocation] = useState<Location>({
         id: uuid.v4().toString(),
         name: 'Cluj-Napoca',
@@ -33,6 +34,7 @@ const SelectLocation = () => {
             long: 23.596883,
         }
     });
+    
     const [rangeArray, setRangeArray] = useState<Distance[]>([
         {label: '+0.2', value: 0.2},
         {label: '+0.5', value: 0.5},
@@ -68,7 +70,7 @@ const SelectLocation = () => {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
                 latitudeDelta: 0.00001,
-                longitudeDelta: maps.kMToLongitudes(range, myLocation.gpsPoint.lat)
+                longitudeDelta: mapsUtils.kMToLongitudes(range, myLocation.gpsPoint.lat)
               }, 1000)
 
           setMyLocation({id: uuid.v4().toString(), name: 'Your Location', gpsPoint: {
@@ -80,11 +82,12 @@ const SelectLocation = () => {
     }, []);
 
     useEffect(() => {
-        const variable = Fetch.getLocation('Cluj-Napoca');
-        if( variable != null)
-        {
-            setMyLocation(variable);
-        }
+        console.log("Well make a location fetch form db");
+        Fetch.getLocation('Cluj-Napoca', (loc) => console.log("Am luat din database asta\n" + JSON.stringify(loc)), () => console.log("Bad bad"));
+        // if( variable != null)
+        // {
+        //     setMyLocation(variable);
+        // }
     }, [])
 
     useEffect(() => {
@@ -94,7 +97,7 @@ const SelectLocation = () => {
                 latitude: myLocation.gpsPoint.lat,
                 longitude: myLocation.gpsPoint.long,
                 latitudeDelta: 0.00001,
-                longitudeDelta: maps.kMToLongitudes(range, myLocation.gpsPoint.lat),
+                longitudeDelta: mapsUtils.kMToLongitudes(range, myLocation.gpsPoint.lat),
               }, 1000)
         }
     }, [range])
@@ -109,9 +112,9 @@ const SelectLocation = () => {
         <PrimaryContainer styleInput={{padding: scale(10), marginVertical: scale(10)}}>
             <View style={{flexDirection: 'row', paddingBottom: verticalScale(5)}}>
                 <View style={{flexDirection:'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <View style={[SpacingStyles.tile, {backgroundColor: theme.colors.tertiary, borderRadius: 10}]}>
+                    <SvgView size='small' style={{backgroundColor: theme.colors.tertiary, borderRadius: 10}}>
                         <LocationSvg></LocationSvg>
-                    </View>
+                    </SvgView>
 
                     <Text variant='bodyLarge'>Location</Text>
                 </View>
@@ -136,7 +139,7 @@ const SelectLocation = () => {
                         latitude: myLocation.gpsPoint.lat,
                         longitude: myLocation.gpsPoint.long,
                         latitudeDelta: 0.00001,
-                        longitudeDelta: maps.kMToLongitudes(range, myLocation.gpsPoint.lat)
+                        longitudeDelta: mapsUtils.kMToLongitudes(range, myLocation.gpsPoint.lat)
                         }}
                         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
                         

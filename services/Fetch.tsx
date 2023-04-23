@@ -2,184 +2,156 @@ import https from 'https';
 import { Event, Location, Schedule, SkateExperience, SkatePracticeStyles, SkateProfile, SkatesType, SportName, User } from "../types";
 import {basketUrl, tennisUrl} from '../assets/imageUrls'
 import {apiUrl} from '../assets/apiUrl'
+import { useSelector } from 'react-redux';
 
 const Fetch = {
-
-    getLocations: function(){
-        const events: Array<Location> = [
-            {
-                id:  '321312',
-                name: 'Gheorgheni Baza',
-                gpsPoint: {
-                    lat: 46.77159014009401, 
-                    long: 23.635888336315503,
-                }
+    
+    put: async function(JWTToken: string, updatedObject: any, url: string, callBackFunction: Function, errorCallBackFunction: Function) {
+      console.log("TRying the endpoint: " + JSON.stringify(url));
+      try 
+      {
+        const response = await fetch(url, {
+            headers: {
+              "Authorization": `Bearer ${JWTToken}`,
+              "Content-Type": "application/json"
             },
-            {
-                id:  '3342434',
-                name: 'Parcul Rozelor',
-                gpsPoint: {
-                    lat: 46.7649101022356, 
-                    long: 23.552784857259145,
-                }
-            }
-        ]
-    },
-    postSkill: async function(callBackFunction: Function){
-        console.log("INTRU AICI");
-        await fetch("http://192.168.1.50:5085/skill/skill", 
-        { method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userEmail: 'userEmail',
-            description: 'description',
-            address: 'address',
-            maxConsumption: 'maxConsumption'
-        })
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-        })
-    },
-    
-    getSkills: async function(callBackFunction: Function) {
-        fetch(apiUrl + "/skill/allSkills", {
-            "method": "GET"
-        }).then(response => response.json())
-        .then(info => callBackFunction(info))
-        .catch(err => console.error(err.message));      
-    },
-
-    getSkateProfiles: function(){
-        // const skateProfiles: Array<SkateProfile> = [
-        //     {
-        //         skateType: SkatesType.SpeedSkates,
-        //         skatePracticeStyle: SkatePracticeStyles.CasualSkating,
-        //         skateExperience: SkateExperience.Intermediate
-        //     },
-        //     {
-        //         skateType: SkatesType.SpeedSkates,
-        //         skatePracticeStyle: SkatePracticeStyles.SpeedSkating,
-        //         skateExperience: SkateExperience.Advanced
-        //     },
-        //     {
-        //         skateType: SkatesType.AggressiveSkates,
-        //         skatePracticeStyle: SkatePracticeStyles.AggresiveSkating,
-        //         skateExperience: SkateExperience.Begginer
-        //     }
-        // ];
-        return null;
-    },
-    
-    getEvents: function(){
-        const events: Array<Event> = [
-            // {
-            //     id: 1,
-            //     name: "Basket Practice",
-            //     imageUrl: basketUrl,
-            //     description: {
-            //         sport: SportName.Basketball,
-            //         sportLevel: 'Healthy beginner',
-            //         location: {
-            //             id: '342jkg',
-            //             name: 'Gheorgheni Baza',
-            //             gpsPoint: {
-            //                 lat: 46.77159014009401, 
-            //                 long: 23.635888336315503,
-            //             }
-            //         }
-            //     }
-                
-            // },
-            // {
-            //     id: 2,
-            //     name: "Tennis Game",
-            //     imageUrl: tennisUrl,
-            //     description: {
-            //         sport: SportName.Tennis,
-            //         sportLevel: 'Elite athlete',
-            //         location: {
-            //             id: '342jkg',
-            //             name: 'Gheorgheni Baza',
-            //             gpsPoint: {
-            //                 lat: 46.77159014009401, 
-            //                 long: 23.635888336315503,
-            //             }
-            //         },
-            //         note: 'This would be a game to train with someone who might be the best in the city'
-            //     }
-            //},
-        ];
-        
-        return events;
-    },
-
-    // getSchedules: function(){
-    //     const schedules: Array<Schedule> =[
-    //         {
-    //             id: 1
-    //         },
-    //         {
-    //             id: 2
-    //         }
-    //     ];
-
-    //     return schedules;
-    // },
-
-    getLocation: function(nameOfLocation: string) : Location | null{
-        if(nameOfLocation === 'Cluj-Napoca')
-        {
-            return {
-                id: '321fdh',
-                name: 'Cluj-Napoca',
-                gpsPoint: {
-                    lat:  46.771069, 
-                    long: 23.596883,
-                }
-            }
-
+            method: "PUT",
+            body: JSON.stringify(updatedObject)
+          });
+      
+        if (!response.ok) {
+          errorCallBackFunction();
+          throw new Error(`get: HTTP error! Status: ${response.status}`);
+          
         }
-        return null;
-    }
-    // getSchedules: function(){
-    //     const schedules: Array<Schedule> =[
-    //         {
-    //             id: 1
-    //         },
-    //         {
-    //             id: 2
-    //         }
-    //     ];
+        else {
+          const data = await response.json();
+          callBackFunction(data);
+        }
+    
+      } 
+      catch (error) {
+        console.error(`Error: ${error.message}`);
+        if (error.message === 'Network request failed') {
+          errorCallBackFunction();
+          console.log('Network error occurred!');
+        } else {
+          errorCallBackFunction();
+          console.error(`Error: ${error.message}`);
+        }
+      }
+    },
 
-    //     return schedules;
-    // },
+    putUser: function(userIdToUpdate: string, updatedUser: User, callBackFunction: Function, errorCallBackFunction: Function){
+      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+      this.put(jwtToken, updatedUser, apiUrl + "/user/put/" + userIdToUpdate, callBackFunction, errorCallBackFunction)
+    },
 
-    // getUsers: function(){
-    //     const events: Array<User> = [
-    //         {
-    //             profileImageUrl: 
-    //             id: 1,
-    //             name: "Basket Practice",
-    //             imageUrl: basketUrl,
-    //             level: 'Healthy beginner',
-    //             location: 'Gheorgheni Baza'
-    //         },
-    //         {
-    //             id: 2,
-    //             name: "Tennis Game",
-    //             imageUrl: tennisUrl,
-    //             level: 'Elite athlete',
-    //             description: 'This would be a game to train with someone who might be the best in the city',
-    //             location: 'Stadion'
-    //         },
-    //     ];
-        
-    //     return events;
-    // }
+    postUser: async function(user: User, callBackFunction: Function){
+      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+      this.post(jwtToken, apiUrl + "/user/post", user, callBackFunction, () => console.log("[postuser]: No error callback provided"))
+    },
 
-   
+    post: async function(jwtToken: string, url: string, objectToPost: any, callBackFunction: Function, errorCallBackFunction: Function){
+      try {
+        const response = await fetch(url, 
+        { method: 'POST',
+          headers: {
+            "Authorization": `Bearer ${jwtToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(objectToPost)
+        })
+      
+        if (!response.ok) {
+          errorCallBackFunction();
+          throw new Error(`getSkills: HTTP error! Status: ${response.status}`);
+        }
+      
+        const data = await response.json();
+        callBackFunction(data);
+
+      } catch (error) {
+        if (error.message === 'Network request failed') {
+          errorCallBackFunction();
+          console.log('Network error occurred!');
+        } else {
+          errorCallBackFunction();
+          console.error(`Error: ${error.message}`);
+        }
+      }
+    },
+
+    get: async function(JWTToken: string, url: string, callBackFunction: Function, errorCallBackFunction: Function) {
+      try 
+      {
+        const response = await fetch(url, {
+            headers: {
+              "Authorization": `Bearer ${JWTToken}`,
+              "Content-Type": "application/json"
+            },
+            method: "GET"
+          });
+      
+        if (!response.ok) {
+          errorCallBackFunction();
+          throw new Error(`get: HTTP error! Status: ${response.status}`);   
+        }
+      
+        const data = await response.json();
+        callBackFunction(data);
+      } 
+      catch (error) {
+        console.error(`Error: ${error.message}`);
+        if (error.message === 'Network request failed') {
+          errorCallBackFunction();
+          console.log('Network error occurred!');
+        } else {
+          errorCallBackFunction();
+          console.error(`Error: ${error.message}`);
+        }
+      }
+    },
+
+    getUser: async function(userId: string, callBackFunction: Function, errorCallBackFunction: Function){
+      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+      this.get(jwtToken, apiUrl + "/user/get/" + userId, callBackFunction, errorCallBackFunction);
+    },
+
+    getSkills: async function(callBackFunction: Function, errorCallBackFunction: Function) {   
+        const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+        this.get(jwtToken, apiUrl + "/skill/allSkills", callBackFunction, errorCallBackFunction);
+    },
+    
+    getRecommendedEvents: function(){
+       
+    },
+
+    getLocation: function(nameOfLocation: string, callBackFunction: Function, errorCallBackFunction: Function){
+      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+      this.get(jwtToken, apiUrl + "/location/" + nameOfLocation, callBackFunction, errorCallBackFunction);  
+    },
+    getLocations: function(){
+      const events: Array<Location> = [
+          {
+              id:  '321312',
+              name: 'Gheorgheni Baza',
+              gpsPoint: {
+                  lat: 46.77159014009401, 
+                  long: 23.635888336315503,
+              }
+          },
+          {
+              id:  '3342434',
+              name: 'Parcul Rozelor',
+              gpsPoint: {
+                  lat: 46.7649101022356, 
+                  long: 23.552784857259145,
+              }
+          }
+      ]
+  },
+
 };
 
 export default Fetch;

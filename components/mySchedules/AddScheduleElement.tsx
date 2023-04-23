@@ -6,7 +6,7 @@ import { Text } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 import { SpacingStyles } from "../../styles";
 
-import { PrimaryContainer } from "../general";
+import { PrimaryContainer, SvgView } from "../general";
 import { PlusSvg } from "../svg/general";
 
 interface Input {
@@ -19,9 +19,9 @@ const AddScheduleElement = ({onPress} : Input) =>
         <PrimaryContainer styleInput={SpacingStyles.scheduleContainer}>
             <TouchableOpacity style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer]} onPress={() => onPress()}>
                 {/* <Text>Add new schedule</Text> */}
-                <View style={{width: scale(100), height: verticalScale(100)}}>
+                <SvgView size='small' style={{width: scale(100), height: verticalScale(100)}}>
                     <PlusSvg></PlusSvg>
-                </View>
+                </SvgView>
                 
                 
             </TouchableOpacity>

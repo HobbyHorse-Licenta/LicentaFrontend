@@ -1,6 +1,7 @@
 import React, {useEffect} from "react";
 import { View, Text } from 'react-native'
-import { EventHeader, EventImage } from "../../../components/eventDisplay";
+import {EventImage } from "../../../components/eventDisplay";
+import { GeneralHeader } from "../../../components/general";
 
 import { Event } from "../../../types";
 import { Layout2Piece } from "../../layouts";
@@ -25,8 +26,8 @@ const EventDisplay = ({route, navigation}) => {
   
   return (
     <Layout2Piece
-            header={ <EventHeader>{event.name}</EventHeader>}
-            body={getBody()}
+      header={<GeneralHeader onBack={navigation.goBack()} title={event.name}></GeneralHeader>}
+      body={getBody()}
     ></Layout2Piece>
   );
 };

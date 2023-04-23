@@ -35,7 +35,11 @@ export enum SportName {
 }
 
 export enum MasteringLevel {
-  InlineSkating = 'InlineSkating'
+  Level0 = 'you have 0 experience with the skill',
+  Level1 = 'you tried the skill just a bit',
+  Level2 = 'you are average at it',
+  Level3 = 'you are good at it',
+  Level4 = 'this skill is second nature to you',
 }
 
 
@@ -61,92 +65,137 @@ export enum SkatePracticeStyles {
 
 export enum Gender {
   Male = 'Male',
-  Female = 'Female'
+  Female = 'Female',
+  Mixed = 'Mixed'
 }
 
 //////////////////////////////////////////////////
 
 
 export type SkateProfile = {
-  id: string
+  id: string,
+  userId: string,
+  events?: Array<Event>,
+  assignedSkills?: Array<AssignedSkill>,
+  schedules?: Array<Schedule>,
   skateType: SkatesType,
   skatePracticeStyle: SkatePracticeStyles,
   skateExperience: SkateExperience
-  assignedSkills: Array<AssignedSkill>
+ 
 }
 
 export type Skill = {
   id: string
   name: string,
-  skillRecomadations: Array<SkillRecommendation>
 }
 
 export type SkillRecommendation = {
   id: string,
+  skill: Skill,
   skatePracticeStyle: SkatePracticeStyles,
   skateExperience: SkateExperience
 }
 
 export type AssignedSkill = {
   id: string,
+  skateProfileId: string,
+  skill: Skill,
   masteringLevel: MasteringLevel
 }
 
 ///////////////////////////////////////////////////
 
 export type User = {
-  id: string
-  profileImageUrl?: string,
-  shortDescription: string,
-  followers?: Array<User>, //??
-  following?: Array<User>, //??
+  id: string,
   skateProfiles: Array<SkateProfile>
+  name: string,
+  age: number,
+  gender: Gender,
+  shortDescription: string,
+  profileImageUrl?: string,
+  //followers?: Array<User>
+ // following?: Array<User>
+  
+}
+
+export type Outing = {
+  id: string,
+  eventId: string,
+  startTime: number,
+  endTime: number,
+  skatePracticeStyle: SkatePracticeStyles,
+  trailType: string,
+  trail: Trail
+}
+
+
+export type Trail = {
+  id: string
+}
+
+export type CustomTrail = Trail & {
+  trailName?: string,
+  checkPoints: Array<CheckPoint>
+}
+
+export type ParkTrail = Trail & {
+  name: string,
+  practiceStyle: SkatePracticeStyles,
+  practiceStyle2?: SkatePracticeStyles,
+  capacity?: number,
+  location: Location,
+  openingHour: number,
+  closingHour: number
 }
 
 export type Event = {
   id: number,
   name: string,
-  imageUrl?: string,
   note: string,
+  maxParticipants: number,
+  skateExperience: SkateExperience,
+  outing: Outing,
+  skateProfiles?: Array<SkateProfile>,
+  imageUrl?: string,
   description?: string,
-  users?: Array<User>[],
-  note?: string;
+  gender: Gender
+ 
 }
-export type EventDescription = {
-  sportName: SportName
-  sportLevel: SportLevel;
-  location: Location;
-};
-
-
 
 
 export type Zone = {
-  id: number,
+  id: string,
+  name?: string,
   range: number,
-  fixedPoint: GpsPoint;
+  location: Location
 }
 
-export type GpsPoint = {
+
+export type Location = {
+  id: string,
+  name?: string,
+  imageUrl?: string,
   lat: number,
   long: number
 }
 
-export type Location = {
+export type CheckPoint = {
   id: string,
-  name: string,
-  imageUrl?: string,
-  gpsPoint: GpsPoint
+  name?: string,
+  customTrailId: string,
+  location: Location
 }
 
-
-
-
 export type Schedule = {
-  id: number,
-  timeRange: TimeRange,
-  sports: Array<SportName>,
-  zone: Zone
+  id: string,
+  skateProfileId: string,
+  startTime: number,
+  endTime: number,
+  zones: Array<Zone>,
+  minimumAge?: number,
+  maximumAge?: number,
+  gender: string,
+  
 }
 
 export type TimeRange = {

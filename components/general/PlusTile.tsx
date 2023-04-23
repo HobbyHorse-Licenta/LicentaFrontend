@@ -6,6 +6,7 @@ import { Text, useTheme } from 'react-native-paper';
 
 import { SpacingStyles } from '../../styles';
 import { PlusSvg } from '../svg/general';
+import SvgView from './SvgView';
 
 interface Input {
     onPress: Function,
@@ -17,7 +18,14 @@ const PlusTile = ({onPress, single} : Input) => {
 
     return(
         <TouchableOpacity onPress={() => onPress()} style={[single === true ? SpacingStyles.fullWidthTile : SpacingStyles.tile,SpacingStyles.centeredContainer, {backgroundColor: theme.colors.onSecondaryContainer}]}>
-            {(single === true) ? <Text>Add Sport</Text> : <PlusSvg></PlusSvg>}
+            {(single === true) ? 
+            (<Text>Add Sport</Text>)
+            :
+            (
+            <SvgView size='small'>
+                <PlusSvg></PlusSvg>
+            </SvgView>
+            )}
         </TouchableOpacity>
    
     );

@@ -1,32 +1,61 @@
-import React, { PropsWithChildren, ReactNode } from "react";
-import { View, ViewStyle } from "react-native";
+import React, { ReactNode } from "react";
+import { Pressable, ViewStyle } from "react-native";
+import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { useTheme } from "react-native-paper";
 
 import { SpacingStyles } from "../../styles";
 
 interface SvgViewInput {
-    onTouchEnd?:  Function,
+    onPress?:  Function,
     children: ReactNode,
     style?: ViewStyle,
+    size: 'tiny' | 'small' | 'medium' | 'big'
 } 
 
-const SvgView = ({children, onTouchEnd, style}: SvgViewInput) => {
+
+
+const SvgView = ({children, onPress, style, size}: SvgViewInput) => {
+
+    
+
 
     const getStyle = () => {
+        let s;
+        switch (size) {
+            case 'tiny':
+                s = [SpacingStyles.tinyIcon, style];
+            break;
+            case 'small':
+                s = [SpacingStyles.smallIcon, style];
+            break;
+            case 'medium':
+                s = [SpacingStyles.mediumIcon, style];
+            break;
+            case 'big':
+                s = [SpacingStyles.bigIcon, style];
+            break;
+            default:
+                s = [SpacingStyles.smallIcon, style];
+            break;
+        }
         if(style != undefined)
-            return [SpacingStyles.smallIcon, style];
-        return [SpacingStyles.smallIcon];
+        {
+            s = [...s, style];
+        }
+        
+        return s;
     }
 
     const theme = useTheme();
 
     return (
-        <View onTouchEnd={() => (onTouchEnd != undefined) ? onTouchEnd() : console.log("[SvgView]: No action on press")} 
+        <TouchableWithoutFeedback  onPress={() => (onPress != undefined) ? onPress() : console.log("[SvgView]: No action on press")} 
         style={getStyle()}>
             {children}
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
+
 
 export default SvgView;

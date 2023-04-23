@@ -12,7 +12,6 @@ import { Layout2Piece } from "../../layouts";
 import { SpacingStyles } from "../../../styles";
 import { SportName } from "../../../types";
 import { InlineSkatesSvg } from "../../../components/svg/sports";
-import SelectSkates from "./SelectSkates";
 import { setSport } from "../../../redux/configProfileState";
 import { ProfileConfigHeader } from "../../../components/profileConfig";
 
@@ -79,7 +78,7 @@ const SelectSport = () => {
 
     return(
         <Layout2Piece
-            header={ <ProfileConfigHeader backButton={true} disabled={goNextDisabled}  nextScreen={'SelectSkates'}></ProfileConfigHeader>}
+            header={ <ProfileConfigHeader backButton={false} disabled={goNextDisabled}  nextScreen={'SelectSkates'}></ProfileConfigHeader>}
             body={getBody()}
         ></Layout2Piece>
     );

@@ -1,5 +1,5 @@
 
-class NavigationService {
+class Navigation {
   
   ShouldHaveTabBar = (route: string) => {
     const routesThatShouldHaveTabBar = ["Events", "Maps", "MyEvents", "MyProfile", "MySchedules"];
@@ -13,8 +13,8 @@ class NavigationService {
 
   
   }
-  const navigationService = new NavigationService();
-  export default navigationService;
+  const navigationUtils = new Navigation();
+  export default navigationUtils;
 
 
 

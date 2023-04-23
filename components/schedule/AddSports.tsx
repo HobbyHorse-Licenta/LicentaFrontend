@@ -6,8 +6,7 @@ import { scale, verticalScale } from 'react-native-size-matters';
 
 import { SpacingStyles } from '../../styles'
 import { SportName } from '../../types';
-import { PrimaryContainer, SelectedSportTile, SportTile } from '../general';
-import SelectSportModal from './SelectSportModal'
+import { PrimaryContainer } from '../general';
 import PlusTile from '../general/PlusTile';
 import { SafeAreaView } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
