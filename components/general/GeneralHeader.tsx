@@ -18,15 +18,16 @@ interface HeaderInput {
     onChat?: Function,
     rightButtonText?: string,
     onRightButtonPress?: Function,
+    rightButtonEnable?: boolean,
     menuItems?: Array<MenuItems> 
 }
-const GeneralHeader = ({onBack, title, onChat, rightButtonText, onRightButtonPress, menuItems} : HeaderInput) => {
+const GeneralHeader = ({onBack, title, onChat, rightButtonText, onRightButtonPress, menuItems, rightButtonEnable} : HeaderInput) => {
 
     const theme = useTheme();
     const getRightItem = () => {
         if(rightButtonText !== undefined && onRightButtonPress !== undefined)
         {
-           return <Button text={rightButtonText} onPress={() => onRightButtonPress()} style={styles.rightItemPosition}/>
+           return <Button disabled={rightButtonEnable !== undefined ? !rightButtonEnable : false} text={rightButtonText} onPress={() => onRightButtonPress()} style={styles.rightItemPosition}/>
         }
         if(onChat !== undefined)
         {
@@ -52,7 +53,6 @@ const GeneralHeader = ({onBack, title, onChat, rightButtonText, onRightButtonPre
             {onBack !== undefined && <Appbar.BackAction onPress={() => onBack()} style={SpacingStyles.goBackPosition} />}
             {title !== undefined && <Text variant='headlineMedium' style={{position: 'absolute', alignSelf: 'center', color: theme.colors.primary}}>{title}</Text>}
             {getRightItem()}
-            
         </AppHeader>
         </View>
     );
@@ -63,6 +63,6 @@ export default GeneralHeader;
 const styles = StyleSheet.create({
     rightItemPosition:{
         position: 'absolute',
-        right: scale(5)
+        right: scale(10)
     }
 })

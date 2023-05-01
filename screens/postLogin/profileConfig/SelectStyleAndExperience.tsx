@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {TouchableWithoutFeedback, View, StyleSheet, Pressable} from 'react-native'
+import {TouchableWithoutFeedback, View, StyleSheet, Pressable, ViewStyle, TextStyle} from 'react-native'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -18,7 +18,7 @@ import { RootState } from '../../../redux/store';
 
 const SelectStyleAndExperience = () => {
 
-    const {addingSkateProfile} = useSelector((state: RootState) => state.appState);
+    const {addingSkateProfile, user} = useSelector((state: RootState) => state.appState);
     const {skateType} = useSelector((state: any) => state.configProfile)
     const {skatePracticeStyle} = useSelector((state: any) => state.configProfile)
     const {skateExperience} = useSelector((state: any) => state.configProfile)
@@ -46,67 +46,85 @@ const SelectStyleAndExperience = () => {
 
     const getPracticeStyleOptions = () => 
     {
+        let stylesArray: Array<string>;
         switch (skateType) {
             case SkatesType.AggressiveSkates:
-                return (
-                    <View style={[StyleSheet.absoluteFill, styles.optionView]}>
-                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.AggresiveSkating)} style={styles.skateStylesPressable}>
-                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.AggresiveSkating)}>{SkatePracticeStyles.AggresiveSkating}</Text>
-                        </Pressable>
-                        <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)} style={styles.skateStylesPressable}>
-                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
-                        </Pressable>
-                    </View>
-                )
+                stylesArray = [SkatePracticeStyles.AggresiveSkating, SkatePracticeStyles.CasualSkating];
                 break;
             case SkatesType.CasualSkates:
-                return(
-                    <View style={[StyleSheet.absoluteFill, styles.optionView]} >
-                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)} style={styles.skateStylesPressable}>
-                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
-                        </Pressable>
-                        <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.AggresiveSkating)} style={styles.skateStylesPressable}>
-                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.AggresiveSkating)}>{SkatePracticeStyles.AggresiveSkating}</Text>
-                        </Pressable>
-                        <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.SpeedSkating)} style={styles.skateStylesPressable}>
-                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.SpeedSkating)}>{SkatePracticeStyles.SpeedSkating}</Text>
-                        </Pressable>
-                    </View>
-                    
-                )
+                stylesArray = [SkatePracticeStyles.CasualSkating, SkatePracticeStyles.AggresiveSkating, SkatePracticeStyles.SpeedSkating];
                 break;
             case SkatesType.SpeedSkates:
-                return (
-                    <View style={[StyleSheet.absoluteFill, styles.optionView]} >
-                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.SpeedSkating)} style={styles.skateStylesPressable}>
-                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.SpeedSkating)}>{SkatePracticeStyles.SpeedSkating}</Text>
-                        </Pressable>
-                        <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>
-                        <Pressable onPress={() => setSelectedSkateStyle(SkatePracticeStyles.CasualSkating)} style={styles.skateStylesPressable}>
-                            <Text style={getSkatePracticeTextStyle(SkatePracticeStyles.CasualSkating)}>{SkatePracticeStyles.CasualSkating}</Text>
-                        </Pressable>
-                    </View>
-                )
+                stylesArray = [SkatePracticeStyles.SpeedSkating, SkatePracticeStyles.CasualSkating]
                 break;
         
             default:
+                stylesArray = [SkatePracticeStyles.CasualSkating, SkatePracticeStyles.AggresiveSkating, SkatePracticeStyles.SpeedSkating];
                 break;
         }
+        if(addingSkateProfile === true)
+        {
+            const alreadyUsedStyles = user?.skateProfiles.map((profile, index) => profile.skatePracticeStyle);
+            if(alreadyUsedStyles !== undefined && alreadyUsedStyles.length > 0)
+            {
+                stylesArray = stylesArray.filter((style) => {
+                    return (alreadyUsedStyles.find(s => s === style) === undefined)
+                });
+            }
+        }
+
+        if(stylesArray !== undefined && stylesArray.length > 0)
+        {
+            return(
+                <View>
+                    {
+                        stylesArray.map((style, index) => {
+                            const enumStyle = stringToEnum(style);
+                            console.log(enumStyle);
+                            return(
+                                <View key={index}>
+                                    {(index != 0) && <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>}
+                                    <Pressable  onPress={() => setSelectedSkateStyle(enumStyle)} style={{...styles.skateStylesPressable, width: scale(180)}}>
+                                        <Text style={getSkatePracticeTextStyle(enumStyle)}>{enumStyle}</Text>
+                                    </Pressable>
+                                </View>
+                            )
+                        })
+                    }
+                </View>
+            )
+        }
+        else return null;
+       
     }
 
-    const getSkatePracticeTextStyle = (practiceStyle: SkatePracticeStyles) => {
+    const stringToEnum = (str: string) => {
+        switch (str) {
+            case SkatePracticeStyles.AggresiveSkating:
+                return SkatePracticeStyles.AggresiveSkating;
+              break;
+            case SkatePracticeStyles.CasualSkating:
+                return SkatePracticeStyles.CasualSkating;
+              break;
+            case SkatePracticeStyles.SpeedSkating:
+              return SkatePracticeStyles.SpeedSkating;
+              break;
+            default:
+                return SkatePracticeStyles.CasualSkating;
+          }
+    }
+    const getSkatePracticeTextStyle = (practiceStyle: SkatePracticeStyles) : TextStyle => {
+        const defaultStyle = {marginHorizontal: scale(10), marginVertical: scale(20)}
         if(practiceStyle === selectedSkateStyle)
-            return {margin: scale(10), color: theme.colors.tertiary}
-        else return {margin: scale(10)} 
+            return {...defaultStyle, color: theme.colors.tertiary}
+        else return defaultStyle
     }
 
     const getExperinceTextStyle = (experience: SkateExperience) => {
+        const defaultStyle = {margin: scale(10)} 
         if(experience === selectedExperience)
-            return {margin: scale(10), color: theme.colors.tertiary}
-        else return {margin: scale(10)} 
+            return {...defaultStyle, color: theme.colors.tertiary}
+        else return defaultStyle
     }
 
     const getExperienceOptions = () => {
@@ -129,6 +147,7 @@ const SelectStyleAndExperience = () => {
         )
     }
 
+    const practiceStyleOptions = getPracticeStyleOptions();
     const getBody = () => {
         return(
             <View style={[StyleSheet.absoluteFill, {justifyContent: 'center', alignItems: 'center'}]}>
@@ -139,9 +158,12 @@ const SelectStyleAndExperience = () => {
                 <SvgView size='big'>
                     <HandDownSvg></HandDownSvg>
                 </SvgView>
-                <PrimaryContainer styleInput={{...SpacingStyles.shadow, ...styles.skateStyleOptions}}>
-                    {getPracticeStyleOptions()}
-                </PrimaryContainer>
+                {
+                    practiceStyleOptions !== null &&
+                    <PrimaryContainer styleInput={{...SpacingStyles.shadow,...{justifyContent: 'space-evenly'}}}>
+                        {practiceStyleOptions}
+                    </PrimaryContainer>
+                }
                 <PrimaryContainer styleInput={{...SpacingStyles.shadow, ...styles.experienceOptions}}>
                     {getExperienceOptions()}
                 </PrimaryContainer>
@@ -199,7 +221,6 @@ const styles = StyleSheet.create({
     skateStylesPressable: {
         paddingHorizontal: scale(5),
         width: '100%',
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },

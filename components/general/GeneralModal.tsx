@@ -9,30 +9,15 @@ const screenWidth = Dimensions.get('screen').width;
 
 interface ModalInput {
     visible: boolean,
-    onDismiss: Function,
+    onDismiss?: Function,
     backgroundColor?: string
     width?: number,
     height?: number,
     children: ReactNode
 }
 
-// const ModalHeight = verticalScale(400);
-// const ModalWidth = verticalScale(230);
 
 const GeneralModal = ({visible, onDismiss, backgroundColor, children} : ModalInput) => {
-
-
-    // const returnLeftAlignValue = (value: number) => {
-    //     const shiftsToLeftMargin = -(screenWidth/2) //shift the modal so that it touches the left screen margin
-    //     return value + shiftsToLeftMargin;
-    // }
-
-    // const returnTopAlignValue = (value: number) => {
-    //     const shiftsToLeftMargin = -(screenWidth/2) //shift the modal so that it touches the left screen margin
-    //     return 0;
-    // }
-
-    // const containerStyle = {backgroundColor: backgroundColor ? backgroundColor : 'white', padding: scale(20)};
 
     return(
         <Modal
@@ -41,12 +26,12 @@ const GeneralModal = ({visible, onDismiss, backgroundColor, children} : ModalInp
         visible={visible}
         onRequestClose={() => {
           console.log('Modal has been closed.');
-          onDismiss();
+          onDismiss !== undefined && onDismiss();
         }}>
         <View style={styles.centeredView}>
             <OutsidePressHandler
                 onOutsidePress={() => {
-                    onDismiss();
+                  onDismiss !== undefined && onDismiss();
                 }}
                 disabled={false}
                 >

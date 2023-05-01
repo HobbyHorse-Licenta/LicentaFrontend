@@ -1,9 +1,33 @@
 import React from 'react';
 import NotificationPopup from 'react-native-push-notification-popup';
+import { MasteringLevel } from '../types';
 
 class UI {
     notificationRef: React.RefObject<NotificationPopup | null>;
  
+    getColorBasedOnSkillLevel(level: MasteringLevel){
+        switch (level) {
+            case MasteringLevel.Novice:
+                return '#94C11E'
+                break;
+            case MasteringLevel.Begginer:
+                return '#EFD907'
+                break;
+            case MasteringLevel.Competent:
+                return '#F59E11'
+                break;
+            case MasteringLevel.Proficient:
+                return '#EC5212'
+                break;
+            case MasteringLevel.Expert:
+                return '#E40613'
+                break;
+        
+            default:
+                return '#F59E11'
+                break;
+        }
+    }
     setNotificationRef(ref: any) {
         this.notificationRef = ref;
     }

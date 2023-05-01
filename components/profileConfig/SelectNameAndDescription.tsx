@@ -50,6 +50,7 @@ const SelectNameAndDescription = ({onNameChange, onDescriptionChange} : Input) =
             <TextInput
             style={[styles.nameInput, {backgroundColor: theme.colors.primary}]}
             label="Write your name"
+            selectionColor={theme.colors.tertiary}
             value={name}
             onChangeText={updateName}
             />
@@ -57,6 +58,7 @@ const SelectNameAndDescription = ({onNameChange, onDescriptionChange} : Input) =
               <TextInput
               style={[styles.descriptionInput, {backgroundColor: theme.colors.primary}]}
               multiline={true}
+              selectionColor={theme.colors.tertiary}
               label="Give a short description of yourself"
               value={description}
               numberOfLines={7}

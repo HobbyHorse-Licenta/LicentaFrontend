@@ -1,4 +1,4 @@
-import React, {useRef, useEffect} from 'react'
+import React, {useRef, useEffect, useState} from 'react'
 import {View} from 'react-native'
 
 import { SafeAreaView } from 'react-navigation';
@@ -20,19 +20,19 @@ const AfterLogin = () => {
 
   const {windowHeight} = useSelector((state: any) => state.ui);
   const {currentRoute, user, addingSkateProfile} = useSelector((state: any) => state.appState);
-
+  const [tabBarVisible, setTabBarVisible] = useState(true);
   const Tab = createBottomTabNavigator();
   const theme = useTheme();
   const dispatch = useDispatch();
   const popUp = useRef<NotificationPopup | null>(null);
 
   const Stack = createNativeStackNavigator();
- 
-  const show = navigationUtils.ShouldHaveTabBar(currentRoute);
-
+  
   useEffect(() => {
+    console.log("Route updated " + currentRoute);
+    setTabBarVisible(navigationUtils.ShouldHaveTabBar(currentRoute));
     //dispatch(setMySchedules(Fetch.getSchedules()));
-  }, [])
+  }, [currentRoute])
 
 
 
@@ -42,7 +42,7 @@ const AfterLogin = () => {
       (user === undefined || addingSkateProfile === true) ?
       (
         <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SelectSport'>
-          <Stack.Screen name="SelectSport" component={SelectSport} />
+          {addingSkateProfile !== true &&  <Stack.Screen name="SelectSport" component={SelectSport} />}    
           <Stack.Screen name="SelectSkates" component={SelectSkates} />
           <Stack.Screen name="SelectStyleAndExperience" component={SelectStyleAndExperience} />
           <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
@@ -54,7 +54,7 @@ const AfterLogin = () => {
         screenOptions={{
           tabBarActiveTintColor: theme.colors.tertiary,
           headerShown: false,
-          tabBarStyle: show ? {display: 'flex'} : {display: "flex", position: 'absolute', bottom: -200},
+          tabBarStyle: tabBarVisible ? {display: 'flex'} : {display: "flex", position: 'absolute', bottom: -200},
         }}
       >
 

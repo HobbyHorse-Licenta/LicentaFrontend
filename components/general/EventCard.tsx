@@ -1,15 +1,17 @@
 import React, { useState, useEffect} from 'react'
 import { View, StyleSheet, Dimensions, Image, Pressable} from 'react-native';
 
-import { verticalScale } from 'react-native-size-matters';
+import { scale, verticalScale } from 'react-native-size-matters';
 import { useTheme, Text } from 'react-native-paper';
 
 import Button from './Button';
-import { Event, SportName } from '../../types';
+import { Event, SportName, User } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
-import {basketUrl, defaultEventUrl, tennisUrl} from '../../assets/imageUrls'
+import {basketUrl, blankProfilePictureUrl, defaultEventUrl, tennisUrl} from '../../assets/imageUrls'
 import { resourceAccess } from '../../utils';
+import { Fetch } from '../../services';
+import ProfilePicList from './ProfilePicList';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -36,29 +38,33 @@ const EventCard = ({event, onPress}: EventInput) => {
       });
 
     const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
+    const [profileImagesUrl, setProfileImagesUrl] = useState<Array<string | undefined> | undefined>();
 
+    //TODO REMOVE THIS
     useEffect(() => {
       if(event.imageUrl == undefined)
-        setImageUrl(resourceAccess.getDefaultEventImage(event.description.sportName))
+        setImageUrl(resourceAccess.getDefaultSkatingEventImage())
       else setImageUrl(event.imageUrl);
-    }, [])
 
+      const getAllPicturesFromUsers = (users: Array<User>) => {
+        setProfileImagesUrl(users.map((user) => {
+            if(user.profileImageUrl !== undefined && user.profileImageUrl !== null)
+                return user.profileImageUrl;
+            else return undefined;
+        }));
+      }
+      Fetch.getAllUsers(
+        (users) => {getAllPicturesFromUsers(users)},
+        () => console.log("Coudn't get all users"));
+    }, []);
 
+    useEffect(() => {
+        if(event.imageUrl == undefined)
+          setImageUrl(resourceAccess.getDefaultSkatingEventImage())
+        else setImageUrl(event.imageUrl);
+      }, []);
 
-    const image = {uri: 'https://i.postimg.cc/tR26nKb9/basket.jpg'};
     const theme = useTheme();
-    // const basketEventDescription: EventDescription = {
-    //     sportLevel: "Begginer",
-    //     location: {
-    //         id: 'wewq',
-    //         name: "Gheorgheni nr. 2",
-    //         gpsPoint: {
-    //             lat: 43,
-    //             long: 23
-    //         }
-    //     },
-    //     note: ""
-    // };
 
     useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -78,7 +84,6 @@ const EventCard = ({event, onPress}: EventInput) => {
     }
     function joinEvent(){
         console.log("join event");
-
         // console.log(propertiesOf<EventDescription>(basketEventDescription))
     }
 
@@ -90,7 +95,7 @@ const EventCard = ({event, onPress}: EventInput) => {
 
     return(
         <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}
-        style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight(), alignSelf: 'center'}]}>
+        style={[styles.container, styles.roundness, {width: scale(280), height: scale(260), alignSelf: 'center'}]}>
             <View style={{width:'40%', height:'100%'}}>
                 <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
             </View>
@@ -100,6 +105,10 @@ const EventCard = ({event, onPress}: EventInput) => {
                 <View style={{width:'80%', flex: 1, margin: '5%'}}>
                     <Button text='Join' onPress={joinEvent}></Button>
                 </View>
+                <View style={{width:'80%', flex: 1, margin: '5%'}}>
+                    <ProfilePicList imageUrlsArray={profileImagesUrl}></ProfilePicList>
+                </View>
+                
             </View>
         </Pressable>
     );

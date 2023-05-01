@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable} from 'react-native'
 
 import { scale } from "react-native-size-matters";
@@ -7,16 +7,25 @@ import {useTheme, Text} from 'react-native-paper'
 import { GeneralHeader, GeneralModal, PrimaryContainer, RoundPicture } from "../../../components/general";
 import {MyProfileHeader, SkateProfiles } from "../../../components/profile";
 import { Layout2PieceForNavigator } from "../../layouts";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { User } from "../../../types";
 import { useNavigation } from "@react-navigation/native";
 import { authenticationUtils } from "../../../utils";
 import { SpacingStyles } from "../../../styles";
+import { setCurrentSkateProfile } from "../../../redux/appState";
+import { RootState } from "../../../redux/store";
 
 const MyProfile = () => {
   const {age, name, skateProfiles, profileImageUrl, gender} = useSelector((state: any) => state.appState.user)
+  const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
   const theme = useTheme();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log("Current profile: " + JSON.stringify(currentSkateProfile));
+  }, [currentSkateProfile])
+  
 
   const getBody = () => {
     return(
@@ -39,9 +48,9 @@ const MyProfile = () => {
           </View>
         </PrimaryContainer>
         
-        <SkateProfiles profiles={skateProfiles}></SkateProfiles>
-        
-        
+        <SkateProfiles profiles={skateProfiles} value={currentSkateProfile} addEnabled={true} holdFeatureEnabled={true}
+        onValueChange={(profile) => {dispatch(setCurrentSkateProfile(profile))}}></SkateProfiles>
+
       </View>
     );
   };

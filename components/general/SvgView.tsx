@@ -1,24 +1,26 @@
 import React, { ReactNode } from "react";
-import { Pressable, ViewStyle } from "react-native";
+import { Pressable, TextStyle, View, ViewStyle } from "react-native";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { useTheme } from "react-native-paper";
 
 import { SpacingStyles } from "../../styles";
 
+
+// type CustomStyle = ViewStyle & {
+//     : string;
+//   };
+
 interface SvgViewInput {
     onPress?:  Function,
     children: ReactNode,
-    style?: ViewStyle,
+    style?: ViewStyle | TextStyle,
     size: 'tiny' | 'small' | 'medium' | 'big'
 } 
 
 
 
 const SvgView = ({children, onPress, style, size}: SvgViewInput) => {
-
-    
-
 
     const getStyle = () => {
         let s;
@@ -50,10 +52,12 @@ const SvgView = ({children, onPress, style, size}: SvgViewInput) => {
     const theme = useTheme();
 
     return (
-        <TouchableWithoutFeedback  onPress={() => (onPress != undefined) ? onPress() : console.log("[SvgView]: No action on press")} 
-        style={getStyle()}>
+        <View style={getStyle()}>
+        <TouchableWithoutFeedback  onPress={() => (onPress != undefined) ? onPress() : console.log("[SvgView]: No action on press")}>
             {children}
         </TouchableWithoutFeedback>
+        </View>
+        
     );
 };
 

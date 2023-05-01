@@ -1,5 +1,19 @@
 import uiUtils from "./UI";
 class Validation {
+
+    isDefined(variable: any): boolean {
+        if(Array.isArray(variable))
+        {
+            if(variable.length == 0)
+                return false;
+        }
+        if(variable == undefined)
+            return false
+        if(variable == null)
+            return false;
+        return true;
+    }
+
     validateEmail(email: string | undefined): boolean {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(email !== undefined)

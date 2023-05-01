@@ -5,7 +5,7 @@ import {Text, useTheme} from 'react-native-paper'
 import { scale } from 'react-native-size-matters';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import { PrimaryContainer } from '../general';
+import PrimaryContainer from '../general/PrimaryContainer';
 
 interface SelectNumberInput {
     range: {minimumValue: number, maximumValue: number},

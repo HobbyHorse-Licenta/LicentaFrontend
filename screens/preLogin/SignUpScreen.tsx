@@ -76,6 +76,7 @@ const SignUpScreen = () => {
                         <TextInput
                         style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
                         autoCapitalize={"none"}
+                        selectionColor={theme.colors.tertiary}
                         label="Email"
                         value={email}
                         onChangeText={handleEmailInput}
@@ -83,6 +84,7 @@ const SignUpScreen = () => {
                         <TextInput
                         style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
                         label="Password"
+                        selectionColor={theme.colors.tertiary}
                         value={password}
                         secureTextEntry={true}
                         onChangeText={handlePasswordInput}
@@ -92,6 +94,7 @@ const SignUpScreen = () => {
                         label="Confirm Password"
                         value={confirmationPassword}
                         secureTextEntry={true}
+                        selectionColor={theme.colors.tertiary}
                         onChangeText={(typedText: string) => setConfirmationPassword(typedText)}
                         />
                         <View style={styles.buttonAndText}>

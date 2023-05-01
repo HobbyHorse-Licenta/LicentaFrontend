@@ -1,8 +1,7 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Schedule, SkateProfile, Skill, User } from '../types';
+import { AssignedSkill, Schedule, SkateProfile, Skill, User } from '../types';
 
 export interface AppState {
-    isLoading: boolean,
     user: User | undefined,
     userId: string | undefined,
     JWTToken: string | undefined,
@@ -15,7 +14,6 @@ export interface AppState {
 }
 
 const initialState: AppState = {
-    isLoading: false,
     user: undefined,
     userId: undefined,
     JWTToken: undefined,
@@ -31,6 +29,82 @@ export const appStateSlice = createSlice({
     name: 'appState',
     initialState,
     reducers: {
+        deleteAssignedSkill: (state, action: PayloadAction<string>) => {
+            //payload == assignedSkillId
+            const idOfSkillToRemove = action.payload;
+            if(state.user !== undefined)
+            {
+                state.user = {
+                    ...state.user,
+                    skateProfiles: state.user.skateProfiles.map(
+                        (skateProfile) => {
+                            if(skateProfile.assignedSkills !== undefined)
+                            {
+                                const newAssignedSkills = skateProfile.assignedSkills.filter(skill => skill.id !== idOfSkillToRemove);
+                              return { ...skateProfile, assignedSkills: newAssignedSkills };
+                            }
+                            else return skateProfile;
+                            
+                        }
+                    )
+                }
+            }
+            
+        },
+        updateAssignedSkill: (state, action: PayloadAction<AssignedSkill>) => {
+            //payload == assignedSkill to update
+            const updatedSkill: AssignedSkill = action.payload;
+            if(state.user !== undefined && state.user !== null)
+            {
+                state.user = {
+                    ...state.user,
+                    skateProfiles: state.user.skateProfiles.map(
+                        (skateProfile) => {
+                            if(skateProfile.id === updatedSkill.skateProfileId)
+                            {
+                                if(skateProfile.assignedSkills !== undefined && skateProfile.assignedSkills !== null)
+                                {
+                                    const newArray = skateProfile.assignedSkills.map((assignedSkill) => {
+                                        if(assignedSkill.id === updatedSkill.id)
+                                        {
+                                            return updatedSkill;
+                                        }
+                                        else return assignedSkill;
+                                    });
+                                    return { ...skateProfile, assignedSkills: newArray};
+                                }
+                                   
+                                else return skateProfile;
+                            }
+                            else return skateProfile;
+                        }
+                    )
+                }
+            }
+            
+        },
+        addAssignedSkill: (state, action: PayloadAction<AssignedSkill>) => {
+            //payload == assignedSkill to add
+            const skillToAdd: AssignedSkill = action.payload;
+            if(state.user !== undefined && state.user !== null)
+            {
+                state.user = {
+                    ...state.user,
+                    skateProfiles: state.user.skateProfiles.map(
+                        (skateProfile) => {
+                            if(skateProfile.id === skillToAdd.skateProfileId)
+                            {
+                                if(skateProfile.assignedSkills !== undefined && skateProfile.assignedSkills !== null)
+                                    return { ...skateProfile, assignedSkills: [...skateProfile.assignedSkills, skillToAdd]};
+                                else return { ...skateProfile, assignedSkills: [skillToAdd]};
+                            }
+                            else return skateProfile;
+                        }
+                    )
+                }
+            }
+            
+        },
         setAllSkills: (state, action: PayloadAction<Array<Skill> | undefined>) => {
             state.allSkills = action.payload;
         },
@@ -39,9 +113,6 @@ export const appStateSlice = createSlice({
         },
         setCurrentSkateProfile: (state, action: PayloadAction<SkateProfile>) => {
             state.currentSkateProfile = action.payload;
-        },
-        setIsLoading: (state, action: PayloadAction<boolean>) => {
-            state.isLoading = action.payload;
         },
         setUser: (state, action: PayloadAction<User | undefined>) => {
             state.user = action.payload;
@@ -67,7 +138,7 @@ export const appStateSlice = createSlice({
 });
 
 export const {setCurrentRoute, setMySchedules, setUserId, setCurrentSkateProfile,
-    setInitialProfileConfigured, setUser, setJWTToken, resetAppState, setIsLoading,
-    setAddingSkateProfile, setAllSkills} = appStateSlice.actions
+    setInitialProfileConfigured, setUser, setJWTToken, resetAppState,
+    setAddingSkateProfile, setAllSkills, deleteAssignedSkill, addAssignedSkill, updateAssignedSkill} = appStateSlice.actions
 
 export default appStateSlice.reducer;

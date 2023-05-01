@@ -48,10 +48,15 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
             navigation.navigate(nextScreen as never);
     }
     const goBack = () => {
-        if(backButton != undefined)
+        if(backButton !== undefined && backButton == true)
         {
             if(navigation.canGoBack())
                 navigation.goBack();
+            if(addingSkateProfile == true)
+            {
+                dispatch(resetConfigProfileState());
+                dispatch(setAddingSkateProfile(false));
+            }
         }
     }
 
@@ -93,7 +98,7 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
         if(user !== null) //user created succesfully
         {
             console.log("///////////////////////\nPOSTING USER:\n" + JSON.stringify(user) + "\n/////////////////////////");
-            Fetch.postUser(user, (postedUser: User) => dispatch(setUser(postedUser)));
+            Fetch.postUser(user, (postedUser: User) => dispatch(setUser(postedUser)), () => console.log("Coudn't post user at profile creation"));
         }
         else {
             //TODO maybe remove also the created account in firebase
@@ -120,19 +125,17 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
     const endProfileConfiguration = () => {
         if(addingSkateProfile === true)
         {
-            //
             if(user !== undefined)
             {
                 const res = createSkateProfile();
                 if(res !== null)
                 {
-                    const newUser : User = {...user, skateProfiles: [...user.skateProfiles, res]}
-                    
-                    Fetch.putUser(user.id, newUser,
-                        (putUser) => {console.log("PUT made with success, got user: " + JSON.stringify(putUser)); dispatch(setUser(putUser))},
-                       () => console.log("PUT user failed") );
+                    Fetch.postSkateProfile(res,
+                    (postedSkateProfile) => {
+                        dispatch(setUser({...user, skateProfiles: [...user.skateProfiles, postedSkateProfile.value]}))
+                    },
+                    () => console.log("Coudn't post skateProfile"))
                 }
-               
             }
             dispatch(resetConfigProfileState());
             dispatch(setAddingSkateProfile(false));

@@ -1,37 +1,27 @@
-import React, {useContext, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { Text, TextInput, useTheme } from 'react-native-paper';
-import NotificationPopup from 'react-native-push-notification-popup';
-import {onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-
-
-import { Button } from '../../components/general';
-import { SpacingStyles } from '../../styles';
-import { Layout1Piece } from '../layouts';
-import { Authentication, Fetch } from '../../services';
-import { useDispatch, useSelector } from 'react-redux';
-import {setIsLoading, setJWTToken, setUser} from '../../redux/appState'
-import { NotifRefProvider } from '../../WholeScreen';
 import { useNavigation } from '@react-navigation/native';
-import { firebaseAuth } from '../../WholeScreen';
-import { uiUtils, validation } from '../../utils';
+
+
+import Button from '../../components/general/Button';
+import { Layout1Piece } from '../layouts';
+import { authenticationUtils, uiUtils, validation } from '../../utils';
+import LoadingScreen from './LoadingScreen';
 
 const LoginScreen = () => {
 
     const [email, setEmail] = useState<string>();
     const [password, setPassword] = useState<string>();
-    const notificationRef = useContext(NotifRefProvider);
-    const popUp = useRef<NotificationPopup | null>(null);
+    const [loading, setLoading] = useState(false);
     const theme = useTheme();
-    const dispatch = useDispatch();
     const navigation = useNavigation();
 
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
-
    
     // onAuthStateChanged(firebaseAuth, (user) => {
     // if (user) {
@@ -52,31 +42,8 @@ const LoginScreen = () => {
         {
             if(validation.validateEmailAndPassword(email, password, false) === true)
             {
-                signInWithEmailAndPassword(firebaseAuth, email, password)
-                .then((userCredential) => {
-                    // Signed in 
-                    userCredential.user.getIdToken().then((jwtToken) => {
-                        dispatch(setJWTToken(jwtToken));
-                    })
-                    try {
-                        dispatch(setIsLoading(true));
-                        console.log("set is loading to true");
-                        Fetch.getUser(userCredential.user.uid, (user) => {
-                            dispatch(setUser(user)); dispatch(setIsLoading(false))}, () =>{console.log("nu am oprit loadingul");   dispatch(setIsLoading(false))});
-                    } catch (error) {
-                        console.error("No user in database corresponding to this firebase user");
-                    }
-                    
-
-                    //TODO: add access token and refresh token to appState;
-                })
-                .catch((error) => {
-                    if(error.code = 'auth/user-not-found')
-                    {
-                        uiUtils.showPopUp("Error","Incorrect credentials");
-                    }
-                    else console.error(error.code);
-                });
+                setLoading(true);
+                authenticationUtils.login(email, password, () =>  setLoading(false));
             }
         }
         else uiUtils.showPopUp("Warning", "Not all credentials provided");
@@ -84,6 +51,9 @@ const LoginScreen = () => {
     };
 
     const getBody = () =>  {
+        if(loading === true)
+        return(<LoadingScreen></LoadingScreen>)
+       
         return (
             <KeyboardAvoidingView style={[StyleSheet.absoluteFill, styles.mainContainer, { backgroundColor: theme.colors.background}]} behavior='padding'>
                 <View style={{alignItems: 'center'}}>
@@ -99,12 +69,14 @@ const LoginScreen = () => {
                         style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
                         label="Email"
                         value={email}
+                        selectionColor={theme.colors.tertiary}
                         autoCapitalize={"none"}
                         onChangeText={handleEmailInput}
                         />
                         <TextInput
                         style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
                         label="Password"
+                        selectionColor={theme.colors.tertiary}
                         value={password}
                         secureTextEntry={true}
                         onChangeText={handlePasswordInput}

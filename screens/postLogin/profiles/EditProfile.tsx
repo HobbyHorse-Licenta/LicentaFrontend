@@ -40,20 +40,12 @@ const EditProfile = () => {
         ...user, name: editedName, age: editedAge, profileImageUrl: editedImage
       }
       Fetch.putUser(user.id, editedUser, 
-      (updatedUser) => dispatch(setUser(updatedUser)),
+      (updatedUser) => {dispatch(setUser(updatedUser))},
       () => console.log("Coudn't update user after profile edit"));
     }
     navigation.goBack();
   }
-  const images: Array<string> = [
-    '../../assets/profilePics/1.jpg',
-    '../../assets/profilePics/2.jpeg',
-    '../../assets/profilePics/3.jpeg',
-    '../../assets/profilePics/4.jpeg',
-    '../../assets/profilePics/5.jpeg',
-    '../../assets/profilePics/6.jpeg',
-  ]
-
+ 
   const getBody = () => {
     return(
       <View style={{justifyContent: 'center', alignItems: 'center'}}>
@@ -66,14 +58,12 @@ const EditProfile = () => {
             <TextInput
                 style={[styles.nameInput, {backgroundColor: theme.colors.primary}]}
                 label="Write your name"
+                selectionColor={theme.colors.tertiary}
                 value={editedName}
                 onChangeText={updateName}
                 />
             <SelectNumber value={editedAge} onChange={(val) => setEditedAge(val)} range={{minimumValue: 2, maximumValue: 10}} descriptionText={'Select Age'}></SelectNumber>
             <View style={{width: scale(100), height: verticalScale(40)}}>
-              <ProfilePicList
-              imagePathArray={images}
-              ></ProfilePicList>
             </View>
           </View>
         )

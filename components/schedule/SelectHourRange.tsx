@@ -4,37 +4,33 @@ import { Platform, View } from "react-native";
 import {useDispatch} from 'react-redux';
 import uuid from 'react-native-uuid';
 
-import { setTimeRange } from "../../redux/createScheduleState";
+import { setStartTime, setEndTime } from "../../redux/createScheduleState";
 import { SpacingStyles } from "../../styles";
 import { PrimaryContainer } from "../general";
 import SelectTimeAndroid from './SelectTimeAndroid';
 import SelectTimeIos from './SelectTimeIos';
-import { StateTimeRange, TimeRange } from "../../types";
 import { scale } from "react-native-size-matters";
 
 const SelectHourRange = () => {
 
-    const [startTime, setStartTime] = useState<Date>(new Date())
-    const [endTime, setEndTime] = useState<Date>(new Date())
+    const [startTime, setStart] = useState<Date>(new Date())
+    const [endTime, setEnd] = useState<Date>(new Date())
 
     const dispatch = useDispatch();
     useEffect(() => {
-      const range: StateTimeRange = {
-        startTime: startTime.getTime(),
-        endTime: endTime.getTime()
-      }
-      dispatch(setTimeRange(range));
-    }, [startTime])
+      dispatch(setStartTime(startTime.getTime()));
+      dispatch(setEndTime(endTime.getTime()));
+    }, [startTime, endTime])
     
     const setEndTimeSchedule = (selectedEndTime: Date) => {
       if(selectedEndTime > startTime)
-        setEndTime(selectedEndTime);
+        setEnd(selectedEndTime);
     }
 
     const setStartTimeSchedule = (selectedStartTime: Date) => {
-      setStartTime(selectedStartTime);
+      setStart(selectedStartTime);
       if(endTime < selectedStartTime)
-        setEndTime(selectedStartTime);
+        setEnd(selectedStartTime);
     }
 
     return(

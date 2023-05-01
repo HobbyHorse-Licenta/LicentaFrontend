@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import { Pressable, View, StyleSheet} from "react-native";
+import { View} from "react-native";
 
-import {useTheme, Text} from 'react-native-paper'
-import { scale } from "react-native-size-matters";
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import RNDateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
-import { SpacingStyles } from '../../styles'
 import { SelectTime } from "../general";
 
 interface timePickerInput {
@@ -16,30 +13,32 @@ interface timePickerInput {
 
 const SelectTimeAndroid = ({textAbovePicker, time, setTime} : timePickerInput) => {
 
- 
-  const theme = useTheme();
-
-  const onChangeDate = (event, selectedTime: Date | undefined) => {
-    if (selectedTime) {
-      setTime(selectedTime);
-    }
-  };
+  const [dataPickerVisible, setDatePickerVisible] = useState(false);
 
   const handleChangeTime = () => {
-    DateTimePickerAndroid.open({
-      display: "clock",
-      value: time,
-      onChange: (event, selectedTime) => onChangeDate(event, selectedTime),
-      mode: "time",
-      is24Hour: true,
-    });
+    // DateTimePickerAndroid.open({
+    //   display: "clock",
+    //   value: time,
+    //   onChange: (event, selectedTime) => onChangeDate(event, selectedTime),
+    //   mode: "time",
+    //   is24Hour: true,
+    // });
   };
 
-  return (
-    <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={handleChangeTime}>
 
-    </SelectTime>
-      
+  return (
+    <View>
+      <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={() => setDatePickerVisible(true)}/>
+      {dataPickerVisible === true && 
+      <RNDateTimePicker onChange={(time) => {
+        if(time.nativeEvent.timestamp !== undefined)
+        {
+          setTime(new Date(time.nativeEvent.timestamp));
+        }
+        setDatePickerVisible(false);
+      }} mode='time'  value={time} minimumDate={new Date(1950, 0, 1)} maximumDate={new Date(2023,0,1)} />
+      }
+    </View>
   );
 };
 

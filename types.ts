@@ -3,6 +3,11 @@ export type PairColor = {
   highlights: string;
 };
 
+export type RenderElement = {
+  id: string | number,
+  element: JSX.Element
+}
+
 /////////////////////////////////////////////////
 
 export type Day = {
@@ -35,11 +40,11 @@ export enum SportName {
 }
 
 export enum MasteringLevel {
-  Level0 = 'you have 0 experience with the skill',
-  Level1 = 'you tried the skill just a bit',
-  Level2 = 'you are average at it',
-  Level3 = 'you are good at it',
-  Level4 = 'this skill is second nature to you',
+  Novice = 'Novice',//'you have 0 experience with the skill',
+  Begginer = 'Begginer',//'you tried the skill just a bit',
+  Competent = 'Competent',//'you are average at it',
+  Proficient = 'Proficient',//'you are good at it',
+  Expert = 'Expert',//'this skill is second nature to you',
 }
 
 
@@ -149,7 +154,7 @@ export type ParkTrail = Trail & {
 }
 
 export type Event = {
-  id: number,
+  id: string,
   name: string,
   note: string,
   maxParticipants: number,
@@ -195,18 +200,19 @@ export type Schedule = {
   minimumAge?: number,
   maximumAge?: number,
   gender: string,
+  maxNumberOfPeople: number
   
 }
 
-export type TimeRange = {
-  id: string,
-  startTime: Date,
-  endTime: Date,
-}
+// export type TimeRange = {
+//   id: string,
+//   startTime: Date,
+//   endTime: Date,
+// }
 
-export type StateTimeRange = {
-  startTime: number,
-  endTime: number,
-}
+// export type StateTimeRange = {
+//   startTime: number,
+//   endTime: number,
+// }
 
 

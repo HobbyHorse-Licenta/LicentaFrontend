@@ -1,53 +1,67 @@
 import React, {ReactNode} from 'react'
 import { Pressable, View, StyleSheet} from 'react-native';
-import { child } from 'react-native-extended-stylesheet';
+import Color from 'color';
+import { child } from 'react-native-extended-stylesheet'
 
 import { useTheme } from 'react-native-paper';
 import { scale } from 'react-native-size-matters';
 
-import { SpacingStyles } from '../../styles';
-import { DeleteSvg, PlusSvg } from '../svg/general';
+import { DeleteSvg } from '../svg/general';
 import SvgView from './SvgView';
 
 interface Input {
     color?: string,
+    withBorder?: boolean,
     children: ReactNode,
-    enabled?: boolean,
+    deleteEnabled?: boolean,
     onLongPress?: Function,
     onPress?: Function,
     onDeleteTile?: Function,
     isIcon?: boolean
 }
-const Tile = ({color, children, enabled, onLongPress, onDeleteTile, onPress, isIcon} : Input) => {
+const Tile = ({color, children, deleteEnabled, onLongPress, onDeleteTile, onPress, isIcon, withBorder} : Input) => {
 
     const theme = useTheme();
-    console.log(typeof(children));
     return (
         <View>
-            <Pressable onPress={() => onPress && onPress()}
-            onLongPress={() => onLongPress && onLongPress()} style={[SpacingStyles.tile, {backgroundColor: color ? color : theme.colors.secondary}]}>
+            <Pressable onPress={() => onPress && onPress()} onLongPress={() => onLongPress && onLongPress()}>
             {
                 isIcon === true ? 
                 (
-                    <SvgView size='small' style={{...styles.svgTile, borderColor: theme.colors.tertiary}} >
+                    withBorder === true ? (
+                    <SvgView size='small' style={{backgroundColor: color ? color : theme.colors.secondary, borderColor: Color(color).darken(10/100).hex(), borderWidth: 1}}>
                         {children}
                     </SvgView>
+                    )
+                    : (
+                    <SvgView size='small' style={{backgroundColor: color ? color : theme.colors.secondary}}>
+                        {children}
+                    </SvgView>
+                    )  
                 ):
                 (
-                    <View style={[styles.textTile, {borderColor: theme.colors.tertiary}]}>
+                    withBorder === true ? (
+                    <View style={{...styles.tile, backgroundColor: color ? color : theme.colors.secondary, borderColor: Color(color).darken(10/100).hex(), borderWidth: 1}}>
                         {children}
                     </View>
+                    )
+                    : (
+                    <View style={{...styles.tile, backgroundColor: color ? color : theme.colors.secondary}}>
+                        {children}
+                    </View>
+                    )  
+                    
                 )
             }
             </Pressable>
             {
-                enabled === true &&
-                <SvgView size='small' onPress={() => onDeleteTile && onDeleteTile()} style={styles.tile}>
+                deleteEnabled === true &&
+                <SvgView size='small' onPress={() => onDeleteTile && onDeleteTile()} style={styles.deleteTile}>
                     <DeleteSvg></DeleteSvg>
                 </SvgView>
             }
-           
         </View>
+           
     )
 };
 
@@ -55,30 +69,41 @@ export default Tile;
 
 
 const styles = StyleSheet.create({
-    textTile: {
-        padding: scale(2),
-        borderRadius: 20,
-    },
     svgTile: {
         padding: scale(2),
         borderRadius: 20,
         height: scale(50),
         width: scale(50)
     },
-    tile: {
-        width: scale(17),
-        height: scale(17),
+    deleteTile: {
+        width: scale(30),
+        height: scale(30),
         borderRadius: 25, 
         minHeight: 10,
         minWidth: 10,
         maxHeight: 45,
         maxWidth: 45, 
+        alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         margin: scale(3),
         position: 'absolute',
         right: 0,
-        top: 0
+        top: 0,
+        backgroundColor: 'red'
         
-    }
+    },
+    tile: {
+        paddingVertical: scale(4),
+        paddingHorizontal: scale(8),
+        borderRadius: 10,
+        minHeight: 25,
+        minWidth: 25,
+        maxHeight: 120,
+        maxWidth: 120, 
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: scale(7)
+      },
+
 });

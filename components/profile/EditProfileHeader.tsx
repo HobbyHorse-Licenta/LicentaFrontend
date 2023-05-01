@@ -19,7 +19,7 @@ const EditProfileHeader = ({saveButtonCallback}: Input) => {
             <Appbar.BackAction onPress={_goBack} />
             <View style={{width: '50%'}}></View>
             <View style={{width: '30%'}}>
-                <Button text="SAVE" callBack={() => saveButtonCallback()}/>
+                <Button text="SAVE" onPress={() => saveButtonCallback()}/>
             </View>
         </AppHeader>
        

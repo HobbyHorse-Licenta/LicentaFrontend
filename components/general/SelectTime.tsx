@@ -13,11 +13,10 @@ import Strings from './../../assets/strings'
 interface timePickerInput {
   textAbovePicker: string,
   time: Date,
-  children: ReactNode,
   onPress: Function
 }
 
-const SelectTime = ({textAbovePicker, time, children, onPress} : timePickerInput) => {
+const SelectTime = ({textAbovePicker, time, onPress} : timePickerInput) => {
  
   const theme = useTheme();
   
@@ -27,18 +26,9 @@ const SelectTime = ({textAbovePicker, time, children, onPress} : timePickerInput
             <Text variant='bodyMedium' style={{fontWeight: 'bold'}}>
               {textAbovePicker}
             </Text>
-            {/* <Shadow distance={4} offset={[1,1]} startColor={theme.colors.onSecondaryContainer} endColor={'#DADADA'}> 
-              <Pressable onPress={handleChangeTime} style={styles.picker}>
-                <Text >
-                  {time.getHours()} : {time.getMinutes()}
-                </Text>
-            </Pressable>
-            </Shadow> */}
             <Text>
               {format(time, "HH")} : {format(time, "mm")}
             </Text>
-
-            {children}
          </Pressable>
        
 

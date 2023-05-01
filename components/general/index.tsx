@@ -17,7 +17,9 @@ import SelectionListModal from "./SelectionListModal";
 import GeneralHeader from "./GeneralHeader";
 import PopupMenu from "./PopupMenu";
 import SelectNumber from "./SelectNumber";
+import UserSummary from "./UserSummary";
+import LoadingComponent from "./LoadingComponent";
 export {TextImage, Button, EventCard, ProfilePicList, RoundPicture, PlusTile,
      AppHeader, PrimaryContainer, SelectTime,
     SvgView, GeneralModal, SelectionListModal, 
-    SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu, SelectNumber}
+    SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu,UserSummary, SelectNumber}

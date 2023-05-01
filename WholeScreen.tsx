@@ -1,7 +1,7 @@
 import React, { createContext, MutableRefObject, useEffect, useMemo, useRef, useState} from 'react'
 import { View, StatusBar, Dimensions, Platform } from 'react-native';
 
-import Loading from 'react-loading';
+
 import { useDispatch, useSelector } from 'react-redux';
 import NotificationPopup from 'react-native-push-notification-popup';
 import { useTheme } from 'react-native-paper';
@@ -18,7 +18,7 @@ import MainStack from './stacks/MainStack';
 import { Fetch } from './services';
 import {authenticationUtils, uiUtils} from './utils';
 import { firebaseConfig } from './firebaseConfig';
-import { resetAppState, setIsLoading, setJWTToken, setUser, setUserId } from './redux/appState';
+import { resetAppState, setJWTToken, setUser, setUserId } from './redux/appState';
 import { User } from './types';
 import LoadingScreen from './screens/preLogin/LoadingScreen';
 import { RootState } from './redux/store';
@@ -49,14 +49,44 @@ const WholeScreen = () => {
     const theme = useTheme();
     const popUp = useRef<NotificationPopup | null>(null);
     const windowHeight = useMemo(() => getWindowHeight(), []);
-    const {isLoading, JWTToken} = useSelector((state: any) => state.appState);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    
+//TODO on ios the tabbar si covering the screen SHOULD BE SOLVED
+
+ ///////////SETTING THINGS UP AND VERIFYING LOGIN///////////
+    useEffect(() => {
+     
+      authenticationUtils.setDispatch(dispatch);
+
+      onAuthStateChanged(firebaseAuth, (firebaseUser) => {
+        setLoading(true);
+        checkUser(firebaseUser);
+      });
+    }, []);
 
     useEffect(() => {
-      console.log("isloading: " + isLoading);
-      setLoading(isLoading);
-    }, [isLoading])
+      if(windowHeight != undefined)
+        dispatch(setWindowHeight(windowHeight));
+    }, [windowHeight]);
+
+    useEffect(() => {
+      if(popUp !== null)
+        uiUtils.setNotificationRef(popUp);
+    }, [popUp])
     
+    const checkUser = (user) => {
+      if (user !== null && user !== undefined) 
+      {
+        currentUserJWTTokenValid(user);
+      }
+      else{
+        console.log("No user logged in, reseting app state");
+        dispatch(resetAppState());
+        setLoading(false);
+      } 
+    }
+    ///////////////////////////////////////////
 
     const currentUserJWTTokenValid = (user) => {
       if (user) {
@@ -86,44 +116,6 @@ const WholeScreen = () => {
         });
       }
     }
-
- ///////////SETTING THINGS UP AND VERIFYING LOGIN///////////
-    useEffect(() => {
-      setLoading(true);
-      const user = firebaseAuth.currentUser;
-      checkUser(user);
-      authenticationUtils.setDispatch(dispatch);
-
-
-      onAuthStateChanged(firebaseAuth, (firebaseUser) => {
-        setLoading(true);
-        checkUser(firebaseUser);
-      });
-    }, []);
-
-    useEffect(() => {
-      if(windowHeight != undefined)
-        dispatch(setWindowHeight(windowHeight));
-    }, [windowHeight]);
-
-    useEffect(() => {
-      if(popUp !== null)
-        uiUtils.setNotificationRef(popUp);
-    }, [popUp])
-    
-    const checkUser = (user) => {
-      if (user !== null && user !== undefined) 
-      {
-        
-        currentUserJWTTokenValid(user);
-      }
-      else{
-        console.log("No user logged in, reseting app state");
-        dispatch(resetAppState());
-        setLoading(false);
-      } 
-    }
-    ///////////////////////////////////////////
    
     const getBody = () => {
       return (

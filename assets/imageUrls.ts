@@ -10,3 +10,5 @@ export const hikingUrl = 'https://i.postimg.cc/B6sZN7XT/Hiking.jpg';
 export const pingPongUrl = 'https://i.postimg.cc/4Nnf89NS/pingPong.jpg';
 export const tennisUrl = 'https://i.postimg.cc/43xBts1V/Tennis.png';
 export const defaultEventUrl = 'https://i.postimg.cc/bJHyRyJF/default-Event.png';
+
+export const blankProfilePictureUrl = 'https://i.postimg.cc/26t73Ypp/blank-profile-picture.png';

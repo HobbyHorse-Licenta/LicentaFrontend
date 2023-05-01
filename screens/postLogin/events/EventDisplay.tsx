@@ -18,15 +18,15 @@ const EventDisplay = ({route, navigation}) => {
   const getBody = () => {
     return(
       <View>
-        <EventImage event={event}></EventImage>
-        <Text>Event display</Text>
+        {/* <EventImage event={event}></EventImage>
+        <Text>Event display</Text> */}
       </View>
     );
   };
   
   return (
     <Layout2Piece
-      header={<GeneralHeader onBack={navigation.goBack()} title={event.name}></GeneralHeader>}
+      header={<GeneralHeader onBack={() => navigation.goBack()} title={event.name}></GeneralHeader>}
       body={getBody()}
     ></Layout2Piece>
   );

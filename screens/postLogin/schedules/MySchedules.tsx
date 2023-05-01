@@ -17,7 +17,7 @@ const MySchedules = () => {
 
   return (
      <Layout2PieceForNavigator 
-        header={<GeneralHeader onChat={() => console.log("[MySchedules]: go to chat")}></GeneralHeader>}
+        header={<GeneralHeader title="My Schedules" onChat={() => console.log("[MySchedules]: go to chat")}></GeneralHeader>}
         body={getBody()}
      ></Layout2PieceForNavigator>
   );

@@ -7,6 +7,7 @@ import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles';
 import { Fetch, ImageService } from '../../services';
+import { blankProfilePictureUrl } from '../../assets/imageUrls';
 
 
 interface Input {
@@ -58,7 +59,7 @@ const RoundPicture = ({image, onChange} : Input) => {
            {(image === undefined || image === null) ?
                 (
                 <TouchableOpacity style={[styles.profileImage, {width: imageSize, height: imageSize}]} onPress={() => onChange !== undefined && handlePickPicture()}>
-                    <Image source={require('../../assets/randomPics/blank-profile-picture.png')} style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, styles.blankPicture]}/>
+                    <Image source={{uri: blankProfilePictureUrl}} style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, styles.blankPicture]}/>
                     {onChange !== undefined && <Text style={{color:'white', fontSize: 18, fontWeight: '900'}}>Add Photo</Text>}
                 </TouchableOpacity>
                 ):(

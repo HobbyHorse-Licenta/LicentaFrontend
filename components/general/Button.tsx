@@ -21,16 +21,18 @@ const Button = ({text, onPress, style, disabled, mode} : Params) => {
     
     const theme = useTheme();
 
-    const getStyle = () => {
-        if (style) return {...styles.button, ...style}
-        else return styles.button;
+    const getStyle = () : ViewStyle => {
+        let st;
+        if (style) st = {...styles.button, ...style}
+        else st = styles.button;
+
+        if(disabled)
+            return {...st, backgroundColor: theme.colors.onSurfaceDisabled}
+        else return {...st, backgroundColor: theme.colors.secondary}
     }
 
-   
-
-
     return(
-        <PaperButton mode={mode} onPress={() => !disabled && onPress()} style={[getStyle(), {backgroundColor: theme.colors.secondary}]}>
+        <PaperButton mode={mode} onPress={() => !disabled && onPress()} style={[getStyle()]}>
             <Text>{text}</Text>
         </PaperButton>
     );

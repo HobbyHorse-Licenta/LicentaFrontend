@@ -1,3 +1,5 @@
+import { imgurConfig } from "../imgurConfig";
+
 const ImageService = {
 
     
@@ -15,7 +17,7 @@ const ImageService = {
         const response = await fetch('https://api.imgur.com/3/image/', {
             method: 'POST',
             headers: {
-                'Authorization': 'Client-ID 09abb43c84f7b52',
+                'Authorization': 'Client-ID ' + imgurConfig.clientId,
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },

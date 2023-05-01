@@ -1,40 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, RefObject } from 'react';
 import {View, StyleSheet, Platform} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
 import MapView, {Circle, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {Text, useTheme} from 'react-native-paper'
 import * as ExpoLocation from 'expo-location';
+import OutsidePressHandler from 'react-native-outside-press';
 import uuid from 'react-native-uuid';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
 
 import { SpacingStyles } from "../../styles";
 import { FemaleSvg, LocationSvg } from '../svg/general';
-import { Location } from '../../types';
+import { Location, Zone } from '../../types';
 import { PrimaryContainer, SvgView } from '../general';
 import Fetch from '../../services/Fetch';
 import { SafeAreaView } from 'react-navigation';
 import {mapsUtils} from '../../utils';
 import { TennisSvg } from '../svg/sports';
+import LoadingComponent from '../general/LoadingComponent';
+import { useDispatch } from 'react-redux';
+import { setZone } from '../../redux/createScheduleState';
 
 interface Distance {
     label: string,
     value: number
 }
 
-const SelectLocation = () => {
+interface Input {
+    onTouchInside?: Function,
+    onTouchOutside?: Function
+}
+
+const SelectLocation = ({onTouchInside, onTouchOutside}) => {
 
     //TODO: fix WheelPickerExpo not working when in ScrollView
 
-    const [myLocation, setMyLocation] = useState<Location>({
-        id: uuid.v4().toString(),
-        name: 'Cluj-Napoca',
-        gpsPoint: {
-            lat:  46.771069, 
-            long: 23.596883,
-        }
-    });
-    
+    const [selectedLocation, setSelectedLocation] = useState<Location | undefined>(undefined);
+    const dispatch = useDispatch();
+    const [range, setRange] = useState<number>(1);
+    const theme = useTheme();
+    const mapRef = useRef<MapView | null>(null);
     const [rangeArray, setRangeArray] = useState<Distance[]>([
         {label: '+0.2', value: 0.2},
         {label: '+0.5', value: 0.5},
@@ -49,10 +54,8 @@ const SelectLocation = () => {
         {label: '+15', value: 15},
 
     ]);
-    const [range, setRange] = useState<number>(1);
 
-    const theme = useTheme();
-    const mapRef = useRef<MapView | null>(null);
+    
 
     useEffect(() => {
         (async () => {
@@ -70,100 +73,149 @@ const SelectLocation = () => {
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
                 latitudeDelta: 0.00001,
-                longitudeDelta: mapsUtils.kMToLongitudes(range, myLocation.gpsPoint.lat)
+                longitudeDelta: mapsUtils.kMToLongitudes(range, location.coords.latitude)
               }, 1000)
 
-          setMyLocation({id: uuid.v4().toString(), name: 'Your Location', gpsPoint: {
-            lat: location.coords.latitude,
-            long: location.coords.longitude,
-          }});
+          setSelectedLocation({id: uuid.v4().toString(), 
+                        name: 'Your Location',
+                        lat: location.coords.latitude,
+                        long: location.coords.longitude,
+            });
 
         })();
     }, []);
 
     useEffect(() => {
-        console.log("Well make a location fetch form db");
-        Fetch.getLocation('Cluj-Napoca', (loc) => console.log("Am luat din database asta\n" + JSON.stringify(loc)), () => console.log("Bad bad"));
-        // if( variable != null)
-        // {
-        //     setMyLocation(variable);
-        // }
+        Fetch.getLocation('Cluj-Napoca',
+        (locationFromDb) => {selectedLocation === undefined && setSelectedLocation(locationFromDb)},
+        () => console.log("Coudn't get Cluj-Napoca location"));
+       
     }, [])
 
     useEffect(() => {
-        if(mapRef !== null && mapRef.current !== null && myLocation !== undefined)
+        zoomMapInAndOut(mapRef, range);
+
+        //update zone
+        if(selectedLocation !== undefined && range !== undefined)
         {
-            mapRef.current.animateToRegion({
-                latitude: myLocation.gpsPoint.lat,
-                longitude: myLocation.gpsPoint.long,
+            const zone: Zone = {
+                id: uuid.v4().toString(),
+                range: range,
+                location: selectedLocation
+            }
+            dispatch(setZone(zone));
+        }
+    }, [range, selectedLocation])
+
+    const zoomMapInAndOut = (mapReference: RefObject<MapView>, rangeInKm: number) =>
+    {
+        if(mapReference !== null && mapReference.current !== null && selectedLocation !== undefined)
+        {
+            mapReference.current.animateToRegion({
+                latitude: selectedLocation.lat,
+                longitude: selectedLocation.long,
                 latitudeDelta: 0.00001,
-                longitudeDelta: mapsUtils.kMToLongitudes(range, myLocation.gpsPoint.lat),
+                longitudeDelta: mapsUtils.kMToLongitudes(range, selectedLocation.lat),
               }, 1000)
         }
-    }, [range])
-
-    const renderWheelPicker = (itemToRender) => {
-        return(
-            <Text style={{margin: verticalScale(3), alignSelf: 'center'}}>{itemToRender.label}</Text>
-        );
     }
-    
-    return(
-        <PrimaryContainer styleInput={{padding: scale(10), marginVertical: scale(10)}}>
-            <View style={{flexDirection: 'row', paddingBottom: verticalScale(5)}}>
-                <View style={{flexDirection:'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <SvgView size='small' style={{backgroundColor: theme.colors.tertiary, borderRadius: 10}}>
-                        <LocationSvg></LocationSvg>
-                    </SvgView>
-
-                    <Text variant='bodyLarge'>Location</Text>
-                </View>
-                
-                <View style={styles.picker}>
-                    <WheelPickerExpo
-                    height={verticalScale(100)}
-                    width={scale(40)}
-                    initialSelectedIndex={0}
-                    items={rangeArray.map(range => ({ label: range.label, value: range.label}))}
-                    onChange={( range ) => {setRange(range.item.value)}}
-                    selectedStyle={{borderColor: theme.colors.tertiary, borderWidth: 1}}
-                    renderItem={(itemToRender) => renderWheelPicker(itemToRender)}
-                    haptics={false}
-                    />
-                    <Text>km</Text>
-                </View>
-
-            </View>
-            <MapView ref={mapRef} style={styles.mapFraction}
-                        initialRegion={{
-                        latitude: myLocation.gpsPoint.lat,
-                        longitude: myLocation.gpsPoint.long,
-                        latitudeDelta: 0.00001,
-                        longitudeDelta: mapsUtils.kMToLongitudes(range, myLocation.gpsPoint.lat)
-                        }}
-                        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
-                        
-            >
+    const getMarker = (location: Location, markerTitle: string | undefined) => {
+        return(
             <Marker
                 key={1}
                 coordinate={{
-                    latitude: myLocation.gpsPoint.lat,
-                    longitude: myLocation.gpsPoint.long
+                    latitude: location.lat,
+                    longitude: location.long
                 }}
-                title={'Your location'}
-                
+                title={markerTitle !== undefined ? markerTitle : ''}
+
                 style={{width: 1, height: 1}}
                 pinColor={'wheat'}
             />
+        )
+    }
+    const getCircle = (location: Location, rangeInKm: number) => {
+        return(
             <Circle 
             strokeWidth={2}
             strokeColor={theme.colors.tertiary}
             fillColor={'rgba(248,95,96,0.2)'}
-            center={{latitude: myLocation.gpsPoint.lat,
-                longitude: myLocation.gpsPoint.long}}
-                radius={range *  1000}/>
-            </MapView>
-        </PrimaryContainer>
+            center={{latitude: location.lat,
+                longitude: location.long}}
+                radius={rangeInKm *  1000}
+            />
+        )
+    }
+
+    const renderWheelPickerItem = (itemToRender) => {
+        return(
+            <Text style={{ alignSelf: 'center'}}>{itemToRender.label}</Text>
+        );
+    }
+    // <OutsidePressHandler  onOutsidePress={() =>  onTouchOutside !== undefined && onTouchOutside()} disabled={false}>
+    return(
+        <View >
+            <PrimaryContainer styleInput={{padding: scale(10), marginVertical: scale(10)}}>
+               
+                <View onTouchStart={() => onTouchInside && onTouchInside()} style={{flexDirection: 'row', paddingBottom: verticalScale(5)}}>
+                    <View style={{flexDirection:'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <SvgView size='small' style={{backgroundColor: theme.colors.tertiary, borderRadius: 10}}>
+                            <LocationSvg></LocationSvg>
+                        </SvgView>
+
+                        <Text variant='bodyLarge'>Location</Text>
+                    </View>
+                    
+                    <View style={styles.picker}>
+                        <WheelPickerExpo
+                        height={verticalScale(100)}
+                        width={scale(40)}
+                        initialSelectedIndex={0}
+                        items={rangeArray.map(range => ({ label: range.label, value: range.label}))}
+                        onChange={( range ) => { onTouchOutside && onTouchOutside(); setRange(range.item.value); }}
+                        selectedStyle={{borderColor: theme.colors.tertiary, borderWidth: 1}}
+                        renderItem={(itemToRender) => renderWheelPickerItem(itemToRender)}
+                        haptics={false}
+                        />
+                        <Text>km</Text>
+                    </View>
+
+                </View>
+
+                {
+                    selectedLocation !== undefined ? 
+                    (
+                        <MapView ref={mapRef} style={styles.mapFraction}
+                        initialRegion={{
+                            latitude: selectedLocation.lat,
+                            longitude: selectedLocation.long,
+                            latitudeDelta: 0.00001,
+                            longitudeDelta: mapsUtils.kMToLongitudes(range, selectedLocation.lat)
+                        }}
+                        onLongPress={({nativeEvent}) => setSelectedLocation((prevLocation) => {
+                         const {coordinate} = nativeEvent;
+                            const newLocation :  Location = {
+                            ...prevLocation,
+                            id: uuid.v4().toString(),
+                            lat: coordinate.latitude,
+                            long: coordinate.longitude
+                            };
+                            return newLocation;
+                         })}
+                        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                        >
+                        {getMarker(selectedLocation, selectedLocation.name)}
+                        {getCircle(selectedLocation, range)}
+                        </MapView>
+                    ):
+                    (
+                        <LoadingComponent width={styles.mapFraction.width} height={styles.mapFraction.height}></LoadingComponent>
+                        )
+                    }
+                
+            
+            </PrimaryContainer>
+        </View>
       
     );
 };

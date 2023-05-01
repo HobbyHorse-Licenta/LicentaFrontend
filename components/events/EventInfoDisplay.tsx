@@ -6,7 +6,7 @@ import { scale, verticalScale } from "react-native-size-matters";
 
 import { SpacingStyles } from "../../styles";
 import { Event } from "../../types";
-import { SvgView } from "../general";
+import SvgView from "../general/SvgView";
 import { BigLocationSvg, LevelSvg } from "../svg/general";
 
 interface EventInput {
@@ -23,14 +23,14 @@ const EventInfoDisplay = ({event}: EventInput) => {
                     <SvgView size='small'>
                         <LevelSvg></LevelSvg>
                     </SvgView>
-                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.description.sportLevel}</Text>
+                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.skateExperience}</Text>
                 </View>
                 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                     <SvgView size='tiny'>
                         <BigLocationSvg color={theme.colors.onPrimary}></BigLocationSvg>
                     </SvgView>
-                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.description.location.name}</Text>
+                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.outing.trailType}</Text>
                 </View>
             </View>
     );

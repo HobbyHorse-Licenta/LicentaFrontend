@@ -29,6 +29,7 @@ const SelectTimeIos = ({textAbovePicker, time, setTime} : timePickerInput) => {
   };
 
   const handleChangeTime = () => {
+    console.log("HAA");
     setIsDatePickerVisible(true);
   };
 
@@ -37,12 +38,15 @@ const SelectTimeIos = ({textAbovePicker, time, setTime} : timePickerInput) => {
   };  
 
   return (
-        <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={handleChangeTime}>
-          <DateTimePickerModal
+    <View>
+        <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={handleChangeTime}/>
+        <DateTimePickerModal
             style={styles.activePicker}
             isVisible={isDatePickerVisible}
             mode="time"
             display="spinner"
+            pickerStyleIOS={{width: '100%'}}
+            modalStyleIOS={{justifyContent: 'center', alignItems: 'center', width: '100%'}}
             onConfirm={onChangeDate}
             onCancel={hideDatePicker}
             cancelTextIOS = {Strings.cancel}
@@ -54,7 +58,7 @@ const SelectTimeIos = ({textAbovePicker, time, setTime} : timePickerInput) => {
             is24Hour={true}
             date={time}
           />
-        </SelectTime>
+    </View>
   );
 };
 

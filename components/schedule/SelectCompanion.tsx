@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -9,6 +9,8 @@ import { Gender } from '../../types';
 import { PrimaryContainer, SvgView } from '../general';
 import SelectAgeGap from './SelectAgeGap';
 import SelectNumberOfPeople from './SelectNumberOfPeople';
+import { useDispatch } from 'react-redux';
+import { setGender, setMaximumAge, setMaxNumberOfPeople, setMinimumAge } from '../../redux/createScheduleState';
 
 interface Distance {
     label: string,
@@ -17,12 +19,30 @@ interface Distance {
 
 const SelectCompanion = () => {
     
-    const [selectedGender, setSelectedGender] = useState<Gender | undefined>();
+    const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
     const [numberOfPartners, setNumberOfPartners] = useState();
-    const [minimumAge, setMinimumAge] = useState();
-    const [maximumAge, setMaximumAge] = useState();
+    const [minimumAge, setMinimumAgee] = useState();
+    const [maximumAge, setMaximumAgee] = useState();
 
     const theme = useTheme();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+      dispatch(setGender(selectedGender))
+    }, [selectedGender])
+
+    useEffect(() => {
+      dispatch(setMaxNumberOfPeople(numberOfPartners))
+    }, [numberOfPartners])
+
+    useEffect(() => {
+      dispatch(setMinimumAge(minimumAge))
+    }, [minimumAge])
+
+    useEffect(() => {
+      dispatch(setMaximumAge(maximumAge))
+    }, [maximumAge])
+    
     
     const selectedFemale = () => {
         if(selectedGender === Gender.Female)
@@ -37,8 +57,9 @@ const SelectCompanion = () => {
     }
 
     const selectedMixed = () => {
-        if(selectedGender !== undefined)
+        if(selectedGender === Gender.Mixed)
             setSelectedGender(undefined)
+        else setSelectedGender(Gender.Mixed)
     }
 
     const getGenderPrefrence = () => {
@@ -61,7 +82,7 @@ const SelectCompanion = () => {
                     </View>
                 </Pressable>
                 <Pressable onPress={selectedMixed}>
-                    <View style={[styles.iconWithLabel, selectedGender === undefined && {backgroundColor: theme.colors.tertiary}]}>
+                    <View style={[styles.iconWithLabel, selectedGender === Gender.Mixed && {backgroundColor: theme.colors.tertiary}]}>
                         <SvgView size='big'>
                             <MaleAndFemaleSvg></MaleAndFemaleSvg>
                         </SvgView>
@@ -80,8 +101,8 @@ const SelectCompanion = () => {
             <Text>Do you want to go in group or not?</Text>
             <SelectNumberOfPeople onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
             <Text>Which age gap are you confortable with for your companion?</Text>
-            <SelectAgeGap onMinimumAgeChange={(age) => setMinimumAge(age)}
-                            onMaximumAgeChange={(age) => setMaximumAge(age)}/>
+            <SelectAgeGap onMinimumAgeChange={(age) => setMinimumAgee(age)}
+                            onMaximumAgeChange={(age) => setMaximumAgee(age)}/>
             {getGenderPrefrence()}
         </PrimaryContainer>
       
