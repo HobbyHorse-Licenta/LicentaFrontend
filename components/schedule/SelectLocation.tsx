@@ -1,13 +1,22 @@
 import React, { useState, useEffect, useRef, RefObject } from 'react';
-import {View, StyleSheet, Platform} from 'react-native';
+import {View, StyleSheet, Platform, Button} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
 import MapView, {Circle, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {Text as ReactNativeText} from 'react-native'
 import {Text, useTheme} from 'react-native-paper'
 import * as ExpoLocation from 'expo-location';
 import OutsidePressHandler from 'react-native-outside-press';
 import uuid from 'react-native-uuid';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
+
+  import {
+    TourGuideProvider, // Main provider
+     // Main wrapper of highlight component
+    TourGuideZoneByPosition, // Component to use mask on overlay (ie, position absolute)
+    useTourGuideController, // hook to start, etc.
+  } from 'rn-tourguide'
+
 
 import { SpacingStyles } from "../../styles";
 import { FemaleSvg, LocationSvg } from '../svg/general';
@@ -18,8 +27,10 @@ import { SafeAreaView } from 'react-navigation';
 import {mapsUtils} from '../../utils';
 import { TennisSvg } from '../svg/sports';
 import LoadingComponent from '../general/LoadingComponent';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setZone } from '../../redux/createScheduleState';
+import { RootState } from '../../redux/store';
+
 
 interface Distance {
     label: string,
@@ -33,12 +44,18 @@ interface Input {
 
 const SelectLocation = ({onTouchInside, onTouchOutside}) => {
 
-    //TODO: fix WheelPickerExpo not working when in ScrollView
-
-    const [selectedLocation, setSelectedLocation] = useState<Location | undefined>(undefined);
+    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+    const [selectedLocation, setSelectedLocation] = useState<Location | undefined>({
+        id: uuid.v4().toString(),
+        name: 'Cluj-Napoca',
+        lat: 46.770960,
+        long:  23.596937
+    });
     const dispatch = useDispatch();
+
     const [range, setRange] = useState<number>(1);
-    const theme = useTheme();
+    const theme = useTheme()
+
     const mapRef = useRef<MapView | null>(null);
     const [rangeArray, setRangeArray] = useState<Distance[]>([
         {label: '+0.2', value: 0.2},
@@ -55,8 +72,26 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
 
     ]);
 
+
+    //////FOR WALKTHROUGH////
+    const {
+        canStart, // a boolean indicate if you can start tour guide
+        start, // a function to start the tourguide
+        stop, // a function  to stopping it
+        eventEmitter, // an object for listening some events
+        TourGuideZone
+      } = useTourGuideController('schedule')
+
+    useEffect(() => {
+        if (canStart) {
+          start()
+        }
+    }, [canStart])   
+    //////
+
     
 
+    /* Gets and sets device location */
     useEffect(() => {
         (async () => {
           
@@ -67,6 +102,8 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
           }
     
           let location = await ExpoLocation.getCurrentPositionAsync({});
+
+          console.log("GOT YOUR LOCATION");
 
           if(mapRef.current != null)
             mapRef.current.animateToRegion({
@@ -93,59 +130,27 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
     }, [])
 
     useEffect(() => {
-        zoomMapInAndOut(mapRef, range);
+        if(selectedLocation !== undefined)
+            mapsUtils.zoomMapInAndOut(mapRef, selectedLocation, range);
 
-        //update zone
-        if(selectedLocation !== undefined && range !== undefined)
-        {
+        updateZone();
+    }, [range, selectedLocation])
+
+    const updateZone = () => {
+         if(selectedLocation !== undefined && range !== undefined && currentSkateProfile !== undefined)
+         {
             const zone: Zone = {
                 id: uuid.v4().toString(),
                 range: range,
-                location: selectedLocation
+                locationId: selectedLocation.id,
+                location: selectedLocation,
+                scheduleId: currentSkateProfile.id
             }
             dispatch(setZone(zone));
-        }
-    }, [range, selectedLocation])
-
-    const zoomMapInAndOut = (mapReference: RefObject<MapView>, rangeInKm: number) =>
-    {
-        if(mapReference !== null && mapReference.current !== null && selectedLocation !== undefined)
-        {
-            mapReference.current.animateToRegion({
-                latitude: selectedLocation.lat,
-                longitude: selectedLocation.long,
-                latitudeDelta: 0.00001,
-                longitudeDelta: mapsUtils.kMToLongitudes(range, selectedLocation.lat),
-              }, 1000)
-        }
-    }
-    const getMarker = (location: Location, markerTitle: string | undefined) => {
-        return(
-            <Marker
-                key={1}
-                coordinate={{
-                    latitude: location.lat,
-                    longitude: location.long
-                }}
-                title={markerTitle !== undefined ? markerTitle : ''}
-
-                style={{width: 1, height: 1}}
-                pinColor={'wheat'}
-            />
-        )
-    }
-    const getCircle = (location: Location, rangeInKm: number) => {
-        return(
-            <Circle 
-            strokeWidth={2}
-            strokeColor={theme.colors.tertiary}
-            fillColor={'rgba(248,95,96,0.2)'}
-            center={{latitude: location.lat,
-                longitude: location.long}}
-                radius={rangeInKm *  1000}
-            />
-        )
-    }
+         }
+    }    
+    
+    
 
     const renderWheelPickerItem = (itemToRender) => {
         return(
@@ -153,16 +158,17 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
         );
     }
     // <OutsidePressHandler  onOutsidePress={() =>  onTouchOutside !== undefined && onTouchOutside()} disabled={false}>
+    
+    const ref = useRef(null)
     return(
         <View >
             <PrimaryContainer styleInput={{padding: scale(10), marginVertical: scale(10)}}>
                
                 <View onTouchStart={() => onTouchInside && onTouchInside()} style={{flexDirection: 'row', paddingBottom: verticalScale(5)}}>
                     <View style={{flexDirection:'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <SvgView size='small' style={{backgroundColor: theme.colors.tertiary, borderRadius: 10}}>
-                            <LocationSvg></LocationSvg>
-                        </SvgView>
-
+                            <SvgView size='small' style={{backgroundColor: theme.colors.tertiary, borderRadius: 10}}>
+                                <LocationSvg></LocationSvg>
+                            </SvgView>
                         <Text variant='bodyLarge'>Location</Text>
                     </View>
                     
@@ -171,8 +177,8 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
                         height={verticalScale(100)}
                         width={scale(40)}
                         initialSelectedIndex={0}
-                        items={rangeArray.map(range => ({ label: range.label, value: range.label}))}
-                        onChange={( range ) => { onTouchOutside && onTouchOutside(); setRange(range.item.value); }}
+                        items={rangeArray.map(range => ({ label: range.label, value: range.value}))}
+                        onChange={( range ) => { onTouchOutside && onTouchOutside(); console.log("Setting range: " + range.item.value); setRange(range.item.value); }}
                         selectedStyle={{borderColor: theme.colors.tertiary, borderWidth: 1}}
                         renderItem={(itemToRender) => renderWheelPickerItem(itemToRender)}
                         haptics={false}
@@ -185,35 +191,39 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
                 {
                     selectedLocation !== undefined ? 
                     (
-                        <MapView ref={mapRef} style={styles.mapFraction}
-                        initialRegion={{
-                            latitude: selectedLocation.lat,
-                            longitude: selectedLocation.long,
-                            latitudeDelta: 0.00001,
-                            longitudeDelta: mapsUtils.kMToLongitudes(range, selectedLocation.lat)
-                        }}
-                        onLongPress={({nativeEvent}) => setSelectedLocation((prevLocation) => {
-                         const {coordinate} = nativeEvent;
-                            const newLocation :  Location = {
-                            ...prevLocation,
-                            id: uuid.v4().toString(),
-                            lat: coordinate.latitude,
-                            long: coordinate.longitude
-                            };
-                            return newLocation;
-                         })}
-                        provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                        <TourGuideZone
+                        zone={2}
+                        text={"You can hold on maps to select a new location"}
+                        borderRadius={16}
                         >
-                        {getMarker(selectedLocation, selectedLocation.name)}
-                        {getCircle(selectedLocation, range)}
-                        </MapView>
+                            <MapView ref={mapRef} style={styles.mapFraction}
+                            initialRegion={{
+                                latitude: selectedLocation.lat,
+                                longitude: selectedLocation.long,
+                                latitudeDelta: 0.00001,
+                                longitudeDelta: mapsUtils.kMToLongitudes(range, selectedLocation.lat)
+                            }}
+                            onLongPress={({nativeEvent}) => setSelectedLocation((prevLocation) => {
+                            const {coordinate} = nativeEvent;
+                                const newLocation :  Location = {
+                                ...prevLocation,
+                                id: uuid.v4().toString(),
+                                lat: coordinate.latitude,
+                                long: coordinate.longitude
+                                };
+                                return newLocation;
+                            })}
+                            provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+                            >
+                            {mapsUtils.getMarker(selectedLocation, selectedLocation.name)}
+                            {mapsUtils.getCircle(selectedLocation, range)}
+                            </MapView>
+                        </TourGuideZone>
                     ):
                     (
                         <LoadingComponent width={styles.mapFraction.width} height={styles.mapFraction.height}></LoadingComponent>
-                        )
+                    )
                     }
-                
-            
             </PrimaryContainer>
         </View>
       

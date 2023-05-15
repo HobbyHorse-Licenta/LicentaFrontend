@@ -2,30 +2,40 @@ import React, { useEffect, useState } from "react";
 import { ScrollView, View } from 'react-native';
 
 import { scale } from "react-native-size-matters";
+import uuid from 'react-native-uuid';
 
 import { SpacingStyles } from '../../../styles';
 import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange, SelectCompanion} from '../../../components/schedule';
 import { Layout2Piece } from '../../layouts';
-import { SportName } from "../../../types";
+import { Gender, Schedule as ScheduleType, SportName } from "../../../types";
 import { GeneralHeader } from "../../../components/general";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
-import { validation } from "../../../utils";
-
+import { uiUtils, validation } from "../../../utils";
+import { Fetch } from "../../../services";
+import { addSchedule, backupUser, revertChangesInUser } from "../../../redux/appState";
+import { setEndTime, setSelectedDaysState, setStartTime } from "../../../redux/createScheduleState";
+import { Day } from "../../../types";
 
 
 const Schedule = () => {
 
   const scheduleConfig = useSelector((state: RootState) => state.createScheduleState);
+  const {currentSkateProfile} = useSelector((state: RootState) => state.appState);
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [sportPickerVisible, setSportPickerVisible] =  useState<boolean>(false);
   const [selectedSports, setSelectedSports] = useState<Array<SportName>>([]);
   const [scrollEnable, setScrollEnable] = useState(true);
   const [canCreateSchedule, setCanCreateSchedule] = useState(false);
+  const [selectedDays, setSelectedDays] = useState<Array<Day>>([]);
+  const [startTime, setStarTTime] = useState<Date>(new Date())
+  const [endTime, setEnDTime] = useState<Date>(new Date())
 
-
+  //checks if all fields are completed so the schedule can be created
+  //(also sets if the button is disabled or not)
   useEffect(() => {
     
     if(!validation.isDefined(scheduleConfig.selectedDays))
@@ -61,35 +71,78 @@ const Schedule = () => {
     setCanCreateSchedule(true);
   }, [scheduleConfig])
   
-  const deleteFromSelectedSports = (sportToRemove: SportName) =>
-  {
-    setSelectedSports(selSports => {return selSports?.filter(sport => sport !== sportToRemove)});
-  }
+  useEffect(() => {
+    dispatch(setSelectedDaysState(selectedDays));
+  }, [selectedDays])
   
-  const addSport = (sportToAdd: SportName) =>
-  {
-    const value = selectedSports?.find(sport => sport === sportToAdd);
-    if(value == undefined)
-    {
-      setSelectedSports([...selectedSports, sportToAdd])
-    }
-    setSportPickerVisible(false);
-  }
+  useEffect(() => {
+    dispatch(setStartTime(startTime.getTime()));
+    dispatch(setEndTime(endTime.getTime()));
+  }, [startTime, endTime])
 
+  const updateSelectedDays = (selectedDays: Array<Day>) =>{
+    setSelectedDays(selectedDays);
+  }
+ 
   
   const createNewSchedule = () => {
-    console.log("Check if schedule can be created; The scheduleConfig object is: " + JSON.stringify(scheduleConfig));
-  }
 
+    if(currentSkateProfile !== undefined && currentSkateProfile !== null)
+    {
+      if(scheduleConfig.endTime !== undefined && scheduleConfig.startTime !== undefined
+        && scheduleConfig.zone !== undefined && scheduleConfig.minimumAge !== undefined
+        && scheduleConfig.maximumAge !== undefined && scheduleConfig.gender !== undefined &&
+        scheduleConfig.maxNumberOfPeople !== undefined && scheduleConfig.selectedDays !== undefined)
+      {
+        
+        const newSchedule: ScheduleType = {
+          id: uuid.v4().toString(),
+          skateProfileId: currentSkateProfile.id,
+          days: scheduleConfig.selectedDays,
+          startTime: scheduleConfig.startTime,
+          endTime: scheduleConfig.endTime,
+          zones: [scheduleConfig.zone],
+          minimumAge: scheduleConfig.minimumAge,
+          maximumAge: scheduleConfig.maximumAge,
+          gender: scheduleConfig.gender,
+          maxNumberOfPeople: scheduleConfig.maxNumberOfPeople
+        }
+        dispatch(backupUser());
+        
+        //optimistic update
+        dispatch(addSchedule(newSchedule));
+        navigation.navigate("MySchedules" as never);
+
+        Fetch.postSchedule(newSchedule, 
+        () => {
+          console.log("Schedule post success");
+        },
+        () => {
+          console.log("Schedule post fail; rever changes");
+          uiUtils.showPopUp("Error", "Coudn't create schedule");
+          dispatch(revertChangesInUser());
+        })
+      }
+      
+    }
+    else uiUtils.showPopUp("Error", "No skateProfile selected");
+    
+  
+  }
 
   const getcreateScheduleContainer = () => {
       return(
         <ScrollView scrollEnabled={scrollEnable} contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={[SpacingStyles.centeredContainer, {flex: 0.8}]}>
-          <SelectDays></SelectDays>
+          <SelectDays selectedDays={selectedDays} onSelectedDaysChange={updateSelectedDays}></SelectDays>
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 0.9}]}>
-          <SelectHourRange></SelectHourRange>
+          <SelectHourRange 
+          startTime={startTime} 
+          onStartTimeChange={(value) => setStarTTime(value)}
+          endTime={endTime} 
+          onEndTimeChange={(value) => setEnDTime(value)}
+          ></SelectHourRange>
         </View>
         {/* <View style={[SpacingStyles.centeredContainer, {flex: 0.7}]}>
           <AddSports selectedSports={selectedSports} onDelete={deleteFromSelectedSports} onAddPress={() => setSportPickerVisible(true)}></AddSports>
@@ -109,21 +162,14 @@ const Schedule = () => {
     return(
       <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {padding: scale(14)}]}>
         {getcreateScheduleContainer()}
-        {/* {
-          (sportPickerVisible === true) ? (
-            <View></View>
-              // <SelectSportModal onSelect={addSport} onDismiss={() =>  setSportPickerVisible(false)} visible={sportPickerVisible}></SelectSportModal>
-          ) : (
-            <View></View>
-          )
-        } */}
       </View>
     );
   }
 
   return (
      <Layout2Piece
-        header={<GeneralHeader rightButtonEnable={canCreateSchedule} onBack={() => navigation.goBack()} onRightButtonPress={() => createNewSchedule()} rightButtonText={"Add Schedule"}/>}
+        header={<GeneralHeader rightButtonEnable={canCreateSchedule} onBack={() => navigation.goBack()}
+        onRightButtonPress={() => createNewSchedule()} rightButtonText={"Add Schedule"}/>}
         body={getBody()}
      ></Layout2Piece>
   );

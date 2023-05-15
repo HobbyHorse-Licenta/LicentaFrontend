@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { View } from 'react-native';
 import { useTheme, Text } from 'react-native-paper';
 import { AssignedSkill, MasteringLevel } from '../../types';
@@ -9,7 +9,7 @@ import { uiUtils } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Fetch } from '../../services';
-import { deleteAssignedSkill, updateAssignedSkill } from '../../redux/appState';
+import { backupUser, deleteAssignedSkill, revertChangesInUser, updateAssignedSkill } from '../../redux/appState';
 import { nothing } from 'immer';
 
 interface Input {
@@ -22,7 +22,12 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
     const dispatch = useDispatch();
     let skateProfile = user?.skateProfiles.find((skateProfile) => skateProfile.id === skateProfileId)
 
+    useEffect(() => {
+      dispatch(backupUser());
+    }, [])
     
+
+
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
     
     const getNextValue = (currentValue: string): string | undefined => {
@@ -49,12 +54,12 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
             masteringLevel: newMasteringLevel
         }
 
-        //TODO: make it so it updates just the assigned skill and after that use dispatch to update the skill with the value returned from fetch
-        if(user !==  undefined)
-            Fetch.postUser(user, () => console.log("Posted user with updated assigned skill succesfully"), () => console.log("Coudn't post user when updating assigned skill"));
+        //optimistic UI update
+        dispatch(updateAssignedSkill(updatedSkill))
 
-        dispatch(updateAssignedSkill(updatedSkill));
-        
+        //if one of this fails the state is reseted
+        if(user !==  undefined)
+            Fetch.putAssignedSkill(updatedSkill, (putUpdatedSkill) => nothing, () =>{dispatch(revertChangesInUser()), uiUtils.showPopUp("Error", "Couldn't update skill level in profile")})
     }
 
     const theme = useTheme();
@@ -64,16 +69,19 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
                     <PlusSvg></PlusSvg>
             </Tile>
             {skateProfile !== undefined && skateProfile.assignedSkills !== undefined && skateProfile.assignedSkills !== null &&
-            skateProfile.assignedSkills.map((skill, index) => {
+            skateProfile.assignedSkills.map((assignedSkill, index) => {
                 return(
                     <Tile key={index} 
-                    color={uiUtils.getColorBasedOnSkillLevel(skill.masteringLevel)}
+                    color={uiUtils.getColorBasedOnSkillLevel(assignedSkill.masteringLevel)}
                     withBorder={true}
                     deleteEnabled={index === selectedIndex} 
-                    onDeleteTile={() => skillDelete(skill)}
-                    onPress={() => advanceSkillLevel(skill)}
+                    onDeleteTile={() => skillDelete(assignedSkill)}
+                    onPress={() => advanceSkillLevel(assignedSkill)}
                     onLongPress={() => setSelectedIndex(index)}>
-                        <Text>{skill.skill.name}</Text>
+                        {
+                            assignedSkill.skill !== undefined && assignedSkill.skill !== null &&
+                            <Text>{assignedSkill.skill.name}</Text>
+                        }
                     </Tile>
                 );
             })}

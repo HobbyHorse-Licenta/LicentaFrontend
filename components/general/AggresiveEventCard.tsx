@@ -30,7 +30,7 @@ interface EventInput {
     event: Event
 }
 
-const EventCard = ({event, onPress}: EventInput) => {
+const AggresiveEventCard = ({event, onPress}: EventInput) => {
 
     const [dimensions, setDimensions] = useState({
         window: windowDimensions,
@@ -114,7 +114,7 @@ const EventCard = ({event, onPress}: EventInput) => {
     );
 };
 
-export default EventCard;
+export default AggresiveEventCard;
 
 const styles = StyleSheet.create({
     container: {

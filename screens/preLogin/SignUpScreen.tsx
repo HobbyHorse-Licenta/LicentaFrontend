@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect } from 'react';
 import { KeyboardAvoidingView, View, StyleSheet, ScrollView} from 'react-native';
 
 import { Text, TextInput, useTheme } from 'react-native-paper';
@@ -14,6 +14,7 @@ import {uiUtils} from '../../utils';
 import { useDispatch } from 'react-redux';
 import { setJWTToken } from '../../redux/appState';
 import { User } from '../../types';
+import PasswordInput from '../../components/general/PasswordInput';
 
 const SignUpScreen = () => {
 
@@ -27,8 +28,6 @@ const SignUpScreen = () => {
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
 
-
-   
     
     const createAccount = async () => {
         if(email !== undefined && password !== undefined && confirmationPassword !== undefined)
@@ -60,10 +59,11 @@ const SignUpScreen = () => {
         else uiUtils.showPopUp("Warning", "Please input all fields😀");
     };
 
- 
+ //<KeyboardAvoidingView style={[StyleSheet.absoluteFill, styles.mainContainer, { backgroundColor: theme.colors.background}]} behavior='padding'>
     const getBody = () =>  {
         return (
-            <KeyboardAvoidingView style={[StyleSheet.absoluteFill, styles.mainContainer, { backgroundColor: theme.colors.background}]} behavior='padding'>
+            <View>
+            
                 <View style={{width: scale(320), alignSelf: 'center'}}>
                     <View style={{justifyContent: "center"}}>
                         <Animatable.Image animation="swing" iterationCount={Infinity} iterationDelay={12000} style={[styles.logoView, {resizeMode:'contain', alignSelf: 'center'}]}
@@ -81,19 +81,17 @@ const SignUpScreen = () => {
                         value={email}
                         onChangeText={handleEmailInput}
                         />
-                        <TextInput
-                        style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
+                        <PasswordInput
+                        style={{...styles.textInput, backgroundColor: theme.colors.primary}}
                         label="Password"
                         selectionColor={theme.colors.tertiary}
                         value={password}
-                        secureTextEntry={true}
                         onChangeText={handlePasswordInput}
                         />
-                        <TextInput
-                        style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
+                        <PasswordInput
+                        style={{...styles.textInput, backgroundColor: theme.colors.primary}}
                         label="Confirm Password"
                         value={confirmationPassword}
-                        secureTextEntry={true}
                         selectionColor={theme.colors.tertiary}
                         onChangeText={(typedText: string) => setConfirmationPassword(typedText)}
                         />
@@ -105,7 +103,8 @@ const SignUpScreen = () => {
                         </View>
                         
                 </ScrollView>
-            </KeyboardAvoidingView>
+            {/* </KeyboardAvoidingView> */}
+            </View>
         );
     }
     return (

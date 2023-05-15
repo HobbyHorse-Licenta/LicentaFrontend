@@ -5,7 +5,7 @@ import {Text, useTheme} from 'react-native-paper'
 import { scale } from 'react-native-size-matters';
 import { Gender } from '../../types';
 
-import { PrimaryContainer, SvgView } from '../general';
+import { FemaleOption, MaleOption, PrimaryContainer, SvgView } from '../general';
 import { FemaleSvg, MaleSvg } from '../svg/general';
 
 interface SelectGenderInput{
@@ -37,22 +37,11 @@ const SelectGender = ({onChange, initialValue} : SelectGenderInput) => {
                         <Text>Gender:</Text>
                         <View style={{flexDirection: 'row'}}>
                             <Pressable onPress={selectedFemale}>
-                            <View style={[styles.iconWithLabel, selectedGender === Gender.Female && {backgroundColor: theme.colors.tertiary}]}>
-                                <SvgView size='big'>
-                                    <FemaleSvg></FemaleSvg>
-                                </SvgView>
-                                <Text>Female</Text>
-                            </View>
+                                <FemaleOption selected={selectedGender === Gender.Female}/>
                             </Pressable>
                             <Pressable onPress={selectedMale}>
-                                <View style={[styles.iconWithLabel, selectedGender === Gender.Male && {backgroundColor: theme.colors.tertiary}]}>
-                                    <SvgView size='big'>
-                                        <MaleSvg></MaleSvg>
-                                    </SvgView>
-                                    <Text>Male</Text>
-                                </View>
+                                <MaleOption selected={selectedGender === Gender.Male}/>
                             </Pressable>
-                            
                         </View>
                     </PrimaryContainer>
     );

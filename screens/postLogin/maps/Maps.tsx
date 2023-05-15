@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text } from 'react-native'
 import { GeneralHeader } from "../../../components/general";
-import { MapsBody, MapsHeader } from "../../../components/maps";
+import { MapsBody } from "../../../components/maps";
 
 import { Layout2PieceForNavigator } from "../../layouts";
 

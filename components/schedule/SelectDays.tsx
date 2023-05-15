@@ -11,24 +11,14 @@ import { scale } from "react-native-size-matters";
 import { PrimaryContainer } from "../general";
 import { setSelectedDaysState } from "../../redux/createScheduleState";
 
-// const days: typeof WeekDays[] = [{name : 'S', index: 1}, 
-// {name : 'M', index: 2},
-// {name : 'T', index: 3},
-// {name : 'W', index: 4},
-// {name : 'T', index: 5},
-// {name : 'F', index: 6},
-// {name : 'S', index: 7},
-// ];
+interface Input {
+  selectedDays: Array<Day>,
+  onSelectedDaysChange: (newSelectedDays: Array<Day>) => void
+}
 
-const SelectDays = () => {
+const SelectDays = ({selectedDays, onSelectedDaysChange}: Input) => {
 
-  const [selectedDays, setSelectedDays] = useState<Array<Day>>([]);
-  const dispatch = useDispatch();
   const theme = useTheme();
-
-  useEffect(() => {
-    dispatch(setSelectedDaysState(selectedDays));
-  }, [selectedDays])
 
   const isActiveDay = useCallback(
     (thisDay: Day, days: Array<Day>) => {
@@ -40,9 +30,9 @@ const SelectDays = () => {
   const selectDay = (day: Day) => {
     if (isActiveDay(day, selectedDays)) {
       const filtered = selectedDays.filter((v) => v !== day);
-      setSelectedDays(filtered);
+      onSelectedDaysChange(filtered);
     } else {
-      setSelectedDays((prev) => [...prev, day]);
+      onSelectedDaysChange([...selectedDays, day]);
     }
     Object.keys(WeekDays).forEach(e => console.log(`key=${e}  value=${WeekDays[e]}`));
   };
@@ -64,7 +54,7 @@ const SelectDays = () => {
                     ]}
                   >
                     <Text style={isActiveDay(day, selectedDays) ? {color: theme.colors.onPrimary} : {color: 'black'}}>
-                      {day.name.minimumForm}
+                      {day.minimumForm}
                     </Text>
                   </View>
                 </Pressable>

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {Text, TextInput, useTheme } from 'react-native-paper'
 
 import { EditProfileHeader, MyProfileHeader } from "../../../components/profile";
-import { GeneralHeader, PrimaryContainer, ProfilePicList, RoundPicture, SelectNumber } from "../../../components/general";
+import { GeneralHeader, PrimaryContainer, RoundPicture, SelectNumber } from "../../../components/general";
 import { Layout2Piece } from "../../layouts";
 import { RootState } from "../../../redux/store";
 import { validation } from "../../../utils";
@@ -16,6 +16,7 @@ import { SpacingStyles } from "../../../styles";
 import {User} from '../../../types'
 import { Fetch } from "../../../services";
 import { setUser } from "../../../redux/appState";
+import constants from "../../../assets/constants";
 
 const EditProfile = () => {
 
@@ -62,7 +63,7 @@ const EditProfile = () => {
                 value={editedName}
                 onChangeText={updateName}
                 />
-            <SelectNumber value={editedAge} onChange={(val) => setEditedAge(val)} range={{minimumValue: 2, maximumValue: 10}} descriptionText={'Select Age'}></SelectNumber>
+            <SelectNumber value={editedAge} onChange={(val) => setEditedAge(val)} range={{minimumValue: constants.minimumAge, maximumValue: constants.maximumAge}} descriptionText={'Select Age'}></SelectNumber>
             <View style={{width: scale(100), height: verticalScale(40)}}>
             </View>
           </View>

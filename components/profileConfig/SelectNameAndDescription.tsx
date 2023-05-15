@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {View, StyleSheet} from 'react-native'
+import {View, StyleSheet, Keyboard} from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 
 import {Text, TextInput, useTheme} from 'react-native-paper'
@@ -33,7 +33,25 @@ const SelectNameAndDescription = ({onNameChange, onDescriptionChange} : Input) =
       }
     }
 
+    const lastCharIsEnter = (text: string) => {
+      if(text.length === 0)
+        return false;
+
+      const enterKeyCode = 10;
+      if(text.slice(-1).charCodeAt(0) === enterKeyCode)
+      {
+        return true;
+      }
+      else return false;
+    }
     const updateDescription = (typedDescription: string) => {
+      if(lastCharIsEnter(typedDescription))
+      {
+        setDescription(previousText => previousText);
+        Keyboard.dismiss();
+      }
+       
+
       if(validation.validateShortDescription(typedDescription) || typedDescription === '')
       {
         setDescription(typedDescription);
@@ -56,6 +74,7 @@ const SelectNameAndDescription = ({onNameChange, onDescriptionChange} : Input) =
             />
             <Text style={{margin: scale(5)}}>Tell us a bit about yourself</Text>
               <TextInput
+              //onSubmitEditing={() => Keyboard.dismiss()}
               style={[styles.descriptionInput, {backgroundColor: theme.colors.primary}]}
               multiline={true}
               selectionColor={theme.colors.tertiary}

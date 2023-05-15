@@ -11,25 +11,21 @@ export type RenderElement = {
 /////////////////////////////////////////////////
 
 export type Day = {
-  name: DayName;
-  index: number;
-};
-
-export type DayName = {
   minimumForm: string;
   shortForm: string;
   longForm: string;
+  index: number;
 };
 
 export const WeekDays: Day[] = 
 [
-  {name: { minimumForm: 'M', shortForm: 'Mon', longForm: 'Monday'}, index: 1},
-  {name: { minimumForm: 'T', shortForm: 'Tue', longForm: 'Tuesday'}, index: 2},
-  {name: { minimumForm: 'W', shortForm: 'Wed', longForm: 'Wednesday'}, index: 3},
-  {name: { minimumForm: 'T', shortForm: 'Thu', longForm: 'Thursday'}, index: 4},
-  {name: { minimumForm: 'F', shortForm: 'Fri', longForm: 'Friday'}, index: 5},
-  {name: { minimumForm: 'S', shortForm: 'Sat', longForm: 'Saturday'}, index: 6},
-  {name: { minimumForm: 'S', shortForm: 'Sun', longForm: 'Sunday'}, index: 7}
+  {minimumForm: 'M', shortForm: 'Mon', longForm: 'Monday', index: 1},
+  {minimumForm: 'T', shortForm: 'Tue', longForm: 'Tuesday', index: 2},
+  {minimumForm: 'W', shortForm: 'Wed', longForm: 'Wednesday', index: 3},
+  {minimumForm: 'T', shortForm: 'Thu', longForm: 'Thursday', index: 4},
+  {minimumForm: 'F', shortForm: 'Fri', longForm: 'Friday', index: 5},
+  {minimumForm: 'S', shortForm: 'Sat', longForm: 'Saturday', index: 6},
+  {minimumForm: 'S', shortForm: 'Sun', longForm: 'Sunday', index: 7}
 ]
 
 
@@ -81,10 +77,12 @@ export type SkateProfile = {
   id: string,
   userId: string,
   events?: Array<Event>,
+  recommendedEvents?: Array<Event>,
   assignedSkills?: Array<AssignedSkill>,
   schedules?: Array<Schedule>,
   skateType: SkatesType,
   skatePracticeStyle: SkatePracticeStyles,
+
   skateExperience: SkateExperience
  
 }
@@ -104,7 +102,8 @@ export type SkillRecommendation = {
 export type AssignedSkill = {
   id: string,
   skateProfileId: string,
-  skill: Skill,
+  skillId: string
+  skill?: Skill,
   masteringLevel: MasteringLevel
 }
 
@@ -130,7 +129,7 @@ export type Outing = {
   endTime: number,
   skatePracticeStyle: SkatePracticeStyles,
   trailType: string,
-  trail: Trail
+  trail: ParkTrail | CustomTrail
 }
 
 
@@ -161,6 +160,7 @@ export type Event = {
   skateExperience: SkateExperience,
   outing: Outing,
   skateProfiles?: Array<SkateProfile>,
+  recommendedSkateProfiles?: Array<SkateProfile>,
   imageUrl?: string,
   description?: string,
   gender: Gender
@@ -173,6 +173,9 @@ export type Zone = {
   name?: string,
   range: number,
   location: Location
+  locationId: string,
+  schedule?: Schedule, 
+  scheduleId: string,
 }
 
 
@@ -193,6 +196,7 @@ export type CheckPoint = {
 
 export type Schedule = {
   id: string,
+  days: Array<Day>
   skateProfileId: string,
   startTime: number,
   endTime: number,

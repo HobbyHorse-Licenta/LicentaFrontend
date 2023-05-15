@@ -14,49 +14,41 @@ interface ProfilePicListInput {
 }
 
 /**
- * Should be wrapped in a View of desired size
+ * Has a fixed size
  */
 const ProfilePicList = ({imageUrlsArray} : ProfilePicListInput) => {
 
-    const [viewWidth, setViewWidth] = useState(0);
-    useEffect(() => {
-      setViewWidth(Dimensions.get('screen').width)
-      totalImageLength();
-    }, [])
     
-    const handleViewChange = (layout) => {
-        const {x, y, width, height} = layout
-        setViewWidth(width);
+    let picturesDisplayed = 0;
+    if(imageUrlsArray !== undefined)
+    {
+        if(imageUrlsArray.length < 6)
+            picturesDisplayed = imageUrlsArray.length;  
+        else picturesDisplayed = 6;
     }
+    else picturesDisplayed = 0;
 
-    const totalImageLength = () => {
-       return (imageSize/2) * (6 + 1);
-    }
+    const picListSize = ((picturesDisplayed + 1) * imageSize/2);
+    const marginOnASide = scale(30);
+    const componentWidth = picListSize + 2 * marginOnASide;
 
     const computeImageOffset = (index: number) => {
-        
-        // const freeSpace = Dimensions.get('window').width - totalImageLength();
-        // const offset = (freeSpace/4) + totalImageLength() - imageSize;
-        // const value = - (index * (imageSize * 1.5)) + offset;
-        // return value;
-        return -(index) * imageSize/2
+        return (index) * imageSize/2 + marginOnASide;
     }
 
     return(
-            <View style={[SpacingStyles.centeredContainer, {margin: scale(5)}]}>
-                <View style={[{flexDirection: 'row', position:'relative', margin: scale(14)}, SpacingStyles.centeredContainer]} onLayout={(event) => handleViewChange(event.nativeEvent.layout)}>  
-                {imageUrlsArray !== undefined && imageUrlsArray.map((imageUrl, index) => {
-                        return(
-                            <Image key={index} source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}  style={[{left: computeImageOffset(index), width: imageSize, height: imageSize}, styles.profileImage]}/>
-                            //     <View key={index} style={[styles.imageContainer, {width: imageSize, height: imageSize, backgroundColor: 'green', left: computeImageOffset(index)}]}>                            
-                            //         <Image source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}  style={[{left: computeImageOffset(index)}, styles.profileImage]}/>
-                            //    </View>
-                            
-                        )
-                })}
-                
+            <View style={[SpacingStyles.centeredContainer, {width: componentWidth, height: imageSize * 2}]}>
+                <View style={[{flexDirection: 'row', width:'100%'}, SpacingStyles.centeredContainer]}>  
+                    {imageUrlsArray !== undefined && imageUrlsArray.map((imageUrl, index) => {
+                            if(index < 6)
+                            return(
+                                <Image key={index} 
+                                source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}
+                                style={[{right: computeImageOffset(index), top: 0, width: imageSize, height: imageSize}, styles.profileImage]}/>            
+                            )
+                    })}
                 </View>
-                <Text>{imageUrlsArray !== undefined ? imageUrlsArray.length : 0} people</Text> 
+                <Text style={{marginTop: imageSize}}>{imageUrlsArray !== undefined ? imageUrlsArray.length : 0} people</Text> 
             </View>
     );
 };

@@ -14,6 +14,7 @@ import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack
 import { navigationUtils } from '../utils';
 import { PersonalInfo, SelectSkates, SelectSport, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
 import { SvgView } from '../components/general';
+import { loadWalkthorughStateAsync } from '../redux/walkthroughState';
 
 
 const AfterLogin = () => {
@@ -27,9 +28,15 @@ const AfterLogin = () => {
   const popUp = useRef<NotificationPopup | null>(null);
 
   const Stack = createNativeStackNavigator();
+
+  // useEffect(() => {
+  //   console.log("We'll prepare loading")
+  //   dispatch(loadWalkthorughStateAsync());
+  // }, [])
+  
   
   useEffect(() => {
-    console.log("Route updated " + currentRoute);
+    //console.log("Route updated " + currentRoute);
     setTabBarVisible(navigationUtils.ShouldHaveTabBar(currentRoute));
     //dispatch(setMySchedules(Fetch.getSchedules()));
   }, [currentRoute])

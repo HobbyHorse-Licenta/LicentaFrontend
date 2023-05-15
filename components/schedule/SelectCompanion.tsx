@@ -11,6 +11,7 @@ import SelectAgeGap from './SelectAgeGap';
 import SelectNumberOfPeople from './SelectNumberOfPeople';
 import { useDispatch } from 'react-redux';
 import { setGender, setMaximumAge, setMaxNumberOfPeople, setMinimumAge } from '../../redux/createScheduleState';
+import { SpacingStyles } from '../../styles';
 
 interface Distance {
     label: string,
@@ -20,9 +21,9 @@ interface Distance {
 const SelectCompanion = () => {
     
     const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
-    const [numberOfPartners, setNumberOfPartners] = useState();
-    const [minimumAge, setMinimumAgee] = useState();
-    const [maximumAge, setMaximumAgee] = useState();
+    const [numberOfPartners, setNumberOfPartners] = useState<number>();
+    const [minimumAge, setMinimumAgee] = useState<number>();
+    const [maximumAge, setMaximumAgee] = useState<number>();
 
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -98,9 +99,16 @@ const SelectCompanion = () => {
 
     return(
         <PrimaryContainer styleInput={{padding: scale(10)}}>
-            <Text>Do you want to go in group or not?</Text>
-            <SelectNumberOfPeople onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
-            <Text>Which age gap are you confortable with for your companion?</Text>
+            <View style={{marginBottom: scale(25)}}>
+                <Text variant="titleMedium" style={{padding: scale(5)}}>You would go out with maximum:</Text>
+                <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
+                    <SelectNumberOfPeople onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
+                    <Text style={{marginLeft: scale(10)}}>skaters</Text>
+                </View>
+            </View>
+        
+            <Text variant="titleMedium">Which age gap are you confortable with?</Text>
+            <Text variant="titleSmall" style={{marginBottom: scale(7)}}>Skaters aged:</Text>
             <SelectAgeGap onMinimumAgeChange={(age) => setMinimumAgee(age)}
                             onMaximumAgeChange={(age) => setMaximumAgee(age)}/>
             {getGenderPrefrence()}

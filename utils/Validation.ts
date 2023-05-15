@@ -1,5 +1,10 @@
+import { CreateScheduleState } from "../redux/createScheduleState";
 import uiUtils from "./UI";
 class Validation {
+
+    // areAllFieldsDefinedAndNotNull(object: CreateScheduleState) : boolean {
+    //     return Object.values(object).every(value => value !== undefined && value !== null);
+    // }
 
     isDefined(variable: any): boolean {
         if(Array.isArray(variable))
@@ -52,7 +57,7 @@ class Validation {
         return only30LettersRegex.test(typedName)
     };
     validateShortDescription = (shortDescription) : boolean => {
-        const descriptionTextRegex = /^[A-Za-z0-9 .,:;'""-]{1,200}$/;
+        const descriptionTextRegex = /^[A-Za-z0-9 .,:;'""!?-]{1,200}$/;
         return descriptionTextRegex.test(shortDescription);
     };
  

@@ -80,7 +80,6 @@ const SelectStyleAndExperience = () => {
                     {
                         stylesArray.map((style, index) => {
                             const enumStyle = stringToEnum(style);
-                            console.log(enumStyle);
                             return(
                                 <View key={index}>
                                     {(index != 0) && <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>}

@@ -11,6 +11,8 @@ import { verticalScale } from 'react-native-size-matters';
 import 'firebase/auth';
 import { getAuth, onAuthStateChanged, Auth } from "firebase/auth";
 import type { FirebaseApp } from 'firebase/app';
+import { getNetworkStateAsync } from 'expo-network';
+
 
 
 import { setWindowHeight } from './redux/ui';
@@ -18,10 +20,12 @@ import MainStack from './stacks/MainStack';
 import { Fetch } from './services';
 import {authenticationUtils, uiUtils} from './utils';
 import { firebaseConfig } from './firebaseConfig';
-import { resetAppState, setJWTToken, setUser, setUserId } from './redux/appState';
+import { resetAppState, setCurrentSkateProfile, setJWTToken, setUser, setUserId } from './redux/appState';
 import { User } from './types';
 import LoadingScreen from './screens/preLogin/LoadingScreen';
 import { RootState } from './redux/store';
+import { CheckInternetScreen } from './screens/preLogin';
+//import { wsUrl } from './assets/apiUrl';
 
 const windowH = Dimensions.get("window").height;
 
@@ -43,14 +47,109 @@ export const firebaseApp : FirebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth : Auth  = getAuth(firebaseApp);
 
 
+
+
 const WholeScreen = () => {
   
     const dispatch = useDispatch();
     const theme = useTheme();
     const popUp = useRef<NotificationPopup | null>(null);
     const windowHeight = useMemo(() => getWindowHeight(), []);
+    const [internetConnected, setInternetConnected] = useState<boolean | undefined>(undefined);
+    const [waitingToRecheckInternet, setWaitingToRecheckInternet] = useState(null);
+    const {user}  = useSelector((state: RootState) => state.appState);
     const [loading, setLoading] = useState(true);
+    
 
+
+
+    useEffect(() => {
+      checkInternet();
+    }, [])
+
+    useEffect(() => {
+      if(user !== undefined && user !== null)
+      {
+        if(user.skateProfiles !== undefined && user.skateProfiles !== null && user.skateProfiles.length !== 0)
+        {
+          dispatch(setCurrentSkateProfile(user.skateProfiles[0]));
+        }
+      }
+    }, [user])
+
+ 
+  
+  //   ////////////WEBSOCKET RELATED///////////
+  //   const clientRef = useRef<WebSocket | null>(null);
+  //   const [waitingToReconnect, setWaitingToReconnect] = useState(null);
+  //   const [isOpen, setIsOpen] = useState(false);
+  //   ////////////////////////////////////////
+
+  // useEffect(() => {
+        
+  //   if (waitingToReconnect) {
+  //     return;
+  //   }
+    
+  //   console.log("Am reintrat si incercam un reconnect");
+
+  //   // Only set up the websocket once
+  //   if (!clientRef.current) {
+  //     console.log("Definim websocket")
+  //     const webSocketConnectionString = `${wsUrl}/EventNotifications`;
+  //     console.log("Conn string: " + webSocketConnectionString)
+  //     const client = new WebSocket(webSocketConnectionString);
+  //     clientRef.current = client;
+
+  //     window.client = client;
+
+  //     client.onerror = (e) => console.error(e);
+
+  //     client.onopen = () => {
+  //       setIsOpen(true);
+  //       console.log('Connected to the server websocket');
+  //     };
+
+  //     client.onclose = () => {
+
+  //       if (clientRef.current) {
+  //         // Connection failed
+  //         console.log('Disconnected from websocket. Check internet or server.')
+  //       } else {
+  //         // Cleanup initiated from app side, can return here, to not attempt a reconnect
+  //         console.log('ws closed by app component unmount');
+  //         return;
+  //       }
+
+  //       if (waitingToReconnect) {
+  //         return;
+  //       };
+
+  //       // Parse event code and log
+  //       setIsOpen(false);
+  //       console.log('ws closed');
+
+  //       setWaitingToReconnect(true);
+
+  //       setTimeout(() => setWaitingToReconnect(null), 5000);
+  //     };
+
+  //     client.onmessage = (e) => {
+  //       console.log("Received: " + e.data);
+  //       handleWebSocketPopUp(e.data);
+  //     };
+
+
+  //     return () => {
+  //       console.log('Cleanup');
+  //       // Dereference, so it will set up next time
+  //       clientRef.current = null;
+
+  //       client.close();
+  //     }
+  //   }
+
+  // }, [waitingToReconnect]);
     
 //TODO on ios the tabbar si covering the screen SHOULD BE SOLVED
 
@@ -75,6 +174,24 @@ const WholeScreen = () => {
         uiUtils.setNotificationRef(popUp);
     }, [popUp])
     
+       
+    const getNetInfo = async() => {
+      const netInfo = await getNetworkStateAsync();
+      return netInfo;
+    }
+
+    
+    const checkInternet = () => {
+      getNetInfo().then(info => {
+        setInternetConnected(info.isConnected);
+        setTimeout(() => {
+          checkInternet();
+        }, 2000);
+      });
+    }
+
+
+
     const checkUser = (user) => {
       if (user !== null && user !== undefined) 
       {
@@ -128,8 +245,9 @@ const WholeScreen = () => {
           hidden={false}
         />
         <NotifRefProvider.Provider value={popUp}>
-          {loading === true && <LoadingScreen></LoadingScreen>}
-          {loading === false && <MainStack></MainStack>}
+          {(loading === true || internetConnected === undefined) && <LoadingScreen></LoadingScreen>}
+          {loading === false && internetConnected === true && <MainStack></MainStack>}
+          {loading === false && internetConnected === false && <CheckInternetScreen></CheckInternetScreen>}
         </NotifRefProvider.Provider>
         <View style={{width: '100%', height: 9, position: "absolute", top: Platform.OS === 'ios' ? 0 : -verticalScale(30)}}>
           <NotificationPopup

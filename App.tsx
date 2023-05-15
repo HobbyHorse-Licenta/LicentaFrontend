@@ -1,15 +1,26 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import {LogBox} from 'react-native'
 
-import { persistor, store } from './redux/store';
+import { persistor} from './redux/store';
+import { store } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Provider as PaperProvider} from 'react-native-paper'
 import { EventProvider } from 'react-native-outside-press';
+import { CopilotProvider } from "react-native-copilot";
+import {
+  TourGuideProvider, // Main provider
+  TourGuideZone, // Main wrapper of highlight component
+  TourGuideZoneByPosition, // Component to use mask on overlay (ie, position absolute)
+  useTourGuideController, // hook to start, etc.
+} from 'rn-tourguide'
 
 import WholeScreen from './WholeScreen';
 import { COLORS } from './assets/colors/colors';
 import useFonts from './hooks/useFonts';
+import { NetworkStateType } from 'expo-network/build/Network.types';
+import LoadingScreen from './screens/preLogin/LoadingScreen';
 
 
 const theme = {
@@ -80,19 +91,20 @@ export default function App() {
     EStyleSheet.build();
     loadFonst();
   }, [])
-  
 
-  return (
+return (
     <EventProvider style={{ flex: 1 }}>
       <ReduxProvider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <PaperProvider theme={theme}>
-            <WholeScreen></WholeScreen>
+            <TourGuideProvider {...{ borderRadius: 16 }} androidStatusBarVisible={true}>
+              <WholeScreen></WholeScreen>
+            </TourGuideProvider >
           </PaperProvider>
         </PersistGate>
       </ReduxProvider>
     </EventProvider>
-   
+    
   );
 }
 

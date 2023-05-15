@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
@@ -11,6 +11,7 @@ import Button from '../../components/general/Button';
 import { Layout1Piece } from '../layouts';
 import { authenticationUtils, uiUtils, validation } from '../../utils';
 import LoadingScreen from './LoadingScreen';
+import PasswordInput from '../../components/general/PasswordInput';
 
 const LoginScreen = () => {
 
@@ -22,7 +23,7 @@ const LoginScreen = () => {
 
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
-   
+    
     // onAuthStateChanged(firebaseAuth, (user) => {
     // if (user) {
     //     // User is signed in, see docs for a list of available properties
@@ -73,12 +74,11 @@ const LoginScreen = () => {
                         autoCapitalize={"none"}
                         onChangeText={handleEmailInput}
                         />
-                        <TextInput
-                        style={[styles.textInput, {backgroundColor: theme.colors.primary}]}
+                        <PasswordInput
+                        style={{...styles.textInput, backgroundColor: theme.colors.primary}}
                         label="Password"
                         selectionColor={theme.colors.tertiary}
                         value={password}
-                        secureTextEntry={true}
                         onChangeText={handlePasswordInput}
                         />
                         <View style={styles.buttonAndText}>

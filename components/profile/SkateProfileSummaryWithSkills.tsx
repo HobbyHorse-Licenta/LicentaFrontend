@@ -85,16 +85,14 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
             // //add recommended skill to assigned skills in curent skate profile, mastering level should be begginer
             const newAssignedSkill: AssignedSkill = {
                 id: uuid.v4().toString(),
+                skillId: recommendedSkill.skill.id,
                 skateProfileId: profileInfo.id,
-                skill: recommendedSkill.skill,
                 masteringLevel: MasteringLevel.Novice
             }
 
-            //TODO: make it so it updates just the assigned skill and after that use dispatch to update the skill with the value returned from fetch
             if(user !==  undefined)
-                Fetch.postAssignedSkill(newAssignedSkill, () => console.log("Posted assigned skill succesfully"), () => console.log("Coudn't post assigned skill"))
+                Fetch.postAssignedSkill(newAssignedSkill, (postedAssignedSkill) => dispatch(addAssignedSkill(postedAssignedSkill)), () => console.log("Coudn't post assigned skill"))
 
-            dispatch(addAssignedSkill(newAssignedSkill));
         }
         setAddSkillModalVisible(false);
     }

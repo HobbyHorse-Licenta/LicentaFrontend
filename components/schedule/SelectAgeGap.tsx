@@ -1,44 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {View, StyleSheet, Platform} from 'react-native';
+import {View} from 'react-native';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { scale } from 'react-native-size-matters';
-import {useTheme} from 'react-native-paper'
+import {useTheme, Text} from 'react-native-paper'
+import { SpacingStyles } from '../../styles';
 
 
 interface Input {
-    onMinimumAgeChange: Function,
-    onMaximumAgeChange: Function,
+    onMinimumAgeChange: (minimumAge: number) => void,
+    onMaximumAgeChange: (maximumAge: number) => void,
 }
 
 const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange} : Input) => {
 
     const minimumAge = 12;
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<string | null>(null);
-    const [items, setItems] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge).toString()}}));
+    const [value, setValue] = useState<number | null>(null);
+    const [items, setItems] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge)}}));
 
     const [open2, setOpen2] = useState(false);
-    const [value2, setValue2] = useState<string | null>(null);
-    const [items2, setItems2] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge).toString()}}));
+    const [value2, setValue2] = useState<number | null>(null);
+    const [items2, setItems2] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge)}}));
  
     const theme = useTheme();
 
     useEffect(() => {
-        onMinimumAgeChange(value);
+        if(value !== null)
+            onMinimumAgeChange(value);
     }, [value])
 
     useEffect(() => {
-        onMaximumAgeChange(value);
+        if(value2 !== null)
+            onMaximumAgeChange(value2);
     }, [value2])
   
     return(
-        <View style={{flexDirection: 'row'}}>
+        <View style={[{flexDirection: 'row'}, SpacingStyles.centeredContainer]}>
             <DropDownPicker
             listMode='SCROLLVIEW'
-            style={{
-                width: scale(100)
-                }}
+            placeholder='Min age'
                 containerStyle={{width: scale(100)}}
                 textStyle={{
                 fontSize: scale(14),
@@ -60,12 +61,11 @@ const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange} : Input) => {
             zIndex={3}
             autoScroll={true}
             />
+            <Text style={{marginHorizontal: scale(10)}}>to</Text>
             <DropDownPicker
             zIndex={3}
             listMode='SCROLLVIEW'
-            style={{
-                width: scale(100)
-                }}
+            placeholder='Max age'
                 containerStyle={{width: scale(100)}}
                 textStyle={{
                 fontSize: scale(14),
@@ -96,9 +96,7 @@ const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange} : Input) => {
             }}
             setItems={setItems2}
             />
-        </View>
-       
-      
+        </View> 
     );
 };
 

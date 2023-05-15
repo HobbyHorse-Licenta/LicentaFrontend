@@ -15,12 +15,12 @@ interface SvgViewInput {
     onPress?:  Function,
     children: ReactNode,
     style?: ViewStyle | TextStyle,
-    size: 'tiny' | 'small' | 'medium' | 'big'
+    size: 'tiny' | 'small' | 'medium' | 'big' | 'very large'
 } 
 
 
 
-const SvgView = ({children, onPress, style, size}: SvgViewInput) => {
+const SvgView = ({children, onPress, style, size}: SvgViewInput, {copilot}) => {
 
     const getStyle = () => {
         let s;
@@ -37,6 +37,9 @@ const SvgView = ({children, onPress, style, size}: SvgViewInput) => {
             case 'big':
                 s = [SpacingStyles.bigIcon, style];
             break;
+            case 'very large':
+                s = [SpacingStyles.veryLargeIcon, style];
+            break;
             default:
                 s = [SpacingStyles.smallIcon, style];
             break;
@@ -52,8 +55,8 @@ const SvgView = ({children, onPress, style, size}: SvgViewInput) => {
     const theme = useTheme();
 
     return (
-        <View style={getStyle()}>
-        <TouchableWithoutFeedback  onPress={() => (onPress != undefined) ? onPress() : console.log("[SvgView]: No action on press")}>
+        <View style={getStyle()} {...copilot}>
+        <TouchableWithoutFeedback onPressOut={() => (onPress !== undefined) ? onPress() : console.log("[SvgView]: No action on press")}>
             {children}
         </TouchableWithoutFeedback>
         </View>

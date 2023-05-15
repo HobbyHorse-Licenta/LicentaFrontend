@@ -3,16 +3,22 @@ import { persistReducer, persistStore } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CircularJSON from 'circular-json';
 import thunk from 'redux-thunk'
+import logger from 'redux-logger';
 
 import uiReducer from './ui'
 import appStateReducer from "./appState";
+import walkthroughReducer, { loadWalkthorughStateAsync } from "./walkthroughState"
 import { AppState } from "./appState";
 import createScheduleStateReducer, { CreateScheduleState } from "./createScheduleState";
 import configProfileStateReducer from "./configProfileState"
+import { WalkthroughState } from "./walkthroughState";
+import { saveWalkthroughStateAsync } from "./walkthroughState";
+import { debounce } from 'lodash';
 
 export interface RootState {
   appState: AppState;
-  createScheduleState: CreateScheduleState
+  createScheduleState: CreateScheduleState,
+  walkthroughState: WalkthroughState
 }
 
 ///We use the serializer to make it ignore circular references when serializing and deserializing
@@ -25,9 +31,11 @@ export interface RootState {
 //   },
 // };
 
+
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
+  whitelist: ['walkthrough']
   //serializer: serializer
 }
 
@@ -36,15 +44,21 @@ const rootReducer = combineReducers({
   ui: uiReducer,
   appState: appStateReducer,
   createScheduleState: createScheduleStateReducer,
-  configProfile: configProfileStateReducer
+  configProfile: configProfileStateReducer,
+  walkthroughState: persistReducer(persistConfig, walkthroughReducer)
 })
-
-
-const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
-    reducer: persistedReducer
+    reducer: rootReducer,
+    middleware: [thunk]
 })
-//export const store = configureStore(persistedReducer, applyMiddleware(thunk));
 
-export const persistor = persistStore(store)
+const saveWalkthroughStateAsyncDebounced = debounce(saveWalkthroughStateAsync, 3000);
+
+store.dispatch(loadWalkthorughStateAsync());
+
+store.subscribe(() => {
+  saveWalkthroughStateAsyncDebounced(store.getState().walkthroughState);
+})
+
+export const persistor = persistStore(store);

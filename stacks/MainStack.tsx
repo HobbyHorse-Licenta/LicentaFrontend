@@ -58,8 +58,12 @@ const MainStack = () => {
   });
   
   const resetNavigationState = () => {
-    console.log("RESET NAV STATE!")
-    navigationRef.dispatch(resetAction)
+    if(JWTToken !== undefined)
+    {
+      console.log("RESET NAV STATE! (THIS GIVES ERROR WHEN USER IS NOT LOGGED IN)")
+      navigationRef.dispatch(resetAction)
+    }
+
   };
 
 
@@ -69,14 +73,11 @@ const MainStack = () => {
       onReady={() => setRouteName(navigationRef.getCurrentRoute()?.name)}
       initialState={initialState}
       onStateChange={async (state) => {
-        console.log("NAV STATE CHANGE");
         const currentRouteName = navigationRef.getCurrentRoute()?.name;
         if(currentRouteName != undefined)
         {
-          console.log("SET CURRENT ROUTE")
           dispatch(setCurrentRoute(currentRouteName));
         }
-          
       }}
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>

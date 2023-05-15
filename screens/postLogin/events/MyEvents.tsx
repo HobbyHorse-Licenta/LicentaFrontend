@@ -42,7 +42,7 @@ const MyEvents = () => {
       <View style={{justifyContent: 'space-evenly', alignItems: 'center'}}>
          {
         user !== undefined &&
-        <SkateProfiles profiles={user?.skateProfiles} value={currentSkateProfile}
+        <SkateProfiles style={{margin: scale(20)}} profiles={user?.skateProfiles} value={currentSkateProfile}
         onValueChange={(profile) => {dispatch(setCurrentSkateProfile(profile))}}></SkateProfiles>
         }
         {

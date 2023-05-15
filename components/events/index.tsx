@@ -1,3 +1,4 @@
 import EventsBody from './EventsBody'
 import EventInfoDisplay from "./EventInfoDisplay";
-export {EventsBody, EventInfoDisplay}
+import AddAggresiveSkatingEvent from './AddAggresiveSkatingEvent';
+export {EventsBody, EventInfoDisplay, AddAggresiveSkatingEvent}

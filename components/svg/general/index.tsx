@@ -13,6 +13,8 @@ import HandDownSvg from "./HandDownSvg";
 import MaleSvg from "./MaleSvg";
 import FemaleSvg from "./FemaleSvg";
 import MaleAndFemaleSvg from "./MaleAndFemaleSvg";
+import VisiblePassSvg from "./VisiblePassSvg";
+import NoInternetSvg from "./NoInternetSvg";
 export {ChatSvg, AllEventsSvg, MapsSvg, ScheduleSvg, MyEventsSvg, ProfileSvg,
     PlusSvg, LocationSvg, LevelSvg, BigLocationSvg, DeleteSvg, HandDownSvg, MaleSvg, 
-    FemaleSvg, MaleAndFemaleSvg}
+    FemaleSvg, MaleAndFemaleSvg, VisiblePassSvg, NoInternetSvg}

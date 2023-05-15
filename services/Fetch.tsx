@@ -4,10 +4,60 @@ import {basketUrl, tennisUrl} from '../assets/imageUrls'
 import {apiUrl} from '../assets/apiUrl'
 import { useSelector } from 'react-redux';
 
+const commentOn = false;
+
 const Fetch = {
+//delete/schedule/{scheduleId}"
+    delete: async function(JWTToken: string, url: string, callBackFunction: Function, errorCallBackFunction: Function) {
+      if(commentOn)
+      {
+        console.log("DELETE; endpoint => " + url + "\n");
+      }
+      try 
+      {
+        const response = await fetch(url, {
+            headers: {
+              "Authorization": `Bearer ${JWTToken}`,
+              "Content-Type": "application/json"
+            },
+            method: "DELETE",
+          });
+      
+        if (!response.ok) {
+          errorCallBackFunction();
+          throw new Error(`get: HTTP error! Status: ${response.status}`);
+          
+        }
+        else {
+          //const data = await response.json();
+          if(commentOn)
+          {
+            console.log("DELETE; made successful\n\n\n");
+          }
+          callBackFunction();
+        }
     
+      } 
+      catch (error) {
+        console.error(`Error: ${error.message}`);
+        if (error.message === 'Network request failed') {
+          errorCallBackFunction();
+          console.log('Network error occurred!');
+        } else {
+          errorCallBackFunction();
+          console.error(`Error: ${error.message}`);
+        }
+      }
+    },
+    deleteSchedule: async function(scheduleId: string, callBackFunction: Function, errorCallBackFunction: Function){
+      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+      this.delete(jwtToken, `${apiUrl}/schedule/delete/schedule/${scheduleId}`, callBackFunction, errorCallBackFunction);
+    },
     put: async function(JWTToken: string, url: string, updatedObject: any, callBackFunction: Function, errorCallBackFunction: Function) {
-      console.log("TRying the endpoint: " + JSON.stringify(url));
+      if(commentOn)
+      {
+        console.log("PUT; endpoint => " + url + "\nbody:\n" + JSON.stringify(updatedObject) + "\n");
+      }
       try 
       {
         const response = await fetch(url, {
@@ -26,6 +76,10 @@ const Fetch = {
         }
         else {
           const data = await response.json();
+          if(commentOn)
+          {
+            console.log("PUT; data returned:\n" + JSON.stringify(updatedObject) + "\n\n\n");
+          }
           callBackFunction(data);
         }
     
@@ -67,7 +121,16 @@ const Fetch = {
       this.post(jwtToken, `${apiUrl}/skill/post/assignedSkill`, assignedSkill, callBackFunction, errorCallBackFunction);
     },
 
+    postSchedule: async function(schedule: Schedule, callBackFunction: Function, errorCallBackFunction: Function){
+      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+      this.post(jwtToken, `${apiUrl}/schedule/post/schedule`, schedule, callBackFunction, errorCallBackFunction);
+    },
+
     post: async function(jwtToken: string, url: string, objectToPost: any, callBackFunction: Function, errorCallBackFunction: Function){
+      if(commentOn)
+      {
+        console.log("POST; endpoint => " + url + "\nbody:\n" + JSON.stringify(objectToPost) + "\n");
+      }
       try {
         const response = await fetch(url, 
         { method: 'POST',
@@ -84,6 +147,10 @@ const Fetch = {
         }
         else{
           const data = await response.json();
+          if(commentOn)
+          {
+            console.log("POST; data returned:\n" + JSON.stringify(data) + "\n\n\n");
+          }
           callBackFunction(data);
         }
       } catch (error) {
@@ -98,7 +165,10 @@ const Fetch = {
     },
 
     get: async function(JWTToken: string, url: string, callBackFunction: Function, errorCallBackFunction: Function) {
-      console.log("Making fetch from: " + url);
+      if(commentOn)
+      {
+        console.log("GET; endpoint => " + url + "\n");
+      }
       try 
       {
         const response = await fetch(url, {
@@ -115,6 +185,10 @@ const Fetch = {
         }
       
         const data = await response.json();
+        if(commentOn)
+        {
+          console.log("GET; data returned:\n" + JSON.stringify(data) + "\n\n\n");
+        }
         callBackFunction(data);
       } 
       catch (error) {

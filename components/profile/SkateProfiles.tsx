@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import {View, StyleSheet, ScrollView, Pressable} from 'react-native'
+import {View, StyleSheet, ScrollView, Pressable, ViewStyle} from 'react-native'
 
 import {Text, useTheme } from 'react-native-paper'
 import { scale, verticalScale } from 'react-native-size-matters';
+import { getStyle } from 'react-native-svg/lib/typescript/xml';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAddingSkateProfile, setCurrentSkateProfile } from '../../redux/appState';
+import { useTourGuideController } from 'rn-tourguide';
+import { setAddingSkateProfile } from '../../redux/appState';
+import { resetConfigProfileState } from '../../redux/configProfileState';
 import { Fetch } from '../../services';
 
 import { SpacingStyles } from '../../styles';
@@ -20,22 +23,42 @@ interface Input {
     onValueChange: Function,
     addEnabled?: boolean,
     holdFeatureEnabled?: boolean,
+    style?: ViewStyle
 }
-const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureEnabled} : Input) => {
+const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureEnabled, style} : Input) => {
     
     const [heldProfile, setHeldProfile] = useState<SkateProfile | undefined>();
 
     const theme = useTheme();
     const dispatch = useDispatch();
 
-   
-    
+    const { canStart, start, stop, TourGuideZone } = useTourGuideController('heldskateProfile');
 
+    useEffect(() => {
+      if(heldProfile !== undefined)
+      {
+        if(canStart)
+        {
+            start();
+        }
+      }
+    }, [heldProfile])
+
+    const getStyle = () => {
+        if(style !== undefined)
+            return {...styles.mainContainer, ...style}
+        else return {...styles.mainContainer, height: 'auto'}
+    }
+    
     const getModalInfo = () =>{
         if(heldProfile !== undefined)
         {
             return(
-                <SkateProfileSummaryWithSkills skateProfileId={heldProfile.id}></SkateProfileSummaryWithSkills>
+                <TourGuideZone
+                zone={1} text={`Here you can add new skills`}>
+                    <SkateProfileSummaryWithSkills skateProfileId={heldProfile.id}></SkateProfileSummaryWithSkills>
+                </TourGuideZone>
+               
               )
         }
         else return(<Text>No info to display</Text>)
@@ -43,6 +66,7 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
     }
   
     const addNewSkateProfile = () => {
+        dispatch(resetConfigProfileState());
         dispatch(setAddingSkateProfile(true));
     }
 
@@ -55,7 +79,7 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
     }
 
     return(
-        <PrimaryContainer styleInput={{...styles.mainContainer, ...{height: 'auto'}}}>
+        <PrimaryContainer styleInput={getStyle()}>
         <Text variant='headlineSmall'>Skate Profiles</Text>
             {
                 profiles != undefined &&
@@ -66,6 +90,7 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
                             <Pressable onPress={() => addNewSkateProfile()}>
                                 <PrimaryContainer
                                 styleInput={{...SpacingStyles.skateProfileSummary, ...{backgroundColor: theme.colors.background, borderColor: theme.colors.tertiary}}}>
+                                     
                                     <SvgView size='small'>
                                         <PlusSvg></PlusSvg>
                                     </SvgView>

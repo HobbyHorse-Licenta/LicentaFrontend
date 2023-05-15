@@ -10,30 +10,42 @@ import { PrimaryContainer } from "../general";
 import SelectTimeAndroid from './SelectTimeAndroid';
 import SelectTimeIos from './SelectTimeIos';
 import { scale } from "react-native-size-matters";
+import { useTourGuideController } from "rn-tourguide";
 
-const SelectHourRange = () => {
+interface Input {
+  startTime: Date,
+  endTime: Date,
+  onStartTimeChange: (newStartTime: Date) => void,
+  onEndTimeChange: (newEndTime: Date) => void,
+}
 
-    const [startTime, setStart] = useState<Date>(new Date())
-    const [endTime, setEnd] = useState<Date>(new Date())
+const SelectHourRange = ({startTime, endTime, onStartTimeChange, onEndTimeChange} : Input) => {
 
-    const dispatch = useDispatch();
-    useEffect(() => {
-      dispatch(setStartTime(startTime.getTime()));
-      dispatch(setEndTime(endTime.getTime()));
-    }, [startTime, endTime])
-    
+    const {
+      canStart, // a boolean indicate if you can start tour guide
+      start, // a function to start the tourguide
+      stop, // a function  to stopping it
+      eventEmitter, // an object for listening some events
+      TourGuideZone
+    } = useTourGuideController('schedule')
+
     const setEndTimeSchedule = (selectedEndTime: Date) => {
       if(selectedEndTime > startTime)
-        setEnd(selectedEndTime);
+        onEndTimeChange(selectedEndTime);
     }
 
     const setStartTimeSchedule = (selectedStartTime: Date) => {
-      setStart(selectedStartTime);
+      onStartTimeChange(selectedStartTime);
       if(endTime < selectedStartTime)
-        setEnd(selectedStartTime);
+        onEndTimeChange(selectedStartTime);
     }
 
     return(
+      <TourGuideZone
+      zone={1}
+      text={"Available hour range is 08:00 - 22:00"}
+      borderRadius={16}
+      >
       <PrimaryContainer styleInput={{marginVertical: scale(10)}}>
         {   
         Platform.OS === "android" ?
@@ -51,6 +63,7 @@ const SelectHourRange = () => {
         )
         }
       </PrimaryContainer>
+      </TourGuideZone>
     );
 };
 

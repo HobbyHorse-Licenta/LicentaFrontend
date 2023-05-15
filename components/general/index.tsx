@@ -19,7 +19,14 @@ import PopupMenu from "./PopupMenu";
 import SelectNumber from "./SelectNumber";
 import UserSummary from "./UserSummary";
 import LoadingComponent from "./LoadingComponent";
+import SelectedDaysDisplay from "./SelectedDaysDisplay";
+import PasswordInput from "./PasswordInput";
+import FemaleOption from "./FemaleOption";
+import MaleOption from "./MaleOption";
+import QuestionModal from "./QuestionModal";
+import RectangularPicture from "./RectangularPicture";
+import AggresiveEventCard from "./AggresiveEventCard";
 export {TextImage, Button, EventCard, ProfilePicList, RoundPicture, PlusTile,
-     AppHeader, PrimaryContainer, SelectTime,
-    SvgView, GeneralModal, SelectionListModal, 
-    SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu,UserSummary, SelectNumber}
+     AppHeader, PrimaryContainer, SelectTime, LoadingComponent, PasswordInput, MaleOption, FemaleOption,
+    SvgView, GeneralModal, SelectionListModal, SelectedDaysDisplay, RectangularPicture, AggresiveEventCard,
+    SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu,UserSummary, SelectNumber, QuestionModal}
