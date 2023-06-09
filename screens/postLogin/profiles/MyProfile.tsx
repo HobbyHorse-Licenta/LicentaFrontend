@@ -10,14 +10,16 @@ import { Layout2PieceForNavigator } from "../../layouts";
 import { useDispatch, useSelector } from "react-redux";
 import { Gender, User } from "../../../types";
 import { useNavigation } from "@react-navigation/native";
-import { authenticationUtils } from "../../../utils";
+import { authenticationUtils, uiUtils } from "../../../utils";
 import { SpacingStyles } from "../../../styles";
 import { setCurrentSkateProfile } from "../../../redux/appState";
 import { RootState } from "../../../redux/store";
 import {SMILING_FACE_WITH_OPEN_MOUTH} from "../../../assets/emotes"
 import { TourGuideZoneByPosition, useTourGuideController } from "rn-tourguide";
+import { setMyProfileWalkthrough } from "../../../redux/walkthroughState";
 
 const MyProfile = () => {
+  const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState(false);
   const {user}= useSelector((state: RootState) => state.appState);
   const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
   const theme = useTheme();
@@ -38,6 +40,23 @@ const MyProfile = () => {
         start()
       }
   }, [canStart])   
+
+
+  useEffect(() => {
+    if(eventEmitter !== undefined)
+    {
+        eventEmitter.on('stop', showWalkthroughModal)
+    }
+    return () => {
+      if(eventEmitter !== undefined)
+      {
+          eventEmitter.off('stop', showWalkthroughModal)
+      }
+    }
+  }, []) 
+
+  const showWalkthroughModal = () => setSkipWalkthroughPromptVisibility(true);
+
   //////
   useEffect(() => {
     //console.log("Current profile: " + JSON.stringify(currentSkateProfile));
@@ -102,6 +121,9 @@ const MyProfile = () => {
           {skateProfiles()}
          
           {userDescription()}
+
+          {uiUtils.getShowWalkthroughModal(skipWalkthroughPromptVisibility, (visibility) => setSkipWalkthroughPromptVisibility(visibility),
+                                                () => dispatch(setMyProfileWalkthrough(false)))}
           
         </View>
       );

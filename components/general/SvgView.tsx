@@ -15,7 +15,7 @@ interface SvgViewInput {
     onPress?:  Function,
     children: ReactNode,
     style?: ViewStyle | TextStyle,
-    size: 'tiny' | 'small' | 'medium' | 'big' | 'very large'
+    size: 'tiny' | 'small' | 'medium' | 'big' | 'very large' | 'wrappable'
 } 
 
 
@@ -39,6 +39,9 @@ const SvgView = ({children, onPress, style, size}: SvgViewInput, {copilot}) => {
             break;
             case 'very large':
                 s = [SpacingStyles.veryLargeIcon, style];
+            break;
+            case 'very large':
+                s = [SpacingStyles.wrappableIcon, style];
             break;
             default:
                 s = [SpacingStyles.smallIcon, style];

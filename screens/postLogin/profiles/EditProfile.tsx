@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import { View, StyleSheet, Image } from 'react-native'
 
 import { scale, verticalScale } from "react-native-size-matters";
@@ -34,12 +34,18 @@ const EditProfile = () => {
     else setEditedName(previousText => previousText);
   }
 
+  useEffect(() => {
+    console.log("Selected iamge in edit " + editedImage);
+  }, [editedImage])
+  
   const finishedProfileEdit = () => {
     if(user !== undefined && editedName !== undefined && editedName !== null && editedAge !== undefined && editedAge !== null)
     {
       const editedUser: User = {
         ...user, name: editedName, age: editedAge, profileImageUrl: editedImage
       }
+      console.log("ID: " + user.id);
+      console.log("Edited user: " + JSON.stringify(editedUser))
       Fetch.putUser(user.id, editedUser, 
       (updatedUser) => {dispatch(setUser(updatedUser))},
       () => console.log("Coudn't update user after profile edit"));

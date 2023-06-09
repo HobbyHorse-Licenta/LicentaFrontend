@@ -8,6 +8,7 @@ import { LocationSvg } from '../svg/general';
 import { Event } from '../../types';
 
 import { SvgView } from '../general';
+import { defaultEventUrl2 } from '../../assets/imageUrls';
 
 interface Input {
     event: Event
@@ -15,15 +16,22 @@ interface Input {
 
 const EventImage = ({event}: Input) => {
 
-        
+    const getImage = () => {
+        if(event.imageUrl !== undefined && event.imageUrl.length !== 0)
+        {
+            return event.imageUrl;
+        }
+        return defaultEventUrl2;
+    }
+        //TODO: change location Text
     return(
         <View>
-            <ImageBackground source={{uri: event.imageUrl}} resizeMode="cover" style={styles.image}>
+            <ImageBackground source={{uri: getImage()}} resizeMode="cover" style={styles.image}>
                 <View style={styles.locationView}>
                     <SvgView size={'small'}>
                         <LocationSvg color='white'></LocationSvg>
                     </SvgView>
-                    <Text variant='bodyLarge' style={{color: 'white'}}>{event.location}</Text>
+                    <Text variant='bodyLarge' style={{color: 'white'}}>{event.outing.trailType}</Text>
                 </View>
             </ImageBackground>
             

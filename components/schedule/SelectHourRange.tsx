@@ -29,6 +29,7 @@ const SelectHourRange = ({startTime, endTime, onStartTimeChange, onEndTimeChange
       TourGuideZone
     } = useTourGuideController('schedule')
 
+
     const setEndTimeSchedule = (selectedEndTime: Date) => {
       if(selectedEndTime > startTime)
         onEndTimeChange(selectedEndTime);

@@ -4,12 +4,15 @@ import { Pressable, View, StyleSheet} from "react-native";
 import { useTheme, Text } from "react-native-paper";
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { useDispatch } from 'react-redux';
+import uuid from 'react-native-uuid'
+
 
 import { SpacingStyles } from '../../styles'
-import {Day, WeekDays} from '../../types';
+import {Day} from '../../types';
 import { scale } from "react-native-size-matters";
 import { PrimaryContainer } from "../general";
 import { setSelectedDaysState } from "../../redux/createScheduleState";
+import dayScheduleUtils from "../../utils/DaySchedule";
 
 interface Input {
   selectedDays: Array<Day>,
@@ -21,20 +24,24 @@ const SelectDays = ({selectedDays, onSelectedDaysChange}: Input) => {
   const theme = useTheme();
 
   const isActiveDay = useCallback(
-    (thisDay: Day, days: Array<Day>) => {
-      return days.includes(thisDay);
+    (thisDay: number, days: Array<Day>) => {
+      return days.find(day => day.dayOfMonth === thisDay);
     },
     []
   );
 
-  const selectDay = (day: Day) => {
+  const selectDay = (day: number) => {
     if (isActiveDay(day, selectedDays)) {
-      const filtered = selectedDays.filter((v) => v !== day);
+      const filtered = selectedDays.filter((v) => v.dayOfMonth !== day);
       onSelectedDaysChange(filtered);
     } else {
-      onSelectedDaysChange([...selectedDays, day]);
+      const newDay: Day = {
+        id: uuid.v4().toString(),
+        dayOfMonth: day
+      }
+      onSelectedDaysChange([...selectedDays, newDay]);
     }
-    Object.keys(WeekDays).forEach(e => console.log(`key=${e}  value=${WeekDays[e]}`));
+    //Object.keys(WeekDays).forEach(e => console.log(`key=${e}  value=${WeekDays[e]}`));
   };
 
   return (
@@ -43,9 +50,9 @@ const SelectDays = ({selectedDays, onSelectedDaysChange}: Input) => {
       <View style={[styles.selectDaysContainer,{
         backgroundColor: 'purple'}]}>
         <View style={[SpacingStyles.daysContainer, {backgroundColor: theme.colors.primary}]}>
-            {WeekDays.map((day) => {
+            {dayScheduleUtils.getWeekDates().map((day, index) => {
               return (
-                <Pressable key={day.index} onPress={() => selectDay(day)}>
+                <Pressable key={index} onPress={() => selectDay(day)}>
                   <View
                     style={[
                       SpacingStyles.day, SpacingStyles.daySelected, {borderColor: theme.colors.onPrimaryContainer},
@@ -54,7 +61,7 @@ const SelectDays = ({selectedDays, onSelectedDaysChange}: Input) => {
                     ]}
                   >
                     <Text style={isActiveDay(day, selectedDays) ? {color: theme.colors.onPrimary} : {color: 'black'}}>
-                      {day.minimumForm}
+                      {dayScheduleUtils.getDayOfWeekFromDayOfMonthMinimumForm(day)}
                     </Text>
                   </View>
                 </Pressable>

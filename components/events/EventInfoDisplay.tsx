@@ -5,7 +5,7 @@ import { Text, useTheme } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 
 import { SpacingStyles } from "../../styles";
-import { Event } from "../../types";
+import { Event, ParkTrail } from "../../types";
 import SvgView from "../general/SvgView";
 import { BigLocationSvg, LevelSvg } from "../svg/general";
 
@@ -14,7 +14,13 @@ interface EventInput {
 }
 const EventInfoDisplay = ({event}: EventInput) => {
 
+    const parkTrail: ParkTrail = (event.outing.trail as ParkTrail);
     const theme = useTheme();
+
+    const getTimeRange = () : string => {
+        return `${new Date(event.outing.startTime).getHours()}:${new Date(event.outing.startTime).getMinutes()} - 
+        ${new Date(event.outing.endTime).getHours()}:${new Date(event.outing.endTime).getMinutes()}`
+    }
     return(
             <View style={[ styles.descriptionView, SpacingStyles.centeredContainer]}>
                 
@@ -25,12 +31,25 @@ const EventInfoDisplay = ({event}: EventInput) => {
                     </SvgView>
                     <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.skateExperience}</Text>
                 </View>
+
+                <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
+                    <Text style={[styles.descriptionText]}>
+                        Age range: {event.minimumAge} - {event.maximumAge}</Text>
+                </View>
+
+                <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
+                    <Text style={[styles.descriptionText]}>{event.gender}</Text>
+                </View>
+
+                <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
+                    <Text style={[styles.descriptionText]}>{getTimeRange()}</Text>
+                </View>
                 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                     <SvgView size='tiny'>
                         <BigLocationSvg color={theme.colors.onPrimary}></BigLocationSvg>
                     </SvgView>
-                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{event.outing.trailType}</Text>
+                    <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{parkTrail.name}</Text>
                 </View>
             </View>
     );

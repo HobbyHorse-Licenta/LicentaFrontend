@@ -1,31 +1,20 @@
-import React, { useState, useEffect, useRef, RefObject } from 'react';
-import {View, StyleSheet, Platform, Button} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {View, StyleSheet, Platform} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
-import MapView, {Circle, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import {Text as ReactNativeText} from 'react-native'
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {Text, useTheme} from 'react-native-paper'
 import * as ExpoLocation from 'expo-location';
-import OutsidePressHandler from 'react-native-outside-press';
 import uuid from 'react-native-uuid';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
+import {
+useTourGuideController,
+} from 'rn-tourguide'
 
-  import {
-    TourGuideProvider, // Main provider
-     // Main wrapper of highlight component
-    TourGuideZoneByPosition, // Component to use mask on overlay (ie, position absolute)
-    useTourGuideController, // hook to start, etc.
-  } from 'rn-tourguide'
-
-
-import { SpacingStyles } from "../../styles";
-import { FemaleSvg, LocationSvg } from '../svg/general';
-import { Location, Zone } from '../../types';
+import { LocationSvg } from '../svg/general';
+import { Location, ParkTrail, Zone } from '../../types';
 import { PrimaryContainer, SvgView } from '../general';
-import Fetch from '../../services/Fetch';
-import { SafeAreaView } from 'react-navigation';
 import {mapsUtils} from '../../utils';
-import { TennisSvg } from '../svg/sports';
 import LoadingComponent from '../general/LoadingComponent';
 import { useDispatch, useSelector } from 'react-redux';
 import { setZone } from '../../redux/createScheduleState';
@@ -42,9 +31,10 @@ interface Input {
     onTouchOutside?: Function
 }
 
-const SelectLocation = ({onTouchInside, onTouchOutside}) => {
+const SelectLocationAggresive = ({onTouchInside, onTouchOutside} : Input) => {
 
-    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile, allParkTrails} = useSelector((state: RootState) => state.appState)
+    const [range, setRange] = useState<number>(1);
     const [selectedLocation, setSelectedLocation] = useState<Location | undefined>({
         id: uuid.v4().toString(),
         name: 'Cluj-Napoca',
@@ -52,10 +42,7 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
         long:  23.596937
     });
     const dispatch = useDispatch();
-
-    const [range, setRange] = useState<number>(1);
     const theme = useTheme()
-
     const mapRef = useRef<MapView | null>(null);
     const [rangeArray, setRangeArray] = useState<Distance[]>([
         {label: '+0.2', value: 0.2},
@@ -89,8 +76,6 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
     }, [canStart])   
     //////
 
-    
-
     /* Gets and sets device location */
     useEffect(() => {
         (async () => {
@@ -123,13 +108,6 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
     }, []);
 
     useEffect(() => {
-        Fetch.getLocation('Cluj-Napoca',
-        (locationFromDb) => {selectedLocation === undefined && setSelectedLocation(locationFromDb)},
-        () => console.log("Coudn't get Cluj-Napoca location"));
-       
-    }, [])
-
-    useEffect(() => {
         if(selectedLocation !== undefined)
             mapsUtils.zoomMapInAndOut(mapRef, selectedLocation, range);
 
@@ -149,17 +127,13 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
             dispatch(setZone(zone));
          }
     }    
-    
-    
 
     const renderWheelPickerItem = (itemToRender) => {
         return(
             <Text style={{ alignSelf: 'center'}}>{itemToRender.label}</Text>
         );
     }
-    // <OutsidePressHandler  onOutsidePress={() =>  onTouchOutside !== undefined && onTouchOutside()} disabled={false}>
     
-    const ref = useRef(null)
     return(
         <View >
             <PrimaryContainer styleInput={{padding: scale(10), marginVertical: scale(10)}}>
@@ -217,20 +191,21 @@ const SelectLocation = ({onTouchInside, onTouchOutside}) => {
                             >
                             {mapsUtils.getMarker(selectedLocation, selectedLocation.name)}
                             {mapsUtils.getCircle(selectedLocation, range)}
+                            {allParkTrails !== undefined && mapsUtils.getParkTrailMarkers(allParkTrails)}
                             </MapView>
-                        </TourGuideZone>
+                        </TourGuideZone>                        
                     ):
                     (
                         <LoadingComponent width={styles.mapFraction.width} height={styles.mapFraction.height}></LoadingComponent>
                     )
-                    }
+                }
             </PrimaryContainer>
         </View>
       
     );
 };
 
-export default SelectLocation;
+export default SelectLocationAggresive;
 
 const styles = StyleSheet.create({
     picker: {

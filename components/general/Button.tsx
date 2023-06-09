@@ -31,7 +31,7 @@ const Button = ({text, onPress, style, disabled, mode, textColor} : Params) => {
     
     return(
         <PaperButton textColor={textColor !== undefined ? textColor : undefined} mode={mode !== undefined ? mode :  "contained"} onPress={() => !disabled && onPress()} style={getStyle()}>
-            <Text>{text}</Text>
+            {text}
         </PaperButton>
     );
 };

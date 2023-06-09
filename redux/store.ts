@@ -6,7 +6,7 @@ import thunk from 'redux-thunk'
 import logger from 'redux-logger';
 
 import uiReducer from './ui'
-import appStateReducer from "./appState";
+import appStateReducer, { loadAppStateAsync, saveAppStateAsync } from "./appState";
 import walkthroughReducer, { loadWalkthorughStateAsync } from "./walkthroughState"
 import { AppState } from "./appState";
 import createScheduleStateReducer, { CreateScheduleState } from "./createScheduleState";
@@ -54,11 +54,14 @@ export const store = configureStore({
 })
 
 const saveWalkthroughStateAsyncDebounced = debounce(saveWalkthroughStateAsync, 3000);
+const saveAppStateAsyncDebounced = debounce(saveAppStateAsync, 3000);
 
 store.dispatch(loadWalkthorughStateAsync());
+store.dispatch(loadAppStateAsync());
 
 store.subscribe(() => {
   saveWalkthroughStateAsyncDebounced(store.getState().walkthroughState);
+  saveAppStateAsyncDebounced(store.getState().appState);
 })
 
 export const persistor = persistStore(store);

@@ -10,26 +10,31 @@ export type RenderElement = {
 
 /////////////////////////////////////////////////
 
-export type Day = {
-  minimumForm: string;
-  shortForm: string;
-  longForm: string;
-  index: number;
-};
+// export type DayConstant = {
+//   minimumForm: string;
+//   shortForm: string;
+//   longForm: string;
+//   index: number;
+// };
 
-export const WeekDays: Day[] = 
-[
-  {minimumForm: 'M', shortForm: 'Mon', longForm: 'Monday', index: 1},
-  {minimumForm: 'T', shortForm: 'Tue', longForm: 'Tuesday', index: 2},
-  {minimumForm: 'W', shortForm: 'Wed', longForm: 'Wednesday', index: 3},
-  {minimumForm: 'T', shortForm: 'Thu', longForm: 'Thursday', index: 4},
-  {minimumForm: 'F', shortForm: 'Fri', longForm: 'Friday', index: 5},
-  {minimumForm: 'S', shortForm: 'Sat', longForm: 'Saturday', index: 6},
-  {minimumForm: 'S', shortForm: 'Sun', longForm: 'Sunday', index: 7}
-]
-
-
+// const weekDays: DayConstant[] = 
+// [
+//   {minimumForm: 'M', shortForm: 'Mon', longForm: 'Monday', index: 1},
+//   {minimumForm: 'T', shortForm: 'Tue', longForm: 'Tuesday', index: 2},
+//   {minimumForm: 'W', shortForm: 'Wed', longForm: 'Wednesday', index: 3},
+//   {minimumForm: 'T', shortForm: 'Thu', longForm: 'Thursday', index: 4},
+//   {minimumForm: 'F', shortForm: 'Fri', longForm: 'Friday', index: 5},
+//   {minimumForm: 'S', shortForm: 'Sat', longForm: 'Saturday', index: 6},
+//   {minimumForm: 'S', shortForm: 'Sun', longForm: 'Sunday', index: 7}
+// ]
+// const currentDay = new Date().getDay();
+// export const WeekDays = weekDays.slice(currentDay - 1).concat(weekDays.slice(0, currentDay - 1));
 /////////////////////////////////////////////////
+export enum MarkerType {
+  Start,
+  Finish,
+  Checkpoint
+}
 
 export enum SportName {
   InlineSkating = 'InlineSkating'
@@ -63,7 +68,6 @@ export enum SkatePracticeStyles {
   SpeedSkating = 'Speed Skating'
 }
 
-
 export enum Gender {
   Male = 'Male',
   Female = 'Female',
@@ -76,15 +80,14 @@ export enum Gender {
 export type SkateProfile = {
   id: string,
   userId: string,
+  user?: User,
   events?: Array<Event>,
   recommendedEvents?: Array<Event>,
   assignedSkills?: Array<AssignedSkill>,
   schedules?: Array<Schedule>,
   skateType: SkatesType,
   skatePracticeStyle: SkatePracticeStyles,
-
   skateExperience: SkateExperience
- 
 }
 
 export type Skill = {
@@ -111,6 +114,7 @@ export type AssignedSkill = {
 
 export type User = {
   id: string,
+  pushNotificationToken?: string,
   skateProfiles: Array<SkateProfile>
   name: string,
   age: number,
@@ -128,8 +132,9 @@ export type Outing = {
   startTime: number,
   endTime: number,
   skatePracticeStyle: SkatePracticeStyles,
-  trailType: string,
-  trail: ParkTrail | CustomTrail
+  trailType: 'ParkTrail' | 'CustomTrail',
+  trail: ParkTrail | CustomTrail,
+  booked: boolean
 }
 
 
@@ -163,10 +168,43 @@ export type Event = {
   recommendedSkateProfiles?: Array<SkateProfile>,
   imageUrl?: string,
   description?: string,
-  gender: Gender
+  gender: Gender,
+  minimumAge: number,
+  maximumAge: number
+}
+
+export type AggresiveEvent = {
+  id: string,
+  name: string,
+  note: string,
+  maxParticipants: number,
+  skateExperience: SkateExperience,
+  outing: AggresiveOuting,
+  skateProfiles?: Array<SkateProfile>,
+  days?: Array<Day>,
+  imageUrl?: string,
+  description?: string,
+  gender: Gender,
+  minimumAge: number,
+  maximumAge: number
  
 }
 
+export type Day = {
+  dayOfMonth: number,
+  id: string;
+};
+
+
+export type AggresiveOuting = {
+  id: string,
+  eventId: string,
+  startTime: number,
+  endTime: number,
+  skatePracticeStyle: SkatePracticeStyles,
+  trail: CustomTrail,
+  booked: boolean
+}
 
 export type Zone = {
   id: string,
@@ -207,16 +245,5 @@ export type Schedule = {
   maxNumberOfPeople: number
   
 }
-
-// export type TimeRange = {
-//   id: string,
-//   startTime: Date,
-//   endTime: Date,
-// }
-
-// export type StateTimeRange = {
-//   startTime: number,
-//   endTime: number,
-// }
 
 

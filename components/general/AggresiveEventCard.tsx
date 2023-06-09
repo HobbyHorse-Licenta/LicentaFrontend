@@ -2,16 +2,18 @@ import React, { useState, useEffect} from 'react'
 import { View, StyleSheet, Dimensions, Image, Pressable} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
-import { useTheme, Text } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 
 import Button from './Button';
-import { Event, SportName, User } from '../../types';
+import { Event, SkateProfile, User } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
-import {basketUrl, blankProfilePictureUrl, defaultEventUrl, tennisUrl} from '../../assets/imageUrls'
+import { defaultEventUrl } from '../../assets/imageUrls'
 import { resourceAccess } from '../../utils';
 import { Fetch } from '../../services';
 import ProfilePicList from './ProfilePicList';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -31,7 +33,7 @@ interface EventInput {
 }
 
 const AggresiveEventCard = ({event, onPress}: EventInput) => {
-
+    
     const [dimensions, setDimensions] = useState({
         window: windowDimensions,
         screen: screenDimensions,
@@ -39,30 +41,19 @@ const AggresiveEventCard = ({event, onPress}: EventInput) => {
 
     const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
     const [profileImagesUrl, setProfileImagesUrl] = useState<Array<string | undefined> | undefined>();
-
+    const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
+    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
     //TODO REMOVE THIS
     useEffect(() => {
-      if(event.imageUrl == undefined)
+      if(event.imageUrl == undefined || event.imageUrl.length === 0)
         setImageUrl(resourceAccess.getDefaultSkatingEventImage())
       else setImageUrl(event.imageUrl);
 
-      const getAllPicturesFromUsers = (users: Array<User>) => {
-        setProfileImagesUrl(users.map((user) => {
-            if(user.profileImageUrl !== undefined && user.profileImageUrl !== null)
-                return user.profileImageUrl;
-            else return undefined;
-        }));
-      }
-      Fetch.getAllUsers(
-        (users) => {getAllPicturesFromUsers(users)},
-        () => console.log("Coudn't get all users"));
-    }, []);
+      Fetch.getSuggestedSkateProfilesForEvent(event.id,
+        (skateProfiles) => setRecommendedSkateProfiles(excludeCurrentSkateProfile(skateProfiles)),
+        () => console.log("Coudn't get suggested users"));
 
-    useEffect(() => {
-        if(event.imageUrl == undefined)
-          setImageUrl(resourceAccess.getDefaultSkatingEventImage())
-        else setImageUrl(event.imageUrl);
-      }, []);
+    }, []);
 
     const theme = useTheme();
 
@@ -76,40 +67,58 @@ const AggresiveEventCard = ({event, onPress}: EventInput) => {
     return () => subscription?.remove();
     });
 
-    const computeWidth = () => 80/100*dimensions.window.width;
-    const computeHeight = () => 25/100*dimensions.window.height;
+    useEffect(() => {
+        if(recommendedSkateProfiles !== undefined && recommendedSkateProfiles.length > 0)
+        {
+            //console.log("RECOMNEDE SKATE PROGILES:  " + JSON.stringify(getAllPicturesFromSkateProfiles(recommendedSkateProfiles)));
+            setProfileImagesUrl(getAllPicturesFromSkateProfiles(recommendedSkateProfiles));
+        }
+    }, [recommendedSkateProfiles])
+    
 
-    const openEventPage = () => {
-
+    const getAllPicturesFromSkateProfiles = (skateProfiles: Array<SkateProfile>): Array<string | undefined> =>
+    {
+        let userArray: Array<User> = [];
+        skateProfiles.forEach(skateProfile => skateProfile.user !== undefined && userArray.push(skateProfile.user));
+        if(userArray !== undefined)
+           return getAllPicturesFromUsers(userArray);
+        return [];   
     }
+
+    const getAllPicturesFromUsers = (users: Array<User>): Array<string | undefined> => {
+        return users.map((user) => {
+            if(user.profileImageUrl !== undefined && user.profileImageUrl !== null)
+                return user.profileImageUrl;
+            else return undefined;
+        });
+    }
+
+    const excludeCurrentSkateProfile = (skateProfiles: Array<SkateProfile>) : Array<SkateProfile>  => {
+        const filteredSkateProfiles = skateProfiles.filter(skateProfile => skateProfile.id != currentSkateProfile?.id);
+        return filteredSkateProfiles;
+    }
+
     function joinEvent(){
         console.log("join event");
         // console.log(propertiesOf<EventDescription>(basketEventDescription))
     }
 
-    function propertiesOf<TObj>(_obj: (TObj | undefined) = undefined) {
-        return function result<T extends keyof TObj>(name: T) {
-            return name;
-        }
-    }
+    // function propertiesOf<TObj>(_obj: (TObj | undefined) = undefined) {
+    //     return function result<T extends keyof TObj>(name: T) {
+    //         return name;
+    //     }
+    // }
 
     return(
         <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}
-        style={[styles.container, styles.roundness, {width: scale(280), height: scale(260), alignSelf: 'center'}]}>
-            <View style={{width:'40%', height:'100%'}}>
-                <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
-            </View>
-
-            <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
+        style={[styles.container]}>
                 <EventInfoDisplay event={event}></EventInfoDisplay>
-                <View style={{width:'80%', flex: 1, margin: '5%'}}>
+                <View style={{width:'80%', margin: '5%'}}>
                     <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
                 </View>
-                <View style={{width:'80%', flex: 1, margin: '5%', alignSelf: 'center'}}>
+                <View style={{width:'80%', margin: '5%', alignSelf: 'center'}}>
                     <ProfilePicList imageUrlsArray={profileImagesUrl}></ProfilePicList>
                 </View>
-                
-            </View>
         </Pressable>
     );
 };
@@ -120,7 +129,9 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         flexDirection: 'row',
-
+        width: scale(280), 
+        height: scale(400),
+        alignSelf: 'center',
         margin: '2%',
         backgroundColor: 'white'
 

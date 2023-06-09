@@ -37,7 +37,7 @@ const ProfilePicList = ({imageUrlsArray} : ProfilePicListInput) => {
     }
 
     return(
-            <View style={[SpacingStyles.centeredContainer, {width: componentWidth, height: imageSize * 2}]}>
+            <View style={[SpacingStyles.centeredContainer, {alignSelf: 'center', width: componentWidth, height: imageSize * 2}]}>
                 <View style={[{flexDirection: 'row', width:'100%'}, SpacingStyles.centeredContainer]}>  
                     {imageUrlsArray !== undefined && imageUrlsArray.map((imageUrl, index) => {
                             if(index < 6)

@@ -1,10 +1,26 @@
 import React from 'react';
+
 import NotificationPopup from 'react-native-push-notification-popup';
+
 import { MasteringLevel } from '../types';
+import { QuestionModal } from '../components/general';
+
 
 class UI {
     notificationRef: React.RefObject<NotificationPopup | null>;
- 
+    
+    getShowWalkthroughModal (visible: boolean, setVisibilityMethod: (visibility: boolean) => void,
+        onWalkthroughSkip: () => void) {
+
+        return(
+            <QuestionModal visible={visible} onDismiss={() => setVisibilityMethod(false)}
+            question={"Skip walkthrough next time?"}
+            onButton1Press={() => setVisibilityMethod(false)} button1Text={"Don't skip"}
+            onButton2Press={() => {onWalkthroughSkip(); setVisibilityMethod(false)}} button2Text={"Skip"}
+            ></QuestionModal>
+        )
+    }
+
     getColorBasedOnSkillLevel(level: MasteringLevel){
         switch (level) {
             case MasteringLevel.Novice:
@@ -30,6 +46,10 @@ class UI {
     }
     setNotificationRef(ref: any) {
         this.notificationRef = ref;
+    }
+
+    getNotificationRef() {
+        return this.notificationRef;
     }
 
     showPopUp ( title: string, messageBody: string, onPress?: Function) {

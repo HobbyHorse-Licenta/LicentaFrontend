@@ -1,7 +1,9 @@
-import React, { useState } from "react"
+import React from "react"
 import {Pressable, View, StyleSheet} from 'react-native'
+
 import { Text, useTheme } from "react-native-paper";
-import { scale, verticalScale } from "react-native-size-matters";
+import { scale } from "react-native-size-matters";
+
 import { Gender } from "../../types";
 import { SvgView } from "../general";
 import { FemaleSvg, MaleAndFemaleSvg, MaleSvg } from "../svg/general";
@@ -11,7 +13,6 @@ interface Input {
     onGenderChange: (gender: Gender | undefined) => void
 }
 const SelectGender = ({gender, onGenderChange} :  Input) => {
-    //const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
 
     const theme = useTheme();
 
@@ -67,25 +68,6 @@ const SelectGender = ({gender, onGenderChange} :  Input) => {
 export default SelectGender;
 
 const styles = StyleSheet.create({
-    picker: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginHorizontal: scale(10)
-    },
-    mapFraction: {
-        width: scale(300),
-        height: verticalScale(60)
-    },
-    container: {
-        padding: scale(10),
-        borderRadius: 20, 
-        backgroundColor: 'purple'
-    },
-    genderIcon: {
-        width: scale(50),
-        height: scale(50),
-    },
     iconWithLabel: {
         justifyContent: 'center',
         alignItems:'center',

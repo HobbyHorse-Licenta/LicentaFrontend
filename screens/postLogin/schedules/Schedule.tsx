@@ -5,10 +5,10 @@ import { scale } from "react-native-size-matters";
 import uuid from 'react-native-uuid';
 
 import { SpacingStyles } from '../../../styles';
-import { AddSports, ScheduleHeader, SelectDays, SelectLocation, SelectHourRange, SelectCompanion} from '../../../components/schedule';
+import { AddSports, ScheduleHeader, SelectDays, SelectLocationAggresive, SelectLocationCasualAndSpeed, SelectHourRange, SelectCompanion} from '../../../components/schedule';
 import { Layout2Piece } from '../../layouts';
-import { Gender, Schedule as ScheduleType, SportName } from "../../../types";
-import { GeneralHeader } from "../../../components/general";
+import { Gender, Schedule as ScheduleType, SkatePracticeStyles, SportName } from "../../../types";
+import { GeneralHeader, QuestionModal } from "../../../components/general";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../redux/store";
@@ -17,6 +17,8 @@ import { Fetch } from "../../../services";
 import { addSchedule, backupUser, revertChangesInUser } from "../../../redux/appState";
 import { setEndTime, setSelectedDaysState, setStartTime } from "../../../redux/createScheduleState";
 import { Day } from "../../../types";
+import { setScheduleWalkthrough } from "../../../redux/walkthroughState";
+import { useTourGuideController } from "rn-tourguide";
 
 
 const Schedule = () => {
@@ -26,13 +28,40 @@ const Schedule = () => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState<boolean>(false);
   const [sportPickerVisible, setSportPickerVisible] =  useState<boolean>(false);
   const [selectedSports, setSelectedSports] = useState<Array<SportName>>([]);
+  const [parkSelected, setParkSelected] = useState(false);
   const [scrollEnable, setScrollEnable] = useState(true);
   const [canCreateSchedule, setCanCreateSchedule] = useState(false);
   const [selectedDays, setSelectedDays] = useState<Array<Day>>([]);
   const [startTime, setStarTTime] = useState<Date>(new Date())
   const [endTime, setEnDTime] = useState<Date>(new Date())
+
+  // const {
+  //   canStart, // a boolean indicate if you can start tour guide
+  //   start, // a function to start the tourguide
+  //   stop, // a function  to stopping it
+  //   eventEmitter, // an object for listening some events
+  //   TourGuideZone
+  // } = useTourGuideController('schedule')
+
+  // useEffect(() => {
+  //   console.log("SETTING UP EVENT EMITER");
+  //   if(eventEmitter !== undefined)
+  //   {
+
+  //       eventEmitter.on('stop', () => setSkipWalkthroughPromptVisibility(true))
+  //       console.log("SETTING UP IS DONE");
+  //   }
+  //   return () => {
+  //     if(eventEmitter !== undefined)
+  //     {
+  //         eventEmitter.off('stop', () => setSkipWalkthroughPromptVisibility(true))
+  //     }
+  //   }
+  // }, [])
 
   //checks if all fields are completed so the schedule can be created
   //(also sets if the button is disabled or not)
@@ -68,8 +97,17 @@ const Schedule = () => {
       setCanCreateSchedule(false);
       return;
     }
+    if(currentSkateProfile !== undefined && (currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.CasualSkating || currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.SpeedSkating))
+    {
+      if(parkSelected === false)
+      {
+        setCanCreateSchedule(false);
+        return;
+      }
+      
+    }
     setCanCreateSchedule(true);
-  }, [scheduleConfig])
+  }, [scheduleConfig, parkSelected])
   
   useEffect(() => {
     dispatch(setSelectedDaysState(selectedDays));
@@ -84,7 +122,6 @@ const Schedule = () => {
     setSelectedDays(selectedDays);
   }
  
-  
   const createNewSchedule = () => {
 
     if(currentSkateProfile !== undefined && currentSkateProfile !== null)
@@ -147,9 +184,24 @@ const Schedule = () => {
         {/* <View style={[SpacingStyles.centeredContainer, {flex: 0.7}]}>
           <AddSports selectedSports={selectedSports} onDelete={deleteFromSelectedSports} onAddPress={() => setSportPickerVisible(true)}></AddSports>
         </View> */}
-        <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
-          <SelectLocation onTouchInside={() => {setScrollEnable(false)}} onTouchOutside={() => {setScrollEnable(true);}}></SelectLocation>
-        </View>
+        {
+          currentSkateProfile?.skatePracticeStyle === SkatePracticeStyles.AggresiveSkating &&
+          <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
+            <SelectLocationAggresive onTouchInside={() => {setScrollEnable(false)}} onTouchOutside={() => {setScrollEnable(true);}}></SelectLocationAggresive>
+          </View>
+        }
+        {
+          currentSkateProfile !== undefined &&
+          (currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.CasualSkating || currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.SpeedSkating) &&
+          <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
+            <SelectLocationCasualAndSpeed 
+            parkSelected={parkSelected}
+            setParkSelected={setParkSelected}
+            onTouchInside={() => {setScrollEnable(false)}} 
+            onTouchOutside={() => {setScrollEnable(true);}}></SelectLocationCasualAndSpeed>
+          </View>
+        }
+       
         <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
           <SelectCompanion></SelectCompanion>
         </View>
@@ -162,6 +214,13 @@ const Schedule = () => {
     return(
       <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {padding: scale(14)}]}>
         {getcreateScheduleContainer()}
+        {/* {uiUtils.getShowWalkthroughModal(skipWalkthroughPromptVisibility, (visibility) => setSkipWalkthroughPromptVisibility(visibility),
+                                                () => console.log("Nothing"))} */}
+            <QuestionModal visible={skipWalkthroughPromptVisibility} onDismiss={() => setSkipWalkthroughPromptVisibility(false)}
+            question={"Skip walkthrough next time?"}
+            onButton1Press={() => setSkipWalkthroughPromptVisibility(false)} button1Text={"Don't skip"}
+            onButton2Press={() => { setSkipWalkthroughPromptVisibility(false)}} button2Text={"Skip"}
+            ></QuestionModal>
       </View>
     );
   }

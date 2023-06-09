@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 
 import { Text, useTheme } from 'react-native-paper';
 import { scale } from 'react-native-size-matters';
-import { getStyle } from 'react-native-svg/lib/typescript/xml';
 import { FemaleSvg } from '../svg/general';
 import SvgView from './SvgView';
 

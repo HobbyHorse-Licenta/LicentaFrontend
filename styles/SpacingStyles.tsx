@@ -141,6 +141,13 @@ export const SpacingStyles = StyleSheet.create({
         height: scale(50),
         padding: scale(3),
       },
+      wrappableIcon: {
+        borderRadius: 10,
+        margin: scale(4),
+        width: "100%",
+        height: "100%",
+        padding: scale(3),
+      },
       veryLargeIcon: {
         borderRadius: 10,
         margin: scale(4),

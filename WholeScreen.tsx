@@ -1,13 +1,14 @@
 import React, { createContext, MutableRefObject, useEffect, useMemo, useRef, useState} from 'react'
 import { View, StatusBar, Dimensions, Platform } from 'react-native';
 
-
+import * as Notifications from 'expo-notifications';
 import { useDispatch, useSelector } from 'react-redux';
 import NotificationPopup from 'react-native-push-notification-popup';
 import { useTheme } from 'react-native-paper';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { initializeApp } from 'firebase/app';
 import { verticalScale } from 'react-native-size-matters';
+import * as Device from 'expo-device';
 import 'firebase/auth';
 import { getAuth, onAuthStateChanged, Auth } from "firebase/auth";
 import type { FirebaseApp } from 'firebase/app';
@@ -25,6 +26,8 @@ import { User } from './types';
 import LoadingScreen from './screens/preLogin/LoadingScreen';
 import { RootState } from './redux/store';
 import { CheckInternetScreen } from './screens/preLogin';
+import { Subscription } from 'expo-modules-core';
+import dayScheduleUtils from './utils/DaySchedule';
 //import { wsUrl } from './assets/apiUrl';
 
 const windowH = Dimensions.get("window").height;
@@ -59,10 +62,117 @@ const WholeScreen = () => {
     const [waitingToRecheckInternet, setWaitingToRecheckInternet] = useState(null);
     const {user}  = useSelector((state: RootState) => state.appState);
     const [loading, setLoading] = useState(true);
+
+
+
+    ////EXPO PUSH////
+    const [expoPushToken, setExpoPushToken] = useState('');
+    //const [notification, setNotification] = useState<Notification>();
+    const notificationListener = useRef<Subscription>();
+    const responseListener = useRef<Subscription>();
+
+useEffect(() => {
+  console.log("Expo token obtained: " + expoPushToken);
+}, [expoPushToken])
+
+  useEffect(() => {
+    if(user !== null && user !== undefined)
+    {
+      registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+    }
+
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      }),
+    });
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+    });
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    // return () => {
+    //   Notifications.removeNotificationSubscription(notificationListener.current);
+    //   Notifications.removeNotificationSubscription(responseListener.current);
+    // };
+  }, [user]);
+
+  
+
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "You've got mail! 📬",
+        body: 'Here is the notification body',
+        data: { data: 'goes here' },
+      },
+      trigger: { seconds: 2 },
+    });
+  }
+  
+  async function registerForPushNotificationsAsync() {
+    let token;
+  
+    if (Platform.OS === 'android') {
+      await Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C',
+      });
+    }
+    else 
+    {
+      if(uiUtils.getNotificationRef() !== null)
+      {
+        uiUtils.showPopUp("NO ANDROID", "THIS IS NO ANDROID");
+      } 
+    }
+
+      if(uiUtils.getNotificationRef() !== null)
+      {
+        uiUtils.showPopUp("Permission", "looking for permissions");
+      } 
+      console.log("looking for permissions");
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        if(uiUtils.getNotificationRef() !== null)
+        {
+          uiUtils.showPopUp("Permission", "Was not granted, so I am asking");
+        } 
+      }
+      try {
+        token = (await Notifications.getExpoPushTokenAsync()).data;
+      } catch (error) {
+        console.log("Coudn't get token")
+      }
+
+      if(token !== undefined && token !== null)
+      {
+        if(user !== undefined && user !== null && (user.pushNotificationToken === null || user.pushNotificationToken === undefined))
+        {
+          const updatedUser: User = {
+            ...user,
+            pushNotificationToken: token
+          }
+          Fetch.putUser(user.id, updatedUser, 
+            () => console.log("Posted user notificationToken succesfully"),
+            () => console.log("Posted user notificationToken UNsuccesfully"))
+        }
+        else console.log("User undefined at this moment; can't post notification token");
+      }
+      
+
+    return token;
+  }
+    ////////////////
     
-
-
-
     useEffect(() => {
       checkInternet();
     }, [])
@@ -174,7 +284,6 @@ const WholeScreen = () => {
         uiUtils.setNotificationRef(popUp);
     }, [popUp])
     
-       
     const getNetInfo = async() => {
       const netInfo = await getNetworkStateAsync();
       return netInfo;

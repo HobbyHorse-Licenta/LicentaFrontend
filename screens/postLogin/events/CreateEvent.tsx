@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react'
-import { View, StyleSheet, Platform, Pressable, ScrollView, Image } from 'react-native';
+import { View, StyleSheet, Platform, Pressable, ScrollView, Image, TouchableOpacity, Button as ReactNativeButton } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -10,21 +10,25 @@ import Popover from 'react-native-popover-view/dist/Popover';
 import { Rect } from 'react-native-popover-view';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 
+
 import { Button, GeneralHeader, LoadingComponent, PrimaryContainer, RectangularPicture } from '../../../components/general';
 import { Layout2Piece } from '../../layouts';
 import { mapsUtils } from '../../../utils';
-import { CheckPoint, Location, Day, Gender, Event, SkateExperience, SkatePracticeStyles, CustomTrail } from '../../../types';
+import { CheckPoint, Location, Day, Gender, Event, SkateExperience, SkatePracticeStyles, CustomTrail, AggresiveEvent, MarkerType } from '../../../types';
 import { SpacingStyles } from '../../../styles';
 import { SelectAgeGap, SelectDays, SelectHourRange, SelectNumberOfPeople } from '../../../components/schedule';
 import SelectGender from '../../../components/createEvent/SelectGender';
 import { setMaxNumberOfPeople } from '../../../redux/createScheduleState';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addAggresiveEventToUser } from '../../../redux/appState';
+import { RootState } from '../../../redux/store';
+import { Fetch } from '../../../services';
 
 const containersWidth = scale(290);
 
 const CreateEvent = () => {
 
+    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
     const navigation =  useNavigation();
     const mapRef = useRef<MapView | null>(null);
     const theme = useTheme();
@@ -90,25 +94,31 @@ const CreateEvent = () => {
     const createEvent = () => 
     {
         if(description !== undefined && numberOfPartners !== undefined && eventName !== undefined
-            && gender !== undefined)
+            && gender !== undefined && currentSkateProfile !== undefined &&
+            maximumAge !== undefined && minimumAge !== undefined)
         {
             console.log("creating event");
             const eventId = uuid.v4().toString();
 
             const customTrail: CustomTrail = {
-                id: uuid.v4().toString(),
+                id: checkPointsArray[0].customTrailId,
                 trailName: "RANDOM NAME",
                 checkPoints: checkPointsArray
             }
 
-            const newEvent: Event = {
+            console.log("\n\nSchedules for the skateprofile the event is created for:\n\n" + JSON.stringify(currentSkateProfile.schedules));
+
+            const newAggresiveSkatingEvent: AggresiveEvent = {
                 id: eventId,
                 name: eventName,
                 note: description,
                 maxParticipants: numberOfPartners,
                 imageUrl: eventImage,
                 description: description,
+                days: selectedDays,
                 gender: gender,
+                maximumAge: maximumAge,
+                minimumAge: minimumAge,
                 skateExperience: SkateExperience.Advanced, //TODO selected by user
                 outing: {
                     id: uuid.v4().toString(),
@@ -116,12 +126,22 @@ const CreateEvent = () => {
                     startTime: startTime.getTime(),
                     endTime: endTime.getTime(),
                     skatePracticeStyle: SkatePracticeStyles.AggresiveSkating,
-                    trailType: "Custom Trail", //TODO selected by user
-                    trail: customTrail
-                }
+                    trail: customTrail,
+                    booked: true
+                },
+                skateProfiles: 
+                [
+                    {
+                        ...currentSkateProfile,
+                        schedules: undefined
+                    }
+                ]
             }
-            console.log("Adding event:\n" + JSON.stringify(newEvent));
-            dispatch(addAggresiveEventToUser(newEvent));
+            console.log("Adding event:\n" + JSON.stringify(newAggresiveSkatingEvent));
+            //dispatch(addAggresiveEventToUser(newAggresiveSkatingEvent));
+            Fetch.postAggresiveSkatingEvent(newAggresiveSkatingEvent,
+                () => console.log("POSTED NEW AGGRESIVE EVEVNT SUCCESSFULLY"), 
+                () => console.log("POSTED NEW AGGRESIVE EVEVNT UNSUCCESSFULLY"))
             //if event posted succesfully 
             navigation.navigate("Events" as never);
         }
@@ -145,11 +165,20 @@ const CreateEvent = () => {
     }
 
     const addCheckPoint = () => {
-        if(selectedLocation !== undefined)
+        if(selectedLocation !== undefined && checkPointsArray !== undefined )
         {
+            let customTrailId;
+            if(checkPointsArray.length === 0)
+            {
+                customTrailId = uuid.v4().toString();
+            }
+            else
+            {
+                customTrailId = checkPointsArray[0]?.customTrailId;
+            }
             const newCheckPoint: CheckPoint = {
                 id: uuid.v4().toString(),
-                customTrailId:  uuid.v4().toString(), //TODO to be fixed later on
+                customTrailId:  customTrailId, //TODO to be fixed later on
                 location: selectedLocation
             }
             setCheckPointsArray((currentArray) => [...currentArray, newCheckPoint])
@@ -198,10 +227,25 @@ const CreateEvent = () => {
 
     const getMarkers = () => {
         return checkPointsArray.map(
-        (checkpoint, index) => mapsUtils.getMarker(checkpoint.location, undefined, index,
+        (checkpoint, index) => 
+        {
+            let markerType: MarkerType;
+            if(index === 0)
+            {
+                markerType = MarkerType.Start;
+            }
+            else if(index === checkPointsArray.length - 1)
+            {
+                markerType = MarkerType.Finish;
+            }
+            else{
+                markerType = MarkerType.Checkpoint;
+            }
+            return mapsUtils.getCustomMarker(markerType, checkpoint.location, undefined, index,
             (changedCoordinates) => {
                 updateCheckpointCoordinates(index, changedCoordinates);
-            }));
+            });
+        });
     }
 
     const drawRoute = () => {
@@ -217,6 +261,8 @@ const CreateEvent = () => {
         return smallRoutes;
     }
 
+   
+      
     /** wraps to size of parent */
     const getMap = () => {
         return(
@@ -228,15 +274,16 @@ const CreateEvent = () => {
                 longitudeDelta: mapsUtils.kMToLongitudes(2, centeredLocation.lat)
             }}
             onLongPress={({nativeEvent}) => setSelectedLocation((prevLocation) => {
-            const {coordinate} = nativeEvent;
+                const {coordinate} = nativeEvent;
                 const newLocation :  Location = {
-                ...prevLocation,
-                id: uuid.v4().toString(),
-                lat: coordinate.latitude,
+                    ...prevLocation,
+                    id: uuid.v4().toString(),
+                    lat: coordinate.latitude,
                 long: coordinate.longitude
-                };
+            };
                 return newLocation;
             })}
+            //onPress={handleMapPress}
             onPress={({nativeEvent}) => showAddMarkerButton(nativeEvent)}
             provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
             >
@@ -250,15 +297,25 @@ const CreateEvent = () => {
 
     const getPopOver = () => {
         return(
-            <Popover 
-                 from={new Rect(markerPopOverPosition.x, markerPopOverPosition.y, 0, 0)} isVisible={markerPopOverVisible}>
-                <Button style={{backgroundColor: 'purple'}} text='Add marker'
+            <Popover
+            backgroundStyle={{ backgroundColor: 'transparent' }}
+            from={new Rect(markerPopOverPosition.x + scale(15), markerPopOverPosition.y, 0, 0)}
+            isVisible={markerPopOverVisible}
+            >          
+                <Button textColor='white' style={{backgroundColor: 'purple', borderRadius: 0}} text='Add marker'
                 onPress={() => 
                 {
                     addCheckPoint();
                     setSelectedLocation(undefined);
                     clearTimeout(timoutId);
                 }} />
+                {/* <ReactNativeButton title='Add marker'
+                onPress={() => 
+                {
+                    addCheckPoint();
+                    setSelectedLocation(undefined);
+                    clearTimeout(timoutId);
+                }} /> */}
             </Popover>
         )
     }

@@ -5,8 +5,9 @@ import { useTheme, Text } from "react-native-paper";
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { SpacingStyles } from '../../styles'
-import {Day, WeekDays} from '../../types';
+import {Day} from '../../types';
 import { scale } from "react-native-size-matters";
+import mapScheduleUtils from '../../utils/DaySchedule';
 import PrimaryContainer from "../general/PrimaryContainer";
 
 
@@ -17,18 +18,21 @@ const SelectedDaysDisplay = ({selectedDays} : Input) => {
 
   const theme = useTheme();
   const isActiveDay = useCallback(
-    (thisDay: Day, days: Array<Day>) => {
-      return days.find(day => {
-        return day.index === thisDay.index && day.longForm === thisDay.longForm 
-        && day.shortForm === thisDay.shortForm && day.minimumForm === thisDay.minimumForm
-      })
+    (thisDay: number, days: Array<Day>) => {
+      if(days !== undefined)
+      {
+        return days.find(day => {
+          return day.dayOfMonth === thisDay
+        })
+      }
+      else return false;
     },
     []
   );
 
   return (
     <PrimaryContainer styleInput={{...styles.daysContainer/*, backgroundColor: theme.colors.primary*/}}>
-        {WeekDays.map((day, index) => {
+        {mapScheduleUtils.getWeekDates().map((day, index) => {
             return (
                 <View key={index}
                 style={[
@@ -37,7 +41,7 @@ const SelectedDaysDisplay = ({selectedDays} : Input) => {
                 ]}
                 >
                 <Text style={isActiveDay(day, selectedDays) ? {color: theme.colors.onPrimary} : {color: 'black'}}>
-                    {day.minimumForm}
+                    {mapScheduleUtils.getDayOfWeekFromDayOfMonthMinimumForm(day)}
                 </Text>
                 </View>
             );

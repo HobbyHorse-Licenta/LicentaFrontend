@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {LogBox} from 'react-native'
 
 import { persistor} from './redux/store';
+import * as Notifications from 'expo-notifications';
 import { store } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';

@@ -1,6 +1,7 @@
-import {createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AssignedSkill, Schedule, SkatePracticeStyles, SkateProfile, Skill, User, Event } from '../types';
+import {createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AssignedSkill, Schedule, SkatePracticeStyles, SkateProfile, Skill, User, Event, ParkTrail } from '../types';
 import produce from 'immer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface AppState {
     userBackup: User | undefined,
@@ -13,6 +14,7 @@ export interface AppState {
     addingSkateProfile:  boolean,
     initialProfileConfigured: boolean,
     allSkills: Array<Skill> | undefined,
+    allParkTrails: Array<ParkTrail> | undefined
 }
 
 const initialState: AppState = {
@@ -26,6 +28,36 @@ const initialState: AppState = {
     addingSkateProfile: false,
     initialProfileConfigured: true,
     allSkills: undefined,
+    allParkTrails: undefined
+}
+
+
+const loadState = async () =>{
+    try{
+        const serializedState = await AsyncStorage.getItem("appState");
+        if(serializedState === null)
+            return undefined;
+        return JSON.parse(serializedState);
+    }
+    catch(error){
+        return undefined;
+    }
+}
+
+export const loadAppStateAsync = createAsyncThunk("walkthrough/loadAppStateAsync",
+async() => {
+    const state = await loadState();
+    return state || initialState;
+})
+
+export const saveAppStateAsync = async(state) => {
+    try{
+        await AsyncStorage.setItem("appState", JSON.stringify(state))
+    }
+    catch(error)
+    {
+        console.log(error)
+    }
 }
 
 export const appStateSlice = createSlice({
@@ -210,6 +242,9 @@ export const appStateSlice = createSlice({
         setCurrentRoute: (state, action: PayloadAction<string | undefined>) => {
             state.currentRoute = action.payload;
         },
+        setAllParkTrails: (state, action: PayloadAction<Array<ParkTrail> | undefined>) => { 
+            state.allParkTrails = action.payload;
+        },
         // setMySchedules: (state, action: PayloadAction<Array<Schedule>>) => {
         //     state.mySchedules = action.payload;
         // },
@@ -228,7 +263,12 @@ export const appStateSlice = createSlice({
         },
         resetAppState: state => initialState
       
-    }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(loadAppStateAsync.fulfilled, (state, action) => {
+          return action.payload;
+        });
+    },
 });
 
 export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTToken,
@@ -237,6 +277,7 @@ export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTToken,
     setUser, 
     revertChangesInUser, backupUser,
     setAllSkills, deleteAssignedSkill, addAssignedSkill, updateAssignedSkill,
+    setAllParkTrails,
     deleteSchedule, addSchedule,
     addAggresiveEventToUser
 } = appStateSlice.actions

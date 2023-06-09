@@ -1,12 +1,10 @@
-import { sparseArrayEquality } from "@jest/expect-utils";
 import React from "react";
-import { TouchableOpacity, TouchableWithoutFeedbackComponent, View, StyleSheet} from "react-native";
+import { View, StyleSheet} from "react-native";
 
 import { Text, useTheme } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
-import { SpacingStyles } from "../../styles";
 import { SkatePracticeStyles } from "../../types";
 
 import { PrimaryContainer, SvgView } from "../general";
@@ -15,7 +13,6 @@ import { PlusSvg } from "../svg/general";
 interface Input {
     onPress: Function
 }
-//<TouchableOpacity style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer]} onPress={() => onPress()}>
 
 const AddAggresiveSkatingEvent = ({onPress} : Input) =>
 {

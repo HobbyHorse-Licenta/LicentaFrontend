@@ -110,6 +110,8 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
     {
         if(user !== undefined)
         {
+            
+            console.log("Skate TYPE: " + skateType);
             const profile: SkateProfile = {
                 id: uuid.v4().toString(),
                 userId: user.id,
@@ -132,7 +134,7 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
                 {
                     Fetch.postSkateProfile(res,
                     (postedSkateProfile) => {
-                        dispatch(setUser({...user, skateProfiles: [...user.skateProfiles, postedSkateProfile.value]}))
+                        dispatch(setUser({...user, skateProfiles: [...user.skateProfiles, postedSkateProfile]}))
                     },
                     () => console.log("Coudn't post skateProfile"))
                 }
