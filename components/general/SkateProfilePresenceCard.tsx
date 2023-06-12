@@ -1,36 +1,30 @@
 import React, {useState, useEffect} from "react";
-import { View, Text, ViewStyle } from "react-native";
+import { View, ViewStyle, StyleSheet} from "react-native";
 
+import { Text } from "react-native-paper";
 import { scale } from 'react-native-size-matters';
 
 
 import { Fetch } from "../../services";
+import { SpacingStyles } from "../../styles";
 import { SkateProfile, User } from "../../types";
 import PrimaryContainer from "./PrimaryContainer";
 import RoundPicture from "./RoundPicture";
 
 interface Input {
     skateProfile: SkateProfile,
-    inactive?: boolean
+    inactive?: boolean,
+    allUsers: Array<User>,
+    cardOpacity?: number
 }
 
-const SkateProfilePresenceCard = ({skateProfile, inactive} : Input) =>{
+const SkateProfilePresenceCard = ({skateProfile, inactive, allUsers, cardOpacity} : Input) =>{
 
     const [user, setUser] = useState<User>();
 
-    console.log("SKATEPROFILE: " + JSON.stringify(skateProfile));
-
     useEffect(() => {
-        Fetch.getAllUsers(
-            (users) => findUserWithinUsers(users),
-            () => console.log("[SkateProfilePresenceCard]: coudn't get all Users")
-        );
-    }, [])
-
-    useEffect(() => {
-        console.log("\n\n\nPROFILE IMAGE GOT FROM USER: "+ JSON.stringify(user))
-    }, [user])
-
+        findUserAndSetIt(allUsers);
+    }, [allUsers])
 
     const getViewStyle = () => {
         const commonStyle: ViewStyle = {padding: scale(10)}
@@ -44,34 +38,44 @@ const SkateProfilePresenceCard = ({skateProfile, inactive} : Input) =>{
         else return commonStyle;
     }
 
-    const findUserWithinUsers = (users: Array<User>) => {
+    const findUserAndSetIt = (users: Array<User>) => {
         users.forEach(user => {
-            if(user.skateProfiles !== undefined && user.skateProfiles !== null && user.skateProfiles.length !== 0)
+            if(user.id === skateProfile.userId)
             {
-                user.skateProfiles.forEach(skateProf => {
-                    if(skateProf.id === skateProfile.id)
-                    {
-                        setUser(user);
-                    }
-                });
+                setUser(user);
+
             }
         });
     }
     return(
-        <PrimaryContainer>
-            {/* <RoundPicture image={user.profileImageUrl}></RoundPicture> */}
-            {/* {
-                user !== undefined && user !== null &&
+        <PrimaryContainer styleInput={{height: 100, marginHorizontal: 5, opacity: cardOpacity !== undefined ? cardOpacity : 1}}>
+            {
+                user !== undefined && user !== null ? (
+                    
                 <View style={getViewStyle()}>
-          
-
-                    <RoundPicture image={user.profileImageUrl !== undefined && user.profileImageUrl.length !== 0 ? user.profileImageUrl : undefined}></RoundPicture>
-                    <Text>{skateProfile.skateExperience}</Text>
+                    <PrimaryContainer styleInput={styles.pic}>
+                        <RoundPicture image={user.profileImageUrl !== undefined && user.profileImageUrl.length !== 0 ? user.profileImageUrl : undefined}></RoundPicture>
+                    </PrimaryContainer>
+                    <Text style={{flexWrap: 'nowrap'}} variant="labelSmall">{user.name}</Text>
+                    <Text style={{flexWrap: 'nowrap'}} variant="labelSmall">{skateProfile.skateExperience}</Text>
                 </View>
-            } */}
-            
+                
+                ):(
+                    <View></View>
+                )
+                
+            }
         </PrimaryContainer>
     );
 }
 
 export default SkateProfilePresenceCard;
+
+const styles = StyleSheet.create({
+    pic: {
+        height: 30,
+        width: 30,
+        margin: scale(1),
+        padding: scale(1)
+    }
+})

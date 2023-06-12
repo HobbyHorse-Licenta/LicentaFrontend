@@ -8,22 +8,28 @@ import { wrap } from 'module';
 
 
 interface Input {
-    onChange: (numberOfPeople: number) => void
+    inputValue: number | null
+    //onChange: (numberOfPeople: number) => void
+    onChange: React.Dispatch<React.SetStateAction<number | undefined>>
 }
 
-const SelectNumberOfPeople = ({onChange} : Input) => {
+const SelectNumberOfPeople = ({onChange, inputValue} : Input) => {
 
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<number | null>(null);
+    //const [value, setValue] = useState<number | null>(null);
     const [items, setItems] = useState(Array.from({length: 5}, (_, i) => { return {label: (i + 1).toString(), value: (i + 1)}}));
 
  
     const theme = useTheme();
 
-    useEffect(() => {
-        if(value !== null)
-            onChange(value);
-    }, [value])
+    // useEffect(() => {
+    //    setValue(inputValue);
+    // }, [inputValue])
+
+    // useEffect(() => {
+    //     if(value !== null)
+    //         onChange(value);
+    // }, [value])
 
     return(
             <DropDownPicker
@@ -41,10 +47,10 @@ const SelectNumberOfPeople = ({onChange} : Input) => {
                 flexWrap: 'nowrap'
             }}
             open={open}
-            value={value}
+            value={inputValue}
             items={items}
             setOpen={setOpen}
-            setValue={setValue}
+            setValue={onChange}
             setItems={setItems}
             zIndex={5}
             autoScroll={true}

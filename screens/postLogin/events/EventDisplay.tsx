@@ -17,16 +17,24 @@ const EventDisplay = ({route, navigation}) => {
 
   const event: Event = route.params.event;
 
-  const [skateProfiles, setSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
+  const [suggestedSkateProfiles, setSuggestedSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
+  const [attendingSkateProfiles, setAttendingSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
 
   useEffect(() => {
-    Fetch.getAllSkateProfiles(
-      (skateProf) => setSkateProfiles(skateProf),
-      () => console.log("Coudn't get all skate profiles")
+    Fetch.getSkateProfilesForEvent(
+      event.id,
+      (skateProf) => setAttendingSkateProfiles(skateProf),
+      () => console.log("Coudn't get attending skate profiles")
     );
+    Fetch.getSuggestedSkateProfilesForEvent(
+      event.id,
+      (skateProf) => setSuggestedSkateProfiles(skateProf),
+      () => console.log("Coudn't get suggested skate profiles")
+    );
+    
   }, [])
   
-   console.log("\n\n\nSKATINGPROFILES ALLLL: " + JSON.stringify(skateProfiles));
+  //  console.log("\n\n\nSKATINGPROFILES ALLLL: " + JSON.stringify(skateProfiles));
    
   const getBody = () => {
     return(
@@ -35,7 +43,9 @@ const EventDisplay = ({route, navigation}) => {
         <View style={SpacingStyles.centeredContainer}>
           <Text>Skaters attending</Text>
           {
-            skateProfiles !== undefined &&  skateProfiles !== null && <SkateProfilesList skateProfiles={skateProfiles}></SkateProfilesList>
+            suggestedSkateProfiles !== undefined &&  suggestedSkateProfiles !== null &&
+            attendingSkateProfiles !== undefined &&  attendingSkateProfiles !== null &&
+             <SkateProfilesList suggestedSkateProfiles={suggestedSkateProfiles} attendingSkateProfiles={attendingSkateProfiles}></SkateProfilesList>
           }
         </View>
       </View>

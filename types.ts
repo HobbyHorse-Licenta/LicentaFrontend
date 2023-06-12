@@ -241,7 +241,7 @@ export type Schedule = {
   zones: Array<Zone>,
   minimumAge?: number,
   maximumAge?: number,
-  gender: string,
+  gender: Gender,
   maxNumberOfPeople: number
   
 }

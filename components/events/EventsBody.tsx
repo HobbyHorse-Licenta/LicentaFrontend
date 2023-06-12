@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, ScrollView, StyleSheet, Pressable} from 'react-native';
+import { View, ScrollView, StyleSheet, Pressable, RefreshControl} from 'react-native';
 
 import { Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -7,7 +7,7 @@ import uuid from 'react-native-uuid'
 import {Button} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles';
-import { AggresiveEventCard, EventCard, PrimaryContainer, QuestionModal, SvgView } from '../general';
+import { AggresiveEventCard, EventCard, InformationalSvgComponent, PrimaryContainer, QuestionModal, SvgView } from '../general';
 import { CustomTrail, Event, Gender, ParkTrail, SkateExperience, SkatePracticeStyles } from '../../types';
 import AddAggresiveSkatingEvent from './AddAggresiveSkatingEvent';
 import { useTourGuideController } from 'rn-tourguide';
@@ -31,75 +31,84 @@ const EventsBody = () => {
     const dispatch = useDispatch();
 
 
-    console.log("SETTING UP");
-    const customTrail: CustomTrail = {
-        id: "dsaa",
-        trailName: "My trail",
-        checkPoints: [
-            {
-                id: "dsadsa",
-                customTrailId: "sdadsa",
-                location: {
-                    id: "dsa",
-                    lat: 43.002,
-                    long: 23.33
-                }
-            }
-        ]
-    }
+    // console.log("SETTING UP");
+    // const customTrail: CustomTrail = {
+    //     id: "dsaa",
+    //     trailName: "My trail",
+    //     checkPoints: [
+    //         {
+    //             id: "dsadsa",
+    //             customTrailId: "sdadsa",
+    //             location: {
+    //                 id: "dsa",
+    //                 lat: 43.002,
+    //                 long: 23.33
+    //             }
+    //         }
+    //     ]
+    // }
 
-    const hardCodedEvent: Event = {
-        id: "somthing",
-        name: "RANDOM EVENT",
-        note: "THis is a note",
-        maxParticipants: 19,
-        skateExperience: SkateExperience.AdvancedBegginer,
-        outing: {
-            id: "outinig-id",
-        eventId: "somthing",
-        startTime: 1685797060291,
-        endTime: 1685797060291,
-        skatePracticeStyle: SkatePracticeStyles.AggresiveSkating,
-        trailType: 'CustomTrail',
-        trail: customTrail,
-        booked: false
-        },
-    //   skateProfiles?: Array<SkateProfile>,
-    //   recommendedSkateProfiles?: Array<SkateProfile>,
-        gender: Gender.Mixed,
-        minimumAge: 14,
-        maximumAge: 28
-    }
+    // const hardCodedEvent: Event = {
+    //     id: "somthing",
+    //     name: "RANDOM EVENT",
+    //     note: "THis is a note",
+    //     maxParticipants: 19,
+    //     skateExperience: SkateExperience.AdvancedBegginer,
+    //     outing: {
+    //         id: "outinig-id",
+    //     eventId: "somthing",
+    //     startTime: 1685797060291,
+    //     endTime: 1685797060291,
+    //     skatePracticeStyle: SkatePracticeStyles.AggresiveSkating,
+    //     trailType: 'CustomTrail',
+    //     trail: customTrail,
+    //     booked: false
+    //     },
+    // //   skateProfiles?: Array<SkateProfile>,
+    // //   recommendedSkateProfiles?: Array<SkateProfile>,
+    //     gender: Gender.Mixed,
+    //     minimumAge: 14,
+    //     maximumAge: 28
+    // }
 
 
-
+    const [refreshing, setRefreshing] = useState(false);
     const {walkthroughState} = useSelector((state: RootState) => state)
     const {currentSkateProfile, user} = useSelector((state: RootState) => state.appState)
     const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState(false);
-    const [events, setEvents] = useState<Array<Event>>([hardCodedEvent]);
+    const [events, setEvents] = useState<Array<Event>>([]);
 
-    console.log("Events: " + JSON.stringify(events));
 
     useEffect(() => {
       Fetch.getAllParkTrails(
         (parkTrails) => {dispatch(setAllParkTrails(parkTrails));},
-        () => console.log("Coudn't get all park trails")
+        () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load the park trails")
       );
+    
+      if(currentSkateProfile !== undefined)
+      {
+        Fetch.getRecommendedEventsForSkateProfile(currentSkateProfile.id,
+            (recommendedEvents) => { setEvents(recommendedEvents)},
+            () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load recommended events")
+        );
+      }
+      
     }, [])
     
-    useEffect(() => {
-    if(currentSkateProfile !== undefined && currentSkateProfile !== null
-        && currentSkateProfile.recommendedEvents !== undefined && currentSkateProfile.recommendedEvents !== null)
-        {
-            console.log("getting event that exist on the skateprofile")
-            //setEvents(currentSkateProfile.recommendedEvents);
-            console.log("RECOMMENDED EVENTS "+ JSON.stringify(currentSkateProfile.recommendedEvents))
-        }
-    else
-    {
-        //setEvents([]);
-    } 
-    }, [currentSkateProfile])
+    // useEffect(() => {
+    //     console.log("DB EVENTS: " + JSON.stringify(currentSkateProfile?.recommendedEvents));
+    // if(currentSkateProfile !== undefined && currentSkateProfile !== null
+    //     && currentSkateProfile.recommendedEvents !== undefined && currentSkateProfile.recommendedEvents !== null)
+    //     {
+    //         console.log("getting event that exist on the skateprofile")
+    //         setEvents(currentSkateProfile.recommendedEvents);
+    //         console.log("RECOMMENDED EVENTS "+ JSON.stringify(currentSkateProfile.recommendedEvents))
+    //     }
+    // else
+    // {
+    //     setEvents([]);
+    // } 
+    // }, [currentSkateProfile])
 
 
     const {
@@ -117,7 +126,7 @@ const EventsBody = () => {
         }
     }, [canStart, walkthroughState])   
 
-    const showWalkthroughModal = () => setSkipWalkthroughPromptVisibility(true);
+    const showWalkthroughModal = () => {setSkipWalkthroughPromptVisibility(true);}
     
     useEffect(() => {
         if(eventEmitter !== undefined)
@@ -134,8 +143,16 @@ const EventsBody = () => {
         }
       }, [])
 
+
+    const onRefresh = () => {
+    setRefreshing(true);
+    console.log("REFRESHING");
+    // Perform your data fetching or refreshing logic here
     
-    
+    // Once the data fetching is complete, set the refreshing state back to false
+    setRefreshing(false);
+    };
+
 
     const GoNextProfile = () => {
         if(user !== undefined && user.skateProfiles !== undefined && currentSkateProfile !== undefined)
@@ -197,13 +214,14 @@ const EventsBody = () => {
                         })}
                     </ScrollView>
                 ):(
-                    <PrimaryContainer styleInput={{marginVertical: scale(20), paddingTop: scale(50)}}>    
-                        <Text style={{textAlign:"center"}} variant="headlineSmall">We are constantly looking for events for you</Text>
-                        <Text style={{textAlign:"center", marginTop: scale(7)}}variant="bodySmall">No skaters you'd like so far anyway</Text>
-                        <View style={{height: 250, width: 300}}>
-                            <SearchingSvg></SearchingSvg>
-                        </View>
-                    </PrimaryContainer>
+                        <InformationalSvgComponent
+                        headline="We are constantly looking for events for you"
+                        body="No skaters you'd like so far anyway"
+                        svgElement={<SearchingSvg></SearchingSvg>}
+                        />
+                        // <RefreshControl refreshing={refreshing} onRefresh={onRefresh} ></RefreshControl>
+                   
+                    
                 )
             }
             {uiUtils.getShowWalkthroughModal(skipWalkthroughPromptVisibility, (visibility) => setSkipWalkthroughPromptVisibility(visibility),

@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { Text } from 'react-native-paper'
 
-import { EventCard, GeneralHeader } from "../../../components/general";
+import { EventCard, GeneralHeader, InformationalSvgComponent } from "../../../components/general";
 import { SkateProfiles } from "../../../components/profile";
 import { setCurrentSkateProfile } from "../../../redux/appState";
 import { RootState } from "../../../redux/store";
 import { Layout2PieceForNavigator } from "../../layouts";
 import { scale, verticalScale } from "react-native-size-matters";
+import { EmptyBoxSvg } from "../../../components/svg/general";
 
 const MyEvents = () => {
 
@@ -21,7 +22,7 @@ const MyEvents = () => {
 
   const getEvents = () => {
     if(currentSkateProfile !== undefined && currentSkateProfile !== null &&
-      currentSkateProfile.events !==  null && currentSkateProfile.events !== undefined)
+      currentSkateProfile.events !==  null && currentSkateProfile.events !== undefined && currentSkateProfile.events.length > 0)
       {
         return currentSkateProfile.events.map(
           (evnt) => {
@@ -32,8 +33,11 @@ const MyEvents = () => {
         });
       }
       else {
-        return <Text style={{textAlign: 'center', marginVertical: verticalScale(100),
-      marginHorizontal: scale(15)}} variant="headlineSmall">You are not attending any event</Text>
+        return <InformationalSvgComponent
+                    headline="You are not attending any event"
+                    body="Check out the event section. If there are events available, select something appealing to you"
+                    svgElement={<EmptyBoxSvg></EmptyBoxSvg>}
+                />
       }
   }
 

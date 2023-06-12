@@ -14,20 +14,21 @@ interface PrimaryContainerInput {
     styleInput?: ViewStyle,
     onPress?: Function,
     onDelete?: Function
+    onUpdate?: Function
     index: number
 }
-const ScheduleContainer = ({children, styleInput, onPress, index, onDelete} : PrimaryContainerInput) => {
+const ScheduleContainer = ({children, styleInput, onPress, index, onDelete, onUpdate} : PrimaryContainerInput) => {
 
     const [svgSize, setSvgSize] = useState(50);
-    const [deletable, setDeletable] = useState(false);
+    const [optionsShown, setOptionsShown] = useState(false);
     const [height, setHeight] = useState(0);
     const theme = useTheme();
     let timeoutId;
 
     const makeDeletable = () => {
-        setDeletable(true);
+        setOptionsShown(true);
         timeoutId = setTimeout(() => {
-            setDeletable(false);
+            setOptionsShown(false);
         }, 4000);
     }
 
@@ -36,7 +37,15 @@ const ScheduleContainer = ({children, styleInput, onPress, index, onDelete} : Pr
         {
             onDelete(index);
             clearTimeout(timeoutId);
-            setDeletable(false);
+            setOptionsShown(false);
+        }
+    }
+    const updateSchedule = () => {
+        if(onUpdate !== undefined)
+        {
+            onUpdate(index);
+            clearTimeout(timeoutId);
+            setOptionsShown(false);
         }
     }
 
@@ -49,9 +58,15 @@ const ScheduleContainer = ({children, styleInput, onPress, index, onDelete} : Pr
                 >
                     {/* <Button textColor={'red'} text="Delete" style={{width: scale(100)}} onPress={() => nothing}/> */}
                     {
-                        deletable === true && onDelete !== undefined &&
+                        optionsShown === true && onDelete !== undefined &&
                         <Pressable onPress={deleteSchedule}>
                             <Text style={[styles.deleteText, {alignSelf: 'flex-end', color: theme.colors.tertiary}]}>Delete</Text>
+                        </Pressable>
+                    }
+                    {
+                        optionsShown === true && onUpdate !== undefined &&
+                        <Pressable onPress={updateSchedule}>
+                            <Text style={[styles.deleteText, {alignSelf: 'flex-end', color: theme.colors.tertiary}]}>Update</Text>
                         </Pressable>
                     }
                     <View style={[SpacingStyles.centeredContainer, {alignSelf: 'center'}]}>

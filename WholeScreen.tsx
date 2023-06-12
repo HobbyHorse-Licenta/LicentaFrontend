@@ -28,6 +28,7 @@ import { RootState } from './redux/store';
 import { CheckInternetScreen } from './screens/preLogin';
 import { Subscription } from 'expo-modules-core';
 import dayScheduleUtils from './utils/DaySchedule';
+import { useTourGuideController } from 'rn-tourguide';
 //import { wsUrl } from './assets/apiUrl';
 
 const windowH = Dimensions.get("window").height;
@@ -50,10 +51,10 @@ export const firebaseApp : FirebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth : Auth  = getAuth(firebaseApp);
 
 
-
+export let ScheduleTourGuideController;
 
 const WholeScreen = () => {
-  
+    ScheduleTourGuideController = useTourGuideController('schedule')
     const dispatch = useDispatch();
     const theme = useTheme();
     const popUp = useRef<NotificationPopup | null>(null);
@@ -128,24 +129,14 @@ useEffect(() => {
     }
     else 
     {
-      if(uiUtils.getNotificationRef() !== null)
-      {
-        uiUtils.showPopUp("NO ANDROID", "THIS IS NO ANDROID");
-      } 
+      console.log("THIS IS NO ANDROID");
     }
 
-      if(uiUtils.getNotificationRef() !== null)
-      {
-        uiUtils.showPopUp("Permission", "looking for permissions");
-      } 
       console.log("looking for permissions");
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
       if (existingStatus !== 'granted') {
-        if(uiUtils.getNotificationRef() !== null)
-        {
-          uiUtils.showPopUp("Permission", "Was not granted, so I am asking");
-        } 
+        console.log("Permission was not granted, so it's asking for it")
       }
       try {
         token = (await Notifications.getExpoPushTokenAsync()).data;
@@ -163,12 +154,10 @@ useEffect(() => {
           }
           Fetch.putUser(user.id, updatedUser, 
             () => console.log("Posted user notificationToken succesfully"),
-            () => console.log("Posted user notificationToken UNsuccesfully"))
+            () => uiUtils.showPopUp("Error", "Couldn't post notification token to database"))
         }
         else console.log("User undefined at this moment; can't post notification token");
       }
-      
-
     return token;
   }
     ////////////////

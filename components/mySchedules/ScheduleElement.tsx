@@ -11,14 +11,15 @@ interface ScheduleElementInput {
     schedule: Schedule,
     onPress?: Function,
     onDelete?: (scheduleIndex: number) => void,
+    onUpdate?: (scheduleIndex: number) => void,
     index: number
 }
 
-const ScheduleElement = ({schedule, onPress, index, onDelete} : ScheduleElementInput) => {
+const ScheduleElement = ({schedule, onPress, index, onDelete, onUpdate} : ScheduleElementInput) => {
 
 
     return (
-        <ScheduleContainer onDelete={onDelete} onPress={() => onPress !== undefined && onPress()} index={index}>
+        <ScheduleContainer onDelete={onDelete} onUpdate={onUpdate} onPress={() => onPress !== undefined && onPress()} index={index}>
             <SelectedDaysDisplay selectedDays={schedule.days}></SelectedDaysDisplay>
             <Text>{format(schedule.startTime, "HH")}:{format(schedule.startTime, "mm")}
             -{format(schedule.endTime, "HH")}:{format(schedule.endTime, "mm")}</Text>

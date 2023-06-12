@@ -43,7 +43,7 @@ const CreateEvent = () => {
     const [endTime, setEndTime] = useState<Date>(new Date())
     const [eventImage, setEventImage] = useState<string>();
     const [selectedDays, setSelectedDays] = useState<Array<Day>>([]);
-    const [minimumAge, setMinimumAge] = useState<number>();
+    const [minimumAge, setMinimumAge] = useState<number | undefined>();
     const [maximumAge, setMaximumAge] = useState<number>();
     const [numberOfPartners, setNumberOfPartners] = useState<number>();
     const [gender, setGender] = useState<Gender | undefined>();
@@ -62,7 +62,7 @@ const CreateEvent = () => {
         long:  23.596937
     });
 
-
+    
     useEffect(() => {
       if(fullScreenMap === false && mapRef.current !== null)
       {
@@ -373,12 +373,13 @@ const CreateEvent = () => {
             <View style={{marginBottom: scale(25)}}>
                 <Text variant="titleMedium" style={{padding: scale(5)}}>You would go out with maximum:</Text>
                 <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
-                    <SelectNumberOfPeople onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
+                    <SelectNumberOfPeople inputValue={numberOfPartners !== undefined ?  numberOfPartners : null} onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
                     <Text style={{marginLeft: scale(10)}}>skaters</Text>
                 </View>
             </View>
             <Text variant="titleMedium" style={{marginBottom: scale(7)}}>Event for skaters aged:</Text>
-            <SelectAgeGap onMinimumAgeChange={(age) => setMinimumAge(age)}
+            <SelectAgeGap minimumAge={minimumAge !== undefined ? minimumAge : null} 
+            maximumAge={maximumAge !== undefined ? maximumAge : null} onMinimumAgeChange={(age) => setMinimumAge(age)}
                             onMaximumAgeChange={(age) => setMaximumAge(age)}/>
             <SelectGender gender={gender} onGenderChange={(value) => setGender(value)}></SelectGender>
             </PrimaryContainer>

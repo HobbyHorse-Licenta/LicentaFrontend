@@ -18,12 +18,24 @@ interface Distance {
     value: number
 }
 
-const SelectCompanion = () => {
+interface Input {
+    selectedGender: Gender | undefined, 
+    setSelectedGender: Function,
+    numberOfPartners: number | undefined,
+    setNumberOfPartners: Function,
+    minimumAge: number | undefined,
+    setMinimumAgee: Function,
+    maximumAge: number | undefined,
+    setMaximumAgee: Function
+}
+const SelectCompanion = ({selectedGender, setSelectedGender, numberOfPartners, setNumberOfPartners,
+                            minimumAge, setMinimumAgee, maximumAge, setMaximumAgee} : Input) => {
     
-    const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
-    const [numberOfPartners, setNumberOfPartners] = useState<number>();
-    const [minimumAge, setMinimumAgee] = useState<number>();
-    const [maximumAge, setMaximumAgee] = useState<number>();
+    // const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
+    // const [numberOfPartners, setNumberOfPartners] = useState<number>();
+    // const [minimumAge, setMinimumAgee] = useState<number>();
+    // const [maximumAge, setMaximumAgee] = useState<number>();
+    console.log(`\n\nMIN: ${minimumAge}, MAX: ${maximumAge}\n\n`);
 
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -102,18 +114,19 @@ const SelectCompanion = () => {
             <View style={{marginBottom: scale(25)}}>
                 <Text variant="titleMedium" style={{padding: scale(5)}}>You would go out with maximum:</Text>
                 <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
-                    <SelectNumberOfPeople onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
+                    <SelectNumberOfPeople inputValue={numberOfPartners !== undefined ? numberOfPartners : null}  onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
                     <Text style={{marginLeft: scale(10)}}>skaters</Text>
                 </View>
             </View>
         
             <Text variant="titleMedium">Which age gap are you confortable with?</Text>
             <Text variant="titleSmall" style={{marginBottom: scale(7)}}>Skaters aged:</Text>
-            <SelectAgeGap onMinimumAgeChange={(age) => setMinimumAgee(age)}
+            <SelectAgeGap minimumAge={minimumAge !== undefined ? minimumAge : null} 
+            maximumAge={maximumAge !== undefined ? maximumAge : null} onMinimumAgeChange={(age) => setMinimumAgee(age)}
                             onMaximumAgeChange={(age) => setMaximumAgee(age)}/>
             {getGenderPrefrence()}
         </PrimaryContainer>
-      
+        //TO DO SO THAT UPDATE SCHEDULE WORKS (IT TRIES TOT CREATE A NEW SCHEDULE NOW INSTEAD)
     );
 };
 

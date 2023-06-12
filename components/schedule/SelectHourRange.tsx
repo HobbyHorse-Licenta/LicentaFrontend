@@ -22,12 +22,9 @@ interface Input {
 const SelectHourRange = ({startTime, endTime, onStartTimeChange, onEndTimeChange} : Input) => {
 
     const {
-      canStart, // a boolean indicate if you can start tour guide
-      start, // a function to start the tourguide
-      stop, // a function  to stopping it
-      eventEmitter, // an object for listening some events
       TourGuideZone
     } = useTourGuideController('schedule')
+
 
 
     const setEndTimeSchedule = (selectedEndTime: Date) => {

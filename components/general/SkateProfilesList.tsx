@@ -1,18 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
-import { SkateProfile } from "../../types";
+import { Fetch } from "../../services";
+import { SkateProfile, User } from "../../types";
 import SkateProfileSummary from "../profile/SkateProfileSummary";
 import SkateProfilePresenceCard from "./SkateProfilePresenceCard";
 interface Input {
-    skateProfiles: Array<SkateProfile>
+    suggestedSkateProfiles: Array<SkateProfile>
+    attendingSkateProfiles: Array<SkateProfile>
 }
-const SkateProfilesList = ({skateProfiles} : Input) =>{
+const SkateProfilesList = ({suggestedSkateProfiles, attendingSkateProfiles} : Input) =>{
+
+    const [allUsers, setAllUsers] = useState<Array<User>>([]);
+
+    useEffect(() => {
+        Fetch.getAllUsers(
+            (users) => setAllUsers(users),
+            () => console.log("[SkateProfilesList]: coudn't get all Users")
+        );
+    }, [])
+
     return(
         <ScrollView horizontal={true}>
-            { skateProfiles !== undefined && skateProfiles !== null && skateProfiles.length !== 0 &&
-                skateProfiles.map((skateProfile, index) => {
+            { attendingSkateProfiles !== undefined && attendingSkateProfiles !== null && attendingSkateProfiles.length !== 0 &&
+                attendingSkateProfiles.map((skateProfile, index) => {
                     return(
-                        <SkateProfilePresenceCard key={index} skateProfile={skateProfile}></SkateProfilePresenceCard>
+                        <SkateProfilePresenceCard key={index} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
+                    )
+                })
+            }
+            { suggestedSkateProfiles !== undefined && suggestedSkateProfiles !== null && suggestedSkateProfiles.length !== 0 &&
+                suggestedSkateProfiles.map((skateProfile, index) => {
+                    return(
+                        <SkateProfilePresenceCard key={index} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
                     )
                 })
             }

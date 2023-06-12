@@ -67,14 +67,14 @@ const SelectLocationAggresive = ({onTouchInside, onTouchOutside} : Input) => {
         stop, // a function  to stopping it
         eventEmitter, // an object for listening some events
         TourGuideZone
-      } = useTourGuideController('schedule')
+      } = useTourGuideController('scheduleAggresive')
 
     useEffect(() => {
         if (canStart) {
           start()
         }
     }, [canStart])   
-    //////
+    ////
 
     /* Gets and sets device location */
     useEffect(() => {

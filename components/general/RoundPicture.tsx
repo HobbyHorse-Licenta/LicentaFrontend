@@ -20,6 +20,7 @@ interface Input {
 const RoundPicture = ({image, onChange} : Input) => {
     const [imageSize, setImageSize] = useState<number>(0);
 
+    console.log("INPUT IMAGE: " + image);
     const handlePickPicture = async () => {
         
         console.log("add profile picture");

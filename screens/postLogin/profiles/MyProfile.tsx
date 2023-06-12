@@ -22,6 +22,7 @@ const MyProfile = () => {
   const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState(false);
   const {user}= useSelector((state: RootState) => state.appState);
   const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+  const {myProfile} = useSelector((state: RootState) => state.walkthroughState)
   const theme = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -36,31 +37,21 @@ const MyProfile = () => {
   } = useTourGuideController('myProfile')
 
   useEffect(() => {
-      if (canStart) {
+      if (canStart && myProfile === true) {
         start()
       }
-  }, [canStart])   
-
-
-  useEffect(() => {
-    if(eventEmitter !== undefined)
-    {
-        eventEmitter.on('stop', showWalkthroughModal)
-    }
-    return () => {
       if(eventEmitter !== undefined)
       {
-          eventEmitter.off('stop', showWalkthroughModal)
+        eventEmitter.on('stop', () => setSkipWalkthroughPromptVisibility(true))
       }
-    }
-  }, []) 
 
-  const showWalkthroughModal = () => setSkipWalkthroughPromptVisibility(true);
-
-  //////
-  useEffect(() => {
-    //console.log("Current profile: " + JSON.stringify(currentSkateProfile));
-  }, [currentSkateProfile])
+      return () => {
+        if(eventEmitter !== undefined)
+        {
+            eventEmitter.off('stop', () => setSkipWalkthroughPromptVisibility(true))
+        }
+      }
+  }, [canStart])
   
   const userInfo = () => {
     const genderOptionColor = theme.colors.background;

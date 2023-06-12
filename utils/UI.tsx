@@ -48,11 +48,12 @@ class UI {
         this.notificationRef = ref;
     }
 
+    /**Check against null*/
     getNotificationRef() {
         return this.notificationRef;
     }
 
-    showPopUp ( title: string, messageBody: string, onPress?: Function) {
+    showPopUp ( title: string, messageBody: string, onPress?: Function, timeUntilDissapearance?: number) {
         if(this.notificationRef != null)
         {
             if(onPress !== undefined)
@@ -63,7 +64,7 @@ class UI {
                     timeText: 'Now',
                     title: title,
                     body: messageBody,
-                    slideOutTime: 2000
+                    slideOutTime: timeUntilDissapearance !== undefined ? timeUntilDissapearance : 2000
                 });
             }
             else {
@@ -72,7 +73,7 @@ class UI {
                     timeText: 'Now',
                     title: title,
                     body: messageBody,
-                    slideOutTime: 2000
+                    slideOutTime: timeUntilDissapearance !== undefined ? timeUntilDissapearance : 2000
                 });
             }
            

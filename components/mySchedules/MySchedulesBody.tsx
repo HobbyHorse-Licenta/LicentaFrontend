@@ -14,6 +14,8 @@ import { backupUser, deleteSchedule, revertChangesInUser, setCurrentSkateProfile
 import { Fetch } from '../../services';
 import { nothing } from 'immer';
 import { uiUtils } from '../../utils';
+import { setExistingScheduleState } from '../../redux/createScheduleState';
+import { Schedule as ScheduleType } from '../../types';
 
 const MySchedulesBody = () => {
 
@@ -38,6 +40,14 @@ const MySchedulesBody = () => {
         
 
     } 
+    const updateASchedule = (scheduleIndex: number) => {
+        if(currentSkateProfile !== undefined && currentSkateProfile.schedules !== undefined)
+        {
+            const scheduleToUpdate: ScheduleType = currentSkateProfile.schedules[scheduleIndex];
+            dispatch(setExistingScheduleState(scheduleToUpdate));
+            navigation.navigate('Schedule' as never, {updateMode: true, scheduleToUpdate: scheduleToUpdate} as never);
+        } 
+    }
 
 
     return(
@@ -55,7 +65,8 @@ const MySchedulesBody = () => {
                         {currentSkateProfile.schedules.map((sch, index) => {
                             return(
                                 <ScheduleElement index={index} key={sch.id} schedule={sch}
-                                onDelete={(scheduleIndex) => deleteASchedule(scheduleIndex)}/>
+                                onDelete={(scheduleIndex) => deleteASchedule(scheduleIndex)}
+                                onUpdate={(scheduleIndex) => updateASchedule(scheduleIndex)}/>
                             );
                         })}
                     </ScrollView>

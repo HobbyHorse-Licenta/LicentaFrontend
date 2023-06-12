@@ -9,11 +9,12 @@ import { Event, SkateProfile, User } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
 import { defaultEventUrl } from '../../assets/imageUrls'
-import { resourceAccess } from '../../utils';
+import { resourceAccess, uiUtils } from '../../utils';
 import { Fetch } from '../../services';
 import ProfilePicList from './ProfilePicList';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { uiSlice } from '../../redux/ui';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -43,6 +44,7 @@ const AggresiveEventCard = ({event, onPress}: EventInput) => {
     const [profileImagesUrl, setProfileImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
     const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+    
     //TODO REMOVE THIS
     useEffect(() => {
       if(event.imageUrl == undefined || event.imageUrl.length === 0)
@@ -51,7 +53,7 @@ const AggresiveEventCard = ({event, onPress}: EventInput) => {
 
       Fetch.getSuggestedSkateProfilesForEvent(event.id,
         (skateProfiles) => setRecommendedSkateProfiles(excludeCurrentSkateProfile(skateProfiles)),
-        () => console.log("Coudn't get suggested users"));
+        () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't participating skaters"));
 
     }, []);
 

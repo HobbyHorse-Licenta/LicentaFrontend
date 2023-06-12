@@ -38,7 +38,8 @@ interface Input {
 const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelected, setParkSelected} : Input) => {
 
     const {currentSkateProfile, allParkTrails} = useSelector((state: RootState) => state.appState)
-    const {zone} = useSelector((state: RootState) => state.createScheduleState)
+    const [localZone, setLocalZone] = useState<Zone>();
+    const [parkTrailsInRange, setParkTrailsInRange] = useState<Array<ParkTrail>>([]);
     const [range, setRange] = useState<number>(1);
     const [dropdownPickerOpen, setDropDownPickerOpen] = useState(false);
     //const [parkSelected, setParkSelected] = useState(false);
@@ -76,11 +77,6 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
         TourGuideZone
       } = useTourGuideController('schedule')
 
-    useEffect(() => {
-        if (canStart) {
-          start()
-        }
-    }, [canStart])   
     //////
 
     /* Gets and sets device location */
@@ -118,6 +114,25 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
 
         updateZone();
     }, [range, selectedLocation])
+
+    useEffect(() => {
+        checkAndSetInRangeParkTrails();
+    }, [localZone])
+    
+    const checkAndSetInRangeParkTrails = () => {
+        const newArray : Array<ParkTrail> = []
+        allParkTrails?.forEach(parkTrail => {
+            if(isParkInRange(parkTrail) === true)
+            {
+                newArray.push(parkTrail);
+            }
+        })
+        if(newArray !== undefined && newArray.length > 0)
+        {
+            setParkSelected(true);
+        }
+        setParkTrailsInRange(newArray);
+    }
     
     const updateZone = () => {
          if(selectedLocation !== undefined && range !== undefined && currentSkateProfile !== undefined)
@@ -129,14 +144,15 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
                 location: selectedLocation,
                 scheduleId: currentSkateProfile.id
             }
+            setLocalZone(zone);
             dispatch(setZone(zone));
          }
     }    
     
     const isParkInRange = (parkTrail: ParkTrail) : boolean => {
-        if(zone !== undefined)
+        if(localZone !== undefined)
         {
-            return mapsUtils.checkIfLocationInZone(parkTrail.location, zone);
+            return mapsUtils.checkIfLocationInZone(parkTrail.location, localZone);
         }
         else return false;
     }
@@ -150,9 +166,9 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
         else return 100; //random range
     }
     const increaseRangeSoThatParkTrailIsInRange = (parkTrail: ParkTrail) => {
-        if(zone !== undefined && zone !== null && zone.location !== undefined && zone.location !== null)
+        if(localZone !== undefined && localZone !== null && localZone.location !== undefined && localZone.location !== null)
         {
-            const distance = mapsUtils.getDistanceInKmBetweenLocations(zone.location, parkTrail.location);
+            const distance = mapsUtils.getDistanceInKmBetweenLocations(localZone.location, parkTrail.location);
             
             //find a range that covers this distance
             const suitableRange: number = findRangeBiggerThanDistance(distance)
@@ -168,11 +184,9 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
                 <View>
                     {
                         allParkTrails.map((parkTrail, index) => {
-                            const parkInRange = isParkInRange(parkTrail);
                             let parkOptionStyle: ViewStyle = {borderWidth: 1, borderColor: 'lightgrey'};
-                            if(parkInRange === true)
+                            if(parkTrailsInRange.some(pk => pk.id === parkTrail.id))
                             {
-                                setParkSelected(true);
                                 parkOptionStyle = {...parkOptionStyle, backgroundColor: theme.colors.tertiary}
                             }
                             return(

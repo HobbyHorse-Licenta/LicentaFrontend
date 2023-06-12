@@ -176,6 +176,39 @@ export const appStateSlice = createSlice({
             }
             
         },
+        updateSchedule: (state, action: PayloadAction<Schedule>) => {
+
+            //payload == schedule to update
+            const updatedSchedule: Schedule = action.payload;
+            if(state.user !== undefined && state.user !== null)
+            {
+                state.user = {
+                    ...state.user,
+                    skateProfiles: state.user.skateProfiles.map(
+                        (skateProfile) => {
+                            if(skateProfile.id === updatedSchedule.skateProfileId)
+                            {
+                                if(skateProfile.schedules !== undefined && skateProfile.schedules !== null)
+                                {
+                                    const newArray = skateProfile.schedules.map((schedule) => {
+                                        if(schedule.id === updatedSchedule.id)
+                                        {
+                                            return updatedSchedule;
+                                        }
+                                        else return schedule;
+                                    });
+                                    return { ...skateProfile, schedules: newArray};
+                                }
+                                else return skateProfile;
+                            }
+                            else return skateProfile;
+                        }
+                    )
+                }
+            }
+            
+        },
+        
         addAssignedSkill: (state, action: PayloadAction<AssignedSkill>) => {
 
             //payload == assignedSkill to add
@@ -278,7 +311,7 @@ export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTToken,
     revertChangesInUser, backupUser,
     setAllSkills, deleteAssignedSkill, addAssignedSkill, updateAssignedSkill,
     setAllParkTrails,
-    deleteSchedule, addSchedule,
+    deleteSchedule, addSchedule, updateSchedule,
     addAggresiveEventToUser
 } = appStateSlice.actions
 

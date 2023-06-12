@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import {Day, Gender, Zone} from '../types'
+import {Day, Gender, Schedule, Zone} from '../types'
 
 export interface CreateScheduleState {
     selectedDays: Day[] | undefined,
@@ -52,11 +52,23 @@ export const createScheduleStateSlice = createSlice({
         setMaxNumberOfPeople: (state, action: PayloadAction<number | undefined>) => {
             state.maxNumberOfPeople = action.payload;
         },
+        setExistingScheduleState: (state, action: PayloadAction<Schedule>) => {
+            console.log("SETTING STATES");
+            state.selectedDays = action.payload.days;
+            state.zone = action.payload.zones[0];
+            state.startTime = action.payload.startTime;
+            state.endTime = action.payload.endTime;
+            state.minimumAge = action.payload.minimumAge;
+            state.maximumAge = action.payload.maximumAge;
+            state.gender = action.payload.gender;
+            state.maxNumberOfPeople = action.payload.maxNumberOfPeople;
+        },
       
     }
 });
 
 export const {setSelectedDaysState, setZone, setStartTime, setEndTime,
-            setMinimumAge, setMaximumAge, setGender, setMaxNumberOfPeople} = createScheduleStateSlice.actions
+            setMinimumAge, setMaximumAge, setGender, setMaxNumberOfPeople,
+            setExistingScheduleState} = createScheduleStateSlice.actions
 
 export default createScheduleStateSlice.reducer;

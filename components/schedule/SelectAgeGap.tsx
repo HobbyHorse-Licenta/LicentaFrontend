@@ -8,32 +8,34 @@ import { SpacingStyles } from '../../styles';
 
 
 interface Input {
-    onMinimumAgeChange: (minimumAge: number) => void,
-    onMaximumAgeChange: (maximumAge: number) => void,
+    minimumAge: number | null,
+    maximumAge: number | null,
+    onMinimumAgeChange: React.Dispatch<React.SetStateAction<number | undefined>>,
+    onMaximumAgeChange: React.Dispatch<React.SetStateAction<number | undefined>>,
 }
 
-const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange} : Input) => {
+const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange, minimumAge, maximumAge} : Input) => {
 
-    const minimumAge = 12;
+    const minAge = 12;
     const [open, setOpen] = useState(false);
-    const [value, setValue] = useState<number | null>(null);
-    const [items, setItems] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge)}}));
+   // const [value, setValue] = useState<number | null>(null);
+    const [items, setItems] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minAge).toString(), value: (i + minAge)}}));
 
     const [open2, setOpen2] = useState(false);
-    const [value2, setValue2] = useState<number | null>(null);
-    const [items2, setItems2] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minimumAge).toString(), value: (i + minimumAge)}}));
+   // const [value2, setValue2] = useState<number | null>(null);
+    const [items2, setItems2] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minAge).toString(), value: (i + minAge)}}));
  
     const theme = useTheme();
 
-    useEffect(() => {
-        if(value !== null)
-            onMinimumAgeChange(value);
-    }, [value])
+    // useEffect(() => {
+    //     if(value !== null)
+    //         onMinimumAgeChange(value);
+    // }, [value])
 
-    useEffect(() => {
-        if(value2 !== null)
-            onMaximumAgeChange(value2);
-    }, [value2])
+    // useEffect(() => {
+    //     if(value2 !== null)
+    //         onMaximumAgeChange(value2);
+    // }, [value2])
   
     return(
         <View style={[{flexDirection: 'row'}, SpacingStyles.centeredContainer]}>
@@ -49,14 +51,14 @@ const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange} : Input) => {
                 color: theme.colors.tertiary
                 }}
             open={open}
-            value={value}
+            value={minimumAge}
             items={items}
             setOpen={setOpen}
-            setValue={setValue}
+            setValue={onMinimumAgeChange}
             setItems={setItems}
             onChangeValue={(val1) => {
-                if(val1 !== null && value2 !== null && value2 < val1)
-                    setValue2(val1);
+                if(val1 !== null && maximumAge !== null && maximumAge < val1)
+                onMaximumAgeChange(val1);
             }}
             zIndex={3}
             autoScroll={true}
@@ -76,22 +78,22 @@ const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange} : Input) => {
                 }}
                 autoScroll={true}
             open={open2}
-            value={value2}
+            value={maximumAge}
             items={items2}
             setOpen={setOpen2}
-            setValue={setValue2}
+            setValue={onMaximumAgeChange}
             onChangeValue={(val2) => {
                 if(val2 != null)
                 {
-                    if(value !== null)
+                    if(minimumAge !== null)
                     {
-                        if(val2 < value)
+                        if(val2 < minimumAge)
                         {
-                            setValue2(value);
+                            onMaximumAgeChange(minimumAge);
                         }
-                        else setValue2(val2)
+                        else onMaximumAgeChange(val2)
                     }
-                    else setValue2(val2);
+                    else onMaximumAgeChange(val2);
                 }
             }}
             setItems={setItems2}
