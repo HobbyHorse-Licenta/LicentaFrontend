@@ -23,8 +23,13 @@ import constants from "../../../assets/constants";
 
 const Schedule = ({route, navigation}) => {
 
-  const updateMode: boolean = route.params.updateMode;
-  const scheduleToUpdate: ScheduleType = route.params.scheduleToUpdate;
+  let updateMode: boolean = false;
+  let scheduleToUpdate: ScheduleType | undefined = undefined;
+  if(route.params !== undefined)
+  {
+    updateMode = route.params.updateMode;
+    scheduleToUpdate = route.params.scheduleToUpdate;
+  }
 
   const scheduleConfig = useSelector((state: RootState) => state.createScheduleState);
   const {currentSkateProfile} = useSelector((state: RootState) => state.appState);
