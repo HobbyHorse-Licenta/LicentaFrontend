@@ -21,15 +21,13 @@ import MainStack from './stacks/MainStack';
 import { Fetch } from './services';
 import {authenticationUtils, uiUtils} from './utils';
 import { firebaseConfig } from './firebaseConfig';
-import { resetAppState, setCurrentSkateProfile, setJWTToken, setUser, setUserId } from './redux/appState';
+import { resetAppState, setCurrentSkateProfile, setJWTToken, setNeedsRefresh, setUser, setUserId } from './redux/appState';
 import { User } from './types';
 import LoadingScreen from './screens/preLogin/LoadingScreen';
 import { RootState } from './redux/store';
 import { CheckInternetScreen } from './screens/preLogin';
 import { Subscription } from 'expo-modules-core';
-import dayScheduleUtils from './utils/DaySchedule';
 import { useTourGuideController } from 'rn-tourguide';
-//import { wsUrl } from './assets/apiUrl';
 
 const windowH = Dimensions.get("window").height;
 
@@ -46,7 +44,6 @@ const getWindowHeight = () => {
 }
 
 export const NotifRefProvider = createContext<MutableRefObject<NotificationPopup | null> | null>(null);
-
 export const firebaseApp : FirebaseApp = initializeApp(firebaseConfig);
 export const firebaseAuth : Auth  = getAuth(firebaseApp);
 
@@ -68,15 +65,13 @@ const WholeScreen = () => {
 
     ////EXPO PUSH////
     const [expoPushToken, setExpoPushToken] = useState('');
-    //const [notification, setNotification] = useState<Notification>();
     const notificationListener = useRef<Subscription>();
-    const responseListener = useRef<Subscription>();
 
-useEffect(() => {
-  console.log("Expo token obtained: " + expoPushToken);
-}, [expoPushToken])
+    useEffect(() => {
+    console.log("Expo token obtained: " + expoPushToken);
+    }, [expoPushToken])
 
-  useEffect(() => {
+    useEffect(() => {
     if(user !== null && user !== undefined)
     {
       registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
@@ -91,30 +86,21 @@ useEffect(() => {
     });
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      if(notification.request.content.title !== null && notification.request.content.title === "refresh")
+      {
+        //this triggers a useEffect in EventsBody component
+        dispatch(setNeedsRefresh(true));
+      }
     });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
-
-    // return () => {
-    //   Notifications.removeNotificationSubscription(notificationListener.current);
-    //   Notifications.removeNotificationSubscription(responseListener.current);
-    // };
+    return () => {
+      if(notificationListener.current !== undefined)
+      {
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+    };
   }, [user]);
 
-  
-
-  async function schedulePushNotification() {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "You've got mail! 📬",
-        body: 'Here is the notification body',
-        data: { data: 'goes here' },
-      },
-      trigger: { seconds: 2 },
-    });
-  }
   
   async function registerForPushNotificationsAsync() {
     let token;
@@ -126,10 +112,6 @@ useEffect(() => {
         vibrationPattern: [0, 250, 250, 250],
         lightColor: '#FF231F7C',
       });
-    }
-    else 
-    {
-      console.log("THIS IS NO ANDROID");
     }
 
       console.log("looking for permissions");

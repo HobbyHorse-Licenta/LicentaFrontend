@@ -8,6 +8,8 @@ import { scale } from 'react-native-size-matters';
 import { Fetch } from "../../services";
 import { SpacingStyles } from "../../styles";
 import { SkateProfile, User } from "../../types";
+import ArrowList from "./ArrowList";
+import AssignedSkillElement from "./AssignedSkillElement";
 import PrimaryContainer from "./PrimaryContainer";
 import RoundPicture from "./RoundPicture";
 
@@ -22,12 +24,14 @@ const SkateProfilePresenceCard = ({skateProfile, inactive, allUsers, cardOpacity
 
     const [user, setUser] = useState<User>();
 
+    console.log("USER FROM PRESENCE CARD: " + JSON.stringify(skateProfile))
+
     useEffect(() => {
         findUserAndSetIt(allUsers);
     }, [allUsers])
 
     const getViewStyle = () => {
-        const commonStyle: ViewStyle = {padding: scale(10)}
+        const commonStyle: ViewStyle = {padding: scale(10), ...SpacingStyles.centeredContainer}
         if(inactive === true)
         {
             return {...commonStyle,
@@ -47,8 +51,10 @@ const SkateProfilePresenceCard = ({skateProfile, inactive, allUsers, cardOpacity
             }
         });
     }
+    const assignedSkillsElements = skateProfile.assignedSkills?.map(assignedSkill => <AssignedSkillElement assignedSkill={assignedSkill}></AssignedSkillElement>)  
+    console.log("\n\nTO DISPLAY: " + JSON.stringify(skateProfile.assignedSkills)); 
     return(
-        <PrimaryContainer styleInput={{height: 100, marginHorizontal: 5, opacity: cardOpacity !== undefined ? cardOpacity : 1}}>
+        <PrimaryContainer styleInput={{...SpacingStyles.centeredContainer, height: 150, marginHorizontal: 5, opacity: cardOpacity !== undefined ? cardOpacity : 1}}>
             {
                 user !== undefined && user !== null ? (
                     
@@ -56,10 +62,14 @@ const SkateProfilePresenceCard = ({skateProfile, inactive, allUsers, cardOpacity
                     <PrimaryContainer styleInput={styles.pic}>
                         <RoundPicture image={user.profileImageUrl !== undefined && user.profileImageUrl.length !== 0 ? user.profileImageUrl : undefined}></RoundPicture>
                     </PrimaryContainer>
-                    <Text style={{flexWrap: 'nowrap'}} variant="labelSmall">{user.name}</Text>
+                    <Text style={[{flexWrap: 'nowrap'}]} variant="labelSmall">{user.name}</Text>
                     <Text style={{flexWrap: 'nowrap'}} variant="labelSmall">{skateProfile.skateExperience}</Text>
+                    {
+                        skateProfile !== undefined && skateProfile.assignedSkills !== undefined && skateProfile.assignedSkills.length > 0 &&
+                        assignedSkillsElements !== undefined &&
+                        <ArrowList itemsToDisplay={assignedSkillsElements}></ArrowList>
+                    }
                 </View>
-                
                 ):(
                     <View></View>
                 )

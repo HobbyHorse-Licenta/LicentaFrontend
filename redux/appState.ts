@@ -14,7 +14,8 @@ export interface AppState {
     addingSkateProfile:  boolean,
     initialProfileConfigured: boolean,
     allSkills: Array<Skill> | undefined,
-    allParkTrails: Array<ParkTrail> | undefined
+    allParkTrails: Array<ParkTrail> | undefined,
+    needsRefresh: boolean
 }
 
 const initialState: AppState = {
@@ -28,7 +29,8 @@ const initialState: AppState = {
     addingSkateProfile: false,
     initialProfileConfigured: true,
     allSkills: undefined,
-    allParkTrails: undefined
+    allParkTrails: undefined,
+    needsRefresh: false
 }
 
 
@@ -294,6 +296,9 @@ export const appStateSlice = createSlice({
             }
             
         },
+        setNeedsRefresh: (state, action: PayloadAction<boolean>) => {
+            state.needsRefresh = action.payload;
+        },
         resetAppState: state => initialState
       
     },
@@ -307,6 +312,7 @@ export const appStateSlice = createSlice({
 export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTToken,
     setInitialProfileConfigured, setAddingSkateProfile, 
     resetAppState,
+    setNeedsRefresh,
     setUser, 
     revertChangesInUser, backupUser,
     setAllSkills, deleteAssignedSkill, addAssignedSkill, updateAssignedSkill,

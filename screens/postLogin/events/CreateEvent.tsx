@@ -13,7 +13,7 @@ import ViewShot, { captureRef } from 'react-native-view-shot';
 
 import { Button, GeneralHeader, LoadingComponent, PrimaryContainer, RectangularPicture } from '../../../components/general';
 import { Layout2Piece } from '../../layouts';
-import { mapsUtils } from '../../../utils';
+import { mapsUtils, uiUtils } from '../../../utils';
 import { CheckPoint, Location, Day, Gender, Event, SkateExperience, SkatePracticeStyles, CustomTrail, AggresiveEvent, MarkerType } from '../../../types';
 import { SpacingStyles } from '../../../styles';
 import { SelectAgeGap, SelectDays, SelectHourRange, SelectNumberOfPeople } from '../../../components/schedule';
@@ -102,7 +102,7 @@ const CreateEvent = () => {
 
             const customTrail: CustomTrail = {
                 id: checkPointsArray[0].customTrailId,
-                trailName: "RANDOM NAME",
+                name: "RANDOM NAME",
                 checkPoints: checkPointsArray
             }
 
@@ -207,7 +207,7 @@ const CreateEvent = () => {
     }
 
 
-    const updateCheckpointCoordinates = (elementToUpdateIndex: number, changedCoordinates) => {
+    const updateCheckpointCoordinates = (elementToUpdateIndex: number, changedCoordinates: LatLng) => {
         setCheckPointsArray(checkPointsArray.map((checkpoint, index) => {
             if(elementToUpdateIndex === index)
             {
@@ -223,45 +223,7 @@ const CreateEvent = () => {
             }
             else return checkpoint;
         }))
-    }
-
-    const getMarkers = () => {
-        return checkPointsArray.map(
-        (checkpoint, index) => 
-        {
-            let markerType: MarkerType;
-            if(index === 0)
-            {
-                markerType = MarkerType.Start;
-            }
-            else if(index === checkPointsArray.length - 1)
-            {
-                markerType = MarkerType.Finish;
-            }
-            else{
-                markerType = MarkerType.Checkpoint;
-            }
-            return mapsUtils.getCustomMarker(markerType, checkpoint.location, undefined, index,
-            (changedCoordinates) => {
-                updateCheckpointCoordinates(index, changedCoordinates);
-            });
-        });
-    }
-
-    const drawRoute = () => {
-        const smallRoutes: Array<JSX.Element> = []
-        if(checkPointsArray.length < 2)
-        {
-            return null;
-        }
-        for (let i = 0; i < checkPointsArray.length - 1; i++) {
-            const element = mapsUtils.getDrawnRoute(checkPointsArray[i].location, checkPointsArray[i+1].location, i);
-            smallRoutes.push(element);
-        }
-        return smallRoutes;
-    }
-
-   
+    }   
       
     /** wraps to size of parent */
     const getMap = () => {
@@ -287,8 +249,8 @@ const CreateEvent = () => {
             onPress={({nativeEvent}) => showAddMarkerButton(nativeEvent)}
             provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
             >
-                {getMarkers()}
-                {drawRoute()}
+                {mapsUtils.getCustomTrailMarkers(checkPointsArray, (index, changedCoordinated) => updateCheckpointCoordinates(index, changedCoordinated))}
+                {mapsUtils.drawRoute(checkPointsArray)}
             </MapView>
         );
 

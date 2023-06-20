@@ -27,8 +27,10 @@ import QuestionModal from "./QuestionModal";
 import RectangularPicture from "./RectangularPicture";
 import AggresiveEventCard from "./AggresiveEventCard";
 import InformationalSvgComponent from "./InformationalSvgComponent";
+import ArrowList from "./ArrowList";
+import AssignedSkillElement from "./AssignedSkillElement";
 export {TextImage, Button, EventCard, ProfilePicList, RoundPicture, PlusTile,
      AppHeader, PrimaryContainer, SelectTime, LoadingComponent, PasswordInput, MaleOption, FemaleOption,
     SvgView, GeneralModal, SelectionListModal, SelectedDaysDisplay, RectangularPicture, AggresiveEventCard,
     SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu,UserSummary, SelectNumber, QuestionModal,
-    InformationalSvgComponent}
+    InformationalSvgComponent, ArrowList, AssignedSkillElement}

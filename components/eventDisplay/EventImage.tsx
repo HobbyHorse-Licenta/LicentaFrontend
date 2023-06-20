@@ -4,18 +4,25 @@ import {View, ImageBackground, StyleSheet} from 'react-native'
 import { scale, verticalScale } from 'react-native-size-matters';
 import { Text } from 'react-native-paper';
 
-import { LocationSvg } from '../svg/general';
-import { Event } from '../../types';
+import { FemaleSvg, LocationSvg } from '../svg/general';
+import { Event, Gender, ParkTrail, SkatePracticeStyles } from '../../types';
 
 import { SvgView } from '../general';
 import { defaultEventUrl2 } from '../../assets/imageUrls';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 interface Input {
     event: Event
 }
-
 const EventImage = ({event}: Input) => {
-
+    console.log("event to display: " + JSON.stringify(event));
+    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+    let parkTrail: ParkTrail | undefined = undefined;
+    if(currentSkateProfile?.skatePracticeStyle === SkatePracticeStyles.CasualSkating || currentSkateProfile?.skatePracticeStyle === SkatePracticeStyles.SpeedSkating )
+    {
+        parkTrail = event.outing.trail as ParkTrail;
+    }
     const getImage = () => {
         if(event.imageUrl !== undefined && event.imageUrl.length !== 0)
         {
@@ -23,16 +30,20 @@ const EventImage = ({event}: Input) => {
         }
         return defaultEventUrl2;
     }
-        //TODO: change location Text
+
+    
+    //TODO: change location Text
     return(
         <View>
             <ImageBackground source={{uri: getImage()}} resizeMode="cover" style={styles.image}>
-                <View style={styles.locationView}>
-                    <SvgView size={'small'}>
-                        <LocationSvg color='white'></LocationSvg>
-                    </SvgView>
-                    <Text variant='bodyLarge' style={{color: 'white'}}>{event.outing.trailType}</Text>
-                </View>
+                {   parkTrail !== undefined &&
+                    <View style={styles.locationView}>
+                        <SvgView size={'small'}>
+                            <LocationSvg color='white'></LocationSvg>
+                        </SvgView>
+                        <Text variant='bodyLarge' style={{color: 'white'}}>{parkTrail.name}</Text>
+                    </View>
+                }
             </ImageBackground>
             
         </View>

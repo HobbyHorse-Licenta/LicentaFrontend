@@ -31,7 +31,7 @@ const SkateProfilesList = ({suggestedSkateProfiles, attendingSkateProfiles} : In
             { suggestedSkateProfiles !== undefined && suggestedSkateProfiles !== null && suggestedSkateProfiles.length !== 0 &&
                 suggestedSkateProfiles.map((skateProfile, index) => {
                     return(
-                        <SkateProfilePresenceCard key={index} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
+                        <SkateProfilePresenceCard key={index} cardOpacity={0.4} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
                     )
                 })
             }

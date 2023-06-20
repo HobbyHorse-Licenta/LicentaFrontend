@@ -1,2 +1,3 @@
 import EventImage from "./EventImage";
-export {EventImage}
+import GenderDisplay from "./GenderDisplay";
+export {EventImage, GenderDisplay}

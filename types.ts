@@ -132,23 +132,22 @@ export type Outing = {
   startTime: number,
   endTime: number,
   skatePracticeStyle: SkatePracticeStyles,
-  trailType: 'ParkTrail' | 'CustomTrail',
-  trail: ParkTrail | CustomTrail,
+ // trailType: 'ParkTrail' | 'CustomTrail',
+  trail: CustomTrail,
   booked: boolean
 }
 
 
 export type Trail = {
-  id: string
+  id: string,
+  name: string
 }
 
 export type CustomTrail = Trail & {
-  trailName?: string,
   checkPoints: Array<CheckPoint>
 }
 
 export type ParkTrail = Trail & {
-  name: string,
   practiceStyle: SkatePracticeStyles,
   practiceStyle2?: SkatePracticeStyles,
   capacity?: number,

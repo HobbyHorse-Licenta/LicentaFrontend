@@ -185,7 +185,8 @@ const Schedule = ({route, navigation}) => {
 
     if(currentSkateProfile !== undefined && currentSkateProfile !== null)
     {
-      if(scheduleConfig.endTime !== undefined && scheduleConfig.startTime !== undefined
+      if(scheduleToUpdate !== undefined &&
+        scheduleConfig.endTime !== undefined && scheduleConfig.startTime !== undefined
         && scheduleConfig.zone !== undefined && scheduleConfig.minimumAge !== undefined
         && scheduleConfig.maximumAge !== undefined && scheduleConfig.gender !== undefined &&
         scheduleConfig.maxNumberOfPeople !== undefined && scheduleConfig.selectedDays !== undefined)

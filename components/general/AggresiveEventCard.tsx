@@ -2,19 +2,20 @@ import React, { useState, useEffect} from 'react'
 import { View, StyleSheet, Dimensions, Image, Pressable} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
-import { useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 
 import Button from './Button';
-import { Event, SkateProfile, User } from '../../types';
+import { CustomTrail, Event, SkateProfile, User } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
 import { defaultEventUrl } from '../../assets/imageUrls'
-import { resourceAccess, uiUtils } from '../../utils';
+import { filterUtils, resourceAccess, uiUtils } from '../../utils';
 import { Fetch } from '../../services';
 import ProfilePicList from './ProfilePicList';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { uiSlice } from '../../redux/ui';
+import { AggresiveEventInfoDisplay } from '../events';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -30,10 +31,14 @@ const computeTextFontSize = (size: number) => {
 
 interface EventInput {
     onPress?: Function,
-    event: Event
+    event: Event,
+    joined: boolean
+
 }
 
-const AggresiveEventCard = ({event, onPress}: EventInput) => {
+const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
+    
+    const customTrail : CustomTrail = event.outing.trail as CustomTrail;
     
     const [dimensions, setDimensions] = useState({
         window: windowDimensions,
@@ -51,10 +56,12 @@ const AggresiveEventCard = ({event, onPress}: EventInput) => {
         setImageUrl(resourceAccess.getDefaultSkatingEventImage())
       else setImageUrl(event.imageUrl);
 
-      Fetch.getSuggestedSkateProfilesForEvent(event.id,
-        (skateProfiles) => setRecommendedSkateProfiles(excludeCurrentSkateProfile(skateProfiles)),
+      if(currentSkateProfile !== undefined)
+      {
+        Fetch.getSuggestedSkateProfilesForEvent(event.id,
+        (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
         () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't participating skaters"));
-
+      }
     }, []);
 
     const theme = useTheme();
@@ -95,30 +102,35 @@ const AggresiveEventCard = ({event, onPress}: EventInput) => {
         });
     }
 
-    const excludeCurrentSkateProfile = (skateProfiles: Array<SkateProfile>) : Array<SkateProfile>  => {
-        const filteredSkateProfiles = skateProfiles.filter(skateProfile => skateProfile.id != currentSkateProfile?.id);
-        return filteredSkateProfiles;
-    }
-
     function joinEvent(){
-        console.log("join event");
-        // console.log(propertiesOf<EventDescription>(basketEventDescription))
+        console.log("join aggresive event");
+        //console.log(propertiesOf<EventDescription>(basketEventDescription))
     }
 
-    // function propertiesOf<TObj>(_obj: (TObj | undefined) = undefined) {
-    //     return function result<T extends keyof TObj>(name: T) {
-    //         return name;
-    //     }
-    // }
+    function leaveEvent(){
+        console.log("leave aggresive event");
+        //console.log(propertiesOf<EventDescription>(basketEventDescription))
+    }
 
     return(
         <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}
         style={[styles.container]}>
-                <EventInfoDisplay event={event}></EventInfoDisplay>
-                <View style={{width:'80%', margin: '5%'}}>
-                    <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
-                </View>
-                <View style={{width:'80%', margin: '5%', alignSelf: 'center'}}>
+                <Text variant="headlineSmall">{event.name}</Text>
+                <AggresiveEventInfoDisplay event={event}></AggresiveEventInfoDisplay>
+                {
+                    joined === false ? (
+                        <View style={{width:'80%', margin: '1%'}}>
+                            <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
+                        </View> 
+                    ):
+                    (
+                        <View style={{width:'80%', margin: '1%'}}>
+                            <Button style={{backgroundColor: theme.colors.secondary}} text='Leave' onPress={leaveEvent}></Button>
+                        </View> 
+                    )
+                }
+                
+                <View style={{width:'80%', margin: '2%', alignSelf: 'center'}}>
                     <ProfilePicList imageUrlsArray={profileImagesUrl}></ProfilePicList>
                 </View>
         </Pressable>
@@ -130,12 +142,12 @@ export default AggresiveEventCard;
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        flexDirection: 'row',
-        width: scale(280), 
-        height: scale(400),
+        width: "100%", 
         alignSelf: 'center',
         margin: '2%',
-        backgroundColor: 'white'
+        padding: '2%',
+        backgroundColor: 'white',
+        borderRadius: 15
 
     },
     roundness: {

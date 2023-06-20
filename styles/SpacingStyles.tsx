@@ -3,6 +3,11 @@ import { scale, verticalScale } from "react-native-size-matters";
 
 
 export const SpacingStyles = StyleSheet.create({
+    eventCard: {
+      width: scale(280),
+      height: scale(400),
+      borderRadius: 15
+    },
     fullSizeContainer: {
         height: '100%',
         width: '100%',

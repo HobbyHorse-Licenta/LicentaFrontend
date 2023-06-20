@@ -1,7 +1,9 @@
 import React from 'react'
 import {RefObject} from 'react'
-import { Location, MarkerType, ParkTrail, Zone } from '../types';
-import MapView, { Circle, LatLng, Marker } from "react-native-maps";
+import {Platform} from 'react-native'
+import { CheckPoint, Location, MarkerType, ParkTrail, Zone } from '../types';
+import MapView, { Circle, LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+
 import { useTheme } from 'react-native-paper';
 import Constants from 'expo-constants';
 
@@ -9,6 +11,7 @@ import { COLORS } from '../assets/colors/colors';
 import MapViewDirections from 'react-native-maps-directions';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import uuid from 'react-native-uuid'
 import { Image } from 'react-native';
 
 
@@ -92,7 +95,9 @@ class Maps {
                     latitude: parkTrail.location.lat,
                     longitude: parkTrail.location.long
                 }}
-                image={require('../assets/mapMarkers/running-track.png')}
+                image={{uri: "https://i.postimg.cc/mrXQvdzc/running-track.png"}}
+                //image={require('../assets/mapMarkers/running-track.png')}
+
                 style={{width: 1, height: 1}}
                 title={parkTrail.name}
                 >
@@ -135,22 +140,26 @@ class Maps {
     }
 
     /* Returns JSX element */
-    getCustomMarker (markerType:MarkerType, location: Location, markerTitle: string | undefined, key?: number, changedCoordinates?: Function) {
+    getCustomMarker (markerType:MarkerType, location: Location, markerTitle: string | undefined, key?: number, changedCoordinates?: ((coordinates: LatLng) => void)) {
         const getImage = () => {
             switch (markerType) {
                 case MarkerType.Checkpoint:
+                    return {uri: "https://i.postimg.cc/TPjQLj4Q/checkpoint.png"}    
                     return require('../assets/mapMarkers/checkpoint.png');
                     break;
                 case MarkerType.Finish:
+                    return {uri: "https://i.postimg.cc/CLZNHp2R/finish.png"}    
                     return require('../assets/mapMarkers/finish.png');
                     break;
                 case MarkerType.Start:
+                    return {uri: "https://i.postimg.cc/Wz7wtsY3/start.png"}
                     return require('../assets/mapMarkers/start.png');
                     break;
                 default: 
+                    return {uri: "https://i.postimg.cc/63rmLJ1s/map-marker.png"}
                     return require('../assets/mapMarkers/map_marker.png'); 
                     break;
-             }
+            }
         }
         return(
             <Marker
@@ -184,6 +193,70 @@ class Maps {
             strokeColor={COLORS.aPrimaryColorOverall}
             />
         )
+    }
+
+    /** draws route using checkpoints*/
+    drawRoute (checkPoints: Array<CheckPoint>) {
+        const smallRoutes: Array<JSX.Element> = []
+        if(checkPoints === undefined)
+            return null;
+        if(checkPoints.length < 2)
+            return null;
+        for (let i = 0; i < checkPoints.length - 1; i++) {
+            const element = this.getDrawnRoute(checkPoints[i].location, checkPoints[i+1].location, i);
+            smallRoutes.push(element);
+        }
+        return smallRoutes;
+    }
+
+    /** draws checkpoints from a custom trail*/
+    getCustomTrailMarkers(checkPoints: Array<CheckPoint>, updateCheckpointCoordinates: ((indexOfChekpoint: number, changedCoordinates: LatLng) => void)){
+        if(checkPoints !== undefined)
+        {
+            return checkPoints.map(
+            (checkpoint, index) => 
+            {
+                let markerType: MarkerType;
+                if(index === 0)
+                {
+                    markerType = MarkerType.Start;
+                }
+                else if(index === checkPoints.length - 1)
+                {
+                    markerType = MarkerType.Finish;
+                }
+                else{
+                    markerType = MarkerType.Checkpoint;
+                }
+                return mapsUtils.getCustomMarker(markerType, checkpoint.location, undefined, index,
+                (changedCoordinates) => {
+                    updateCheckpointCoordinates(index, changedCoordinates);
+                });
+            });
+        }
+        else return null;
+    }
+
+
+    /** wraps to size of parent */
+    getUneditableCustomTrailMap (mapRef:  React.RefObject<MapView>, centeredLocation: Location, 
+        checkPoints: Array<CheckPoint>, updateCheckpoint: (checkpointIndex: number, newCheckpointCoordinates: LatLng) => void) {
+        return(
+            <MapView ref={mapRef} style={{height: '100%', width: '100%', zIndex: 0}}
+            scrollEnabled={false}
+            zoomEnabled={false}
+            initialRegion={{
+                latitude: centeredLocation.lat,
+                longitude: centeredLocation.long,
+                latitudeDelta: 0.00001,
+                longitudeDelta: mapsUtils.kMToLongitudes(2, centeredLocation.lat)
+            }}
+            provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
+            >
+                {this.getCustomTrailMarkers(checkPoints, updateCheckpoint)}
+                {this.drawRoute(checkPoints)}
+            </MapView>
+        );
     }
 
 }

@@ -38,7 +38,7 @@ const EventInfoDisplay = ({event}: EventInput) => {
                 </View>
 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
-                    <Text style={[styles.descriptionText]}>{event.gender}</Text>
+                    <Text style={[styles.descriptionText]}>Gender: {event.gender}</Text>
                 </View>
 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>

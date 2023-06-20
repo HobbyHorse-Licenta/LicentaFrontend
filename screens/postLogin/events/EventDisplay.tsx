@@ -1,54 +1,69 @@
 import React, {useEffect, useState} from "react";
-import { View, Text } from 'react-native'
-import {EventImage } from "../../../components/eventDisplay";
+import { View, ScrollView } from 'react-native'
+
+import { Text } from "react-native-paper";
+import { scale } from "react-native-size-matters";
+import { useSelector } from "react-redux";
+
+import {EventImage, GenderDisplay } from "../../../components/eventDisplay";
 import { GeneralHeader } from "../../../components/general";
 import SkateProfilesList from "../../../components/general/SkateProfilesList";
+import { RootState } from "../../../redux/store";
 import { Fetch } from "../../../services";
 import { SpacingStyles } from "../../../styles";
-
 import { Event, SkateProfile } from "../../../types";
+import { filterUtils } from "../../../utils";
 import { Layout2Piece } from "../../layouts";
 
-interface EventInput {
-    event: Event
-}
 
 const EventDisplay = ({route, navigation}) => {
 
   const event: Event = route.params.event;
 
+  const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
   const [suggestedSkateProfiles, setSuggestedSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
   const [attendingSkateProfiles, setAttendingSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
 
   useEffect(() => {
-    Fetch.getSkateProfilesForEvent(
-      event.id,
-      (skateProf) => setAttendingSkateProfiles(skateProf),
-      () => console.log("Coudn't get attending skate profiles")
-    );
-    Fetch.getSuggestedSkateProfilesForEvent(
-      event.id,
-      (skateProf) => setSuggestedSkateProfiles(skateProf),
-      () => console.log("Coudn't get suggested skate profiles")
-    );
-    
+    if(currentSkateProfile !== undefined)
+    {
+      Fetch.getSkateProfilesForEvent(
+        event.id,
+        (skateProf) => setAttendingSkateProfiles(filterUtils.excludeSkateProfile(skateProf, currentSkateProfile)),
+        () => console.log("Coudn't get attending skate profiles")
+      );
+      Fetch.getSuggestedSkateProfilesForEvent(
+        event.id,
+        (skateProf) =>  setSuggestedSkateProfiles(filterUtils.excludeSkateProfile(skateProf, currentSkateProfile)),
+        () => console.log("Coudn't get suggested skate profiles")
+      );
+    }
   }, [])
-  
-  //  console.log("\n\n\nSKATINGPROFILES ALLLL: " + JSON.stringify(skateProfiles));
-   
-  const getBody = () => {
+
+  const skatersInfo = () => {
     return(
-      <View>
-        <EventImage event={event}></EventImage>
-        <View style={SpacingStyles.centeredContainer}>
-          <Text>Skaters attending</Text>
+      <View style={SpacingStyles.centeredContainer}>
+          <View style={{margin: 10, justifyContent: 'center', alignItems: 'center'}}>
+            <Text variant="headlineSmall" style={{marginBottom: scale(2)}}>Event's skaters</Text>
+            <GenderDisplay gender={event.gender}></GenderDisplay>
+            <Text variant="labelMedium">Skaters with opacity are just suggested</Text>
+            <Text variant="labelMedium">Skater who are opaque are participating</Text>
+          </View>
           {
             suggestedSkateProfiles !== undefined &&  suggestedSkateProfiles !== null &&
             attendingSkateProfiles !== undefined &&  attendingSkateProfiles !== null &&
              <SkateProfilesList suggestedSkateProfiles={suggestedSkateProfiles} attendingSkateProfiles={attendingSkateProfiles}></SkateProfilesList>
           }
-        </View>
       </View>
+    )
+  }
+
+  const getBody = () => {
+    return(
+      <ScrollView>
+        <EventImage event={event}></EventImage>
+        {skatersInfo()}
+      </ScrollView>
     );
   };
   
@@ -61,3 +76,4 @@ const EventDisplay = ({route, navigation}) => {
 };
 
 export default EventDisplay;
+

@@ -9,7 +9,7 @@ import { Event, SkateProfile, User } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
 import { blankProfilePictureUrl, defaultEventUrl } from '../../assets/imageUrls'
-import { resourceAccess } from '../../utils';
+import { filterUtils, resourceAccess } from '../../utils';
 import { Fetch } from '../../services';
 import ProfilePicList from './ProfilePicList';
 import { useSelector } from 'react-redux';
@@ -30,10 +30,11 @@ const computeTextFontSize = (size: number) => {
 
 interface EventInput {
     onPress?: Function,
-    event: Event
+    event: Event,
+    joined: boolean
 }
 
-const EventCard = ({event, onPress}: EventInput) => {
+const EventCard = ({event, onPress, joined}: EventInput) => {
 
     const [dimensions, setDimensions] = useState({
         window: windowDimensions,
@@ -50,10 +51,13 @@ const EventCard = ({event, onPress}: EventInput) => {
         setImageUrl(resourceAccess.getDefaultSkatingEventImage())
       else setImageUrl(event.imageUrl);
 
-      Fetch.getSuggestedSkateProfilesForEvent(event.id,
-        (skateProfiles) => setRecommendedSkateProfiles(excludeCurrentSkateProfile(skateProfiles)),
+      if(currentSkateProfile !== undefined)
+      {
+        Fetch.getSuggestedSkateProfilesForEvent(event.id,
+        (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
         () => console.log("Coudn't get suggested users"));
-
+      }
+      
     }, []);
 
     const theme = useTheme();
@@ -94,13 +98,27 @@ const EventCard = ({event, onPress}: EventInput) => {
         });
     }
 
-    const excludeCurrentSkateProfile = (skateProfiles: Array<SkateProfile>) : Array<SkateProfile>  => {
-        const filteredSkateProfiles = skateProfiles.filter(skateProfile => skateProfile.id != currentSkateProfile?.id);
-        return filteredSkateProfiles;
+    function joinEvent(){
+        console.log(`Change skateprofile with id ${currentSkateProfile?.id} from suggestined to attending in event with id ${event.id}`);
+        if(currentSkateProfile !== undefined)
+        {
+            Fetch.joinSkateProfileToEvent(currentSkateProfile.id, event.id,
+            () => console.log("\n\nEvent joined SUCCESSFULLY"),
+            () => console.log("\n\nEvent join FAILED")
+            );
+        }
+        // console.log(propertiesOf<EventDescription>(basketEventDescription))
     }
 
-    function joinEvent(){
-        console.log("join event");
+    function leaveEvent(){
+        
+        if(currentSkateProfile !== undefined)
+        {
+            Fetch.leaveSkateProfileFromEvent(currentSkateProfile.id, event.id,
+            () => console.log("\n\nEvent left SUCCESSFULLY"),
+            () => console.log("\n\nEvent left FAILED")
+            );
+        }
         // console.log(propertiesOf<EventDescription>(basketEventDescription))
     }
 
@@ -112,16 +130,26 @@ const EventCard = ({event, onPress}: EventInput) => {
 
     return(
         <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}
-        style={[styles.container, styles.roundness, {width: scale(280), height: scale(400), alignSelf: 'center'}]}>
+        style={[styles.container, {alignSelf: 'center'}, SpacingStyles.eventCard]}>
             <View style={{width:'40%', height:'100%'}}>
                 <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
             </View>
 
             <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
                 <EventInfoDisplay event={event}></EventInfoDisplay>
-                <View style={{width:'80%', margin: '5%'}}>
-                    <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
-                </View>
+                {
+                    joined === false ? (
+                        <View style={{width:'80%', margin: '5%'}}>
+                            <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
+                        </View>
+                    )
+                    :(
+                        <View style={{width:'80%', margin: '5%'}}>
+                            <Button style={{backgroundColor: theme.colors.secondary}} text='Leave' onPress={leaveEvent}></Button>
+                        </View>
+                    )
+                }
+                
                 <View style={{width:'80%', margin: '5%', alignSelf: 'center'}}>
                     <ProfilePicList imageUrlsArray={profileImagesUrl}></ProfilePicList>
                 </View>
@@ -137,16 +165,9 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         flexDirection: 'row',
-
         margin: '2%',
         backgroundColor: 'white'
 
-    },
-    roundness: {
-        borderTopRightRadius: 15,
-        borderBottomRightRadius: 15,
-        borderBottomLeftRadius: 15,
-        borderTopLeftRadius: 15
     },
     leftRoundness: {
         borderBottomLeftRadius: 15,
