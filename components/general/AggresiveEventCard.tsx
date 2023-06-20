@@ -46,8 +46,10 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
       });
 
     const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
-    const [profileImagesUrl, setProfileImagesUrl] = useState<Array<string | undefined> | undefined>();
+    const [recommendedUsersImagesUrl, setRecommendedUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
+    const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
+    const [participatingSkateProfiles, setParticipatingSkateProfiles] = useState<Array<SkateProfile>>();
     const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
     
     //TODO REMOVE THIS
@@ -60,7 +62,11 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
       {
         Fetch.getSuggestedSkateProfilesForEvent(event.id,
         (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
-        () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't participating skaters"));
+        () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't suggested skaters"));
+
+        Fetch.getSkateProfilesForEvent(event.id,
+            (skateProfiles) => setParticipatingSkateProfiles(skateProfiles),
+            () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't participating skaters"));
       }
     }, []);
 
@@ -79,10 +85,16 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
     useEffect(() => {
         if(recommendedSkateProfiles !== undefined && recommendedSkateProfiles.length > 0)
         {
-            //console.log("RECOMNEDE SKATE PROGILES:  " + JSON.stringify(getAllPicturesFromSkateProfiles(recommendedSkateProfiles)));
-            setProfileImagesUrl(getAllPicturesFromSkateProfiles(recommendedSkateProfiles));
+            setRecommendedUsersImagesUrl(getAllPicturesFromSkateProfiles(recommendedSkateProfiles));
         }
     }, [recommendedSkateProfiles])
+
+    useEffect(() => {
+        if(participatingSkateProfiles !== undefined && participatingSkateProfiles.length > 0)
+        {
+            setParticipatingUsersImagesUrl(getAllPicturesFromSkateProfiles(participatingSkateProfiles));
+        }
+    }, [participatingSkateProfiles])
     
 
     const getAllPicturesFromSkateProfiles = (skateProfiles: Array<SkateProfile>): Array<string | undefined> =>
@@ -131,7 +143,7 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
                 }
                 
                 <View style={{width:'80%', margin: '2%', alignSelf: 'center'}}>
-                    <ProfilePicList imageUrlsArray={profileImagesUrl}></ProfilePicList>
+                    <ProfilePicList imageUrlsArray={participatingUsersImagesUrl} grayedOutImageUrlsArray={recommendedUsersImagesUrl}></ProfilePicList>
                 </View>
         </Pressable>
     );

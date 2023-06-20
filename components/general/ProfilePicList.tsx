@@ -10,13 +10,14 @@ import { blankProfilePictureUrl } from '../../assets/imageUrls';
 const imageSize = scale(30);
 
 interface ProfilePicListInput {
-    imageUrlsArray: Array<string | undefined> | undefined
+    imageUrlsArray: Array<string | undefined> | undefined,
+    grayedOutImageUrlsArray: Array<string | undefined> | undefined,
 }
 
 /**
  * Has a fixed size
  */
-const ProfilePicList = ({imageUrlsArray} : ProfilePicListInput) => {
+const ProfilePicList = ({imageUrlsArray, grayedOutImageUrlsArray} : ProfilePicListInput) => {
 
     
     let picturesDisplayed = 0;
@@ -36,19 +37,53 @@ const ProfilePicList = ({imageUrlsArray} : ProfilePicListInput) => {
         return (index) * imageSize/2 + marginOnASide;
     }
 
+    const maxNormalPics = 5;
+    const maxGrayedOutPics = 3;
+
+    let secondaryStartingIndex = 0;
+    if(imageUrlsArray !== undefined)
+    {
+        if(imageUrlsArray.length > maxNormalPics)
+        {
+            secondaryStartingIndex = maxNormalPics;
+        }
+        else secondaryStartingIndex = imageUrlsArray.length;
+    }
+
+    let totalPicCount = 0;
+    if(grayedOutImageUrlsArray !== undefined)
+    {
+        if(grayedOutImageUrlsArray.length > maxGrayedOutPics)
+        {
+            totalPicCount = secondaryStartingIndex + maxGrayedOutPics;
+        }
+        else totalPicCount = secondaryStartingIndex + grayedOutImageUrlsArray.length;
+    }
+    else totalPicCount = secondaryStartingIndex;
+
     return(
             <View style={[SpacingStyles.centeredContainer, {alignSelf: 'center', width: componentWidth, height: imageSize * 2}]}>
-                <View style={[{flexDirection: 'row', width:'100%'}, SpacingStyles.centeredContainer]}>  
-                    {imageUrlsArray !== undefined && imageUrlsArray.map((imageUrl, index) => {
-                            if(index < 6)
+                <View style={[{flexDirection: 'row', width:'100%'}, SpacingStyles.centeredContainer]}>
+                {
+                    grayedOutImageUrlsArray !== undefined && grayedOutImageUrlsArray.map((imageUrl, index) => {
+                            if(index < maxNormalPics)
                             return(
                                 <Image key={index} 
                                 source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}
-                                style={[{right: computeImageOffset(index), top: 0, width: imageSize, height: imageSize}, styles.profileImage]}/>            
+                                style={[{right: computeImageOffset(index), top: 0, width: imageSize, height: imageSize}, styles.profileImage]}/>             
+                            )
+                    })}  
+                    {imageUrlsArray !== undefined && imageUrlsArray.map((imageUrl, index) => {
+                            if(index < maxGrayedOutPics)
+                            return(
+                                <Image key={index} 
+                                source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}
+                                style={[{right: computeImageOffset(secondaryStartingIndex + index), top: 0, width: imageSize, height: imageSize}, styles.profileImage2]}/>            
                             )
                     })}
+                    
                 </View>
-                <Text style={{marginTop: imageSize}}>{imageUrlsArray !== undefined ? imageUrlsArray.length : 0} people</Text> 
+                <Text style={{marginTop: imageSize}}>{totalPicCount} people</Text> 
             </View>
     );
 };
@@ -62,11 +97,15 @@ const styles = StyleSheet.create({
         alignItems: 'center' 
    },
    profileImage: {
-        // width: '100%',
-        // height: '100%',
         borderRadius: 100,
         position: 'absolute',
         borderWidth: 3/100*imageSize,
         borderColor: 'white'
-   }
+   },
+   profileImage2: {
+    borderRadius: 100,
+    position: 'absolute',
+    borderWidth: 3/100*imageSize + 1,
+    borderColor: 'red'
+    }
 });

@@ -42,8 +42,11 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
       });
 
     const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
-    const [profileImagesUrl, setProfileImagesUrl] = useState<Array<string | undefined> | undefined>();
+    const [recommendedUsersImagesUrl, setRecommendedUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
+    const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
+    const [participatingSkateProfiles, setParticipatingSkateProfiles] = useState<Array<SkateProfile>>();
+    const [reversed, setReversed] = useState(false);
     const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
     //TODO REMOVE THIS
     useEffect(() => {
@@ -56,6 +59,11 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
         Fetch.getSuggestedSkateProfilesForEvent(event.id,
         (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
         () => console.log("Coudn't get suggested users"));
+
+        //user can see himselft if hes participating
+        Fetch.getSkateProfilesForEvent(event.id,
+            (skateProfiles) => setParticipatingSkateProfiles(skateProfiles),
+            () => console.log("Coudn't get participating users"));
       }
       
     }, []);
@@ -75,10 +83,17 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
     useEffect(() => {
         if(recommendedSkateProfiles !== undefined && recommendedSkateProfiles.length > 0)
         {
-            //console.log("RECOMNEDE SKATE PROGILES:  " + JSON.stringify(getAllPicturesFromSkateProfiles(recommendedSkateProfiles)));
-            setProfileImagesUrl(getAllPicturesFromSkateProfiles(recommendedSkateProfiles));
+            setRecommendedUsersImagesUrl(getAllPicturesFromSkateProfiles(recommendedSkateProfiles));
         }
     }, [recommendedSkateProfiles])
+
+    useEffect(() => {
+        if(participatingSkateProfiles !== undefined && participatingSkateProfiles.length > 0)
+        {
+            setParticipatingUsersImagesUrl(getAllPicturesFromSkateProfiles(participatingSkateProfiles));
+        }
+    }, [participatingSkateProfiles])
+    
     
 
     const getAllPicturesFromSkateProfiles = (skateProfiles: Array<SkateProfile>): Array<string | undefined> =>
@@ -131,30 +146,46 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
     return(
         <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}
         style={[styles.container, {alignSelf: 'center'}, SpacingStyles.eventCard]}>
-            <View style={{width:'40%', height:'100%'}}>
-                <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
-            </View>
+            {
+                reversed === false ? 
+                (
+                    <View style={{width: "100%", height: "100%", flexDirection: "row"}}>
 
-            <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
-                <EventInfoDisplay event={event}></EventInfoDisplay>
-                {
-                    joined === false ? (
-                        <View style={{width:'80%', margin: '5%'}}>
-                            <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
+                        <View style={{width:'40%', height:'100%'}}>
+                            <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
                         </View>
-                    )
-                    :(
-                        <View style={{width:'80%', margin: '5%'}}>
-                            <Button style={{backgroundColor: theme.colors.secondary}} text='Leave' onPress={leaveEvent}></Button>
+
+                        <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
+                            <EventInfoDisplay event={event}></EventInfoDisplay>
+                            {
+                                joined === false ? (
+                                    <View style={{width:'80%', margin: '5%'}}>
+                                        <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
+                                    </View>
+                                )
+                                :(
+                                    <View style={{width:'80%', margin: '5%'}}>
+                                        <Button style={{backgroundColor: theme.colors.secondary}} text='Leave' onPress={leaveEvent}></Button>
+                                    </View>
+                                )
+                            }
+                    
+                            <View style={{width:'80%', margin: '5%', alignSelf: 'center'}}>
+                                <ProfilePicList imageUrlsArray={participatingUsersImagesUrl} grayedOutImageUrlsArray={recommendedUsersImagesUrl}></ProfilePicList>
+                            </View>  
                         </View>
-                    )
-                }
+
+                    </View>                   
+                ):
+                (
+                    <View style={{width:'80%', margin: '5%'}}>
+                        <Button style={{backgroundColor: theme.colors.secondary}} text='Delete' onPress={leaveEvent}></Button>
+                    </View>
+                )
+            }
+            
                 
-                <View style={{width:'80%', margin: '5%', alignSelf: 'center'}}>
-                    <ProfilePicList imageUrlsArray={profileImagesUrl}></ProfilePicList>
-                </View>
-                
-            </View>
+          
         </Pressable>
     );
 };
