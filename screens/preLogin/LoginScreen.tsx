@@ -93,9 +93,9 @@ const LoginScreen = () => {
                                         <Text style={[{fontWeight: 'bold', color: theme.colors.tertiary}]} variant='labelSmall'> Sign Up</Text>
                                     </TouchableOpacity>
                                 </View>
-                                <TouchableOpacity onPress={() => console.log("[LoginScreen]: reset password")}>
+                                {/* <TouchableOpacity onPress={() => console.log("[LoginScreen]: reset password")}>
                                         <Text style={[styles.actionText, {fontWeight: 'bold', color: theme.colors.tertiary}]} variant='labelSmall'>Forgot password?</Text>
-                                </TouchableOpacity>
+                                </TouchableOpacity> */}
                             </View>
                         </View>
                         

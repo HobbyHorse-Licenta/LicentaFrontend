@@ -9,12 +9,13 @@ import { Event, SkateProfile, User } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
 import { blankProfilePictureUrl, defaultEventUrl } from '../../assets/imageUrls'
-import { filterUtils, resourceAccess } from '../../utils';
+import { filterUtils, resourceAccess, validation } from '../../utils';
 import { Fetch } from '../../services';
 import ProfilePicList from './ProfilePicList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { json } from 'node:stream/consumers';
+import { setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -41,13 +42,14 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
         screen: screenDimensions,
       });
 
+    const dispatch =  useDispatch();
     const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
     const [recommendedUsersImagesUrl, setRecommendedUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
     const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [participatingSkateProfiles, setParticipatingSkateProfiles] = useState<Array<SkateProfile>>();
     const [reversed, setReversed] = useState(false);
-    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
     //TODO REMOVE THIS
     useEffect(() => {
       if(event.imageUrl == undefined || event.imageUrl.length === 0)
@@ -56,15 +58,22 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
 
       if(currentSkateProfile !== undefined)
       {
-        Fetch.getSuggestedSkateProfilesForEvent(event.id,
-        (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
-        () => console.log("Coudn't get suggested users"));
-
-        //user can see himselft if hes participating
-        Fetch.getSkateProfilesForEvent(event.id,
-            (skateProfiles) => setParticipatingSkateProfiles(skateProfiles),
-            () => console.log("Coudn't get participating users"));
-      }
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+            Fetch.getSuggestedSkateProfilesForEvent(JWTTokenResult.token, event.id,
+                (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
+                () => console.log("Coudn't get suggested users"));
+        
+            //user can see himselft if hes participating
+            Fetch.getSkateProfilesForEvent(JWTTokenResult.token, event.id,
+                (skateProfiles) => setParticipatingSkateProfiles(skateProfiles),
+                () => console.log("Coudn't get participating users"));
+            }
+        }
+        else{
+            //TODO refresh token
+        }
+        
       
     }, []);
 
@@ -117,31 +126,43 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
         console.log(`Change skateprofile with id ${currentSkateProfile?.id} from suggestined to attending in event with id ${event.id}`);
         if(currentSkateProfile !== undefined)
         {
-            Fetch.joinSkateProfileToEvent(currentSkateProfile.id, event.id,
-            () => console.log("\n\nEvent joined SUCCESSFULLY"),
-            () => console.log("\n\nEvent join FAILED")
-            );
-        }
-        // console.log(propertiesOf<EventDescription>(basketEventDescription))
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.joinSkateProfileToEvent(JWTTokenResult.token,
+                    currentSkateProfile.id, event.id,
+                    () => console.log("\n\nEvent joined SUCCESSFULLY"),
+                    () => console.log("\n\nEvent join FAILED")
+                    );
+                }
+            }
+            else{
+                //TODO refresh token
+            }
+           
+            dispatch(setNeedsEventsRefresh(true));
+            dispatch(setNeedsRecommendedEventsRefresh(true));
     }
 
     function leaveEvent(){
-        
         if(currentSkateProfile !== undefined)
         {
-            Fetch.leaveSkateProfileFromEvent(currentSkateProfile.id, event.id,
-            () => console.log("\n\nEvent left SUCCESSFULLY"),
-            () => console.log("\n\nEvent left FAILED")
-            );
-        }
-        // console.log(propertiesOf<EventDescription>(basketEventDescription))
-    }
+            dispatch(setNeedsEventsRefresh(true));
+            dispatch(setNeedsRecommendedEventsRefresh(true));
 
-    // function propertiesOf<TObj>(_obj: (TObj | undefined) = undefined) {
-    //     return function result<T extends keyof TObj>(name: T) {
-    //         return name;
-    //     }
-    // }
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.leaveSkateProfileFromEvent(JWTTokenResult.token,
+                    currentSkateProfile.id, event.id,
+                () => console.log("\n\nEvent left SUCCESSFULLY"),
+                () => console.log("\n\nEvent left FAILED")
+                );
+            }
+            else{
+                //TODO refresh token
+            }
+            
+        }
+    }
 
     return(
         <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}

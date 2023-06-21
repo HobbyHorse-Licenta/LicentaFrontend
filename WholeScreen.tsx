@@ -10,6 +10,7 @@ import { initializeApp } from 'firebase/app';
 import { verticalScale } from 'react-native-size-matters';
 import * as Device from 'expo-device';
 import 'firebase/auth';
+import { nothing } from 'immer';
 import { getAuth, onAuthStateChanged, Auth } from "firebase/auth";
 import type { FirebaseApp } from 'firebase/app';
 import { getNetworkStateAsync } from 'expo-network';
@@ -19,9 +20,9 @@ import { getNetworkStateAsync } from 'expo-network';
 import { setWindowHeight } from './redux/ui';
 import MainStack from './stacks/MainStack';
 import { Fetch } from './services';
-import {authenticationUtils, uiUtils} from './utils';
+import {authenticationUtils, uiUtils, validation} from './utils';
 import { firebaseConfig } from './firebaseConfig';
-import { resetAppState, setCurrentSkateProfile, setJWTToken, setNeedsRefresh, setUser, setUserId } from './redux/appState';
+import { resetAppState, setCurrentSkateProfile, setJWTTokenResult, setNeedsRecommendedEventsRefresh, setUser, setUserId } from './redux/appState';
 import { User } from './types';
 import LoadingScreen from './screens/preLogin/LoadingScreen';
 import { RootState } from './redux/store';
@@ -55,6 +56,7 @@ const WholeScreen = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
     const popUp = useRef<NotificationPopup | null>(null);
+    const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
     const windowHeight = useMemo(() => getWindowHeight(), []);
     const [internetConnected, setInternetConnected] = useState<boolean | undefined>(undefined);
     const [waitingToRecheckInternet, setWaitingToRecheckInternet] = useState(null);
@@ -89,7 +91,7 @@ const WholeScreen = () => {
       if(notification.request.content.title !== null && notification.request.content.title === "refresh")
       {
         //this triggers a useEffect in EventsBody component
-        dispatch(setNeedsRefresh(true));
+        dispatch(setNeedsRecommendedEventsRefresh(true));
       }
     });
 
@@ -134,9 +136,18 @@ const WholeScreen = () => {
             ...user,
             pushNotificationToken: token
           }
-          Fetch.putUser(user.id, updatedUser, 
-            () => console.log("Posted user notificationToken succesfully"),
-            () => uiUtils.showPopUp("Error", "Couldn't post notification token to database"))
+
+          if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+          {
+            Fetch.putUser(JWTTokenResult.token,
+              user.id, updatedUser, 
+              () => console.log("Posted user notificationToken succesfully"),
+              () => uiUtils.showPopUp("Error", "Couldn't post notification token to database"))
+          }
+          else {
+            //TODO refresh token
+          }
+          
         }
         else console.log("User undefined at this moment; can't post notification token");
       }
@@ -158,80 +169,6 @@ const WholeScreen = () => {
       }
     }, [user])
 
- 
-  
-  //   ////////////WEBSOCKET RELATED///////////
-  //   const clientRef = useRef<WebSocket | null>(null);
-  //   const [waitingToReconnect, setWaitingToReconnect] = useState(null);
-  //   const [isOpen, setIsOpen] = useState(false);
-  //   ////////////////////////////////////////
-
-  // useEffect(() => {
-        
-  //   if (waitingToReconnect) {
-  //     return;
-  //   }
-    
-  //   console.log("Am reintrat si incercam un reconnect");
-
-  //   // Only set up the websocket once
-  //   if (!clientRef.current) {
-  //     console.log("Definim websocket")
-  //     const webSocketConnectionString = `${wsUrl}/EventNotifications`;
-  //     console.log("Conn string: " + webSocketConnectionString)
-  //     const client = new WebSocket(webSocketConnectionString);
-  //     clientRef.current = client;
-
-  //     window.client = client;
-
-  //     client.onerror = (e) => console.error(e);
-
-  //     client.onopen = () => {
-  //       setIsOpen(true);
-  //       console.log('Connected to the server websocket');
-  //     };
-
-  //     client.onclose = () => {
-
-  //       if (clientRef.current) {
-  //         // Connection failed
-  //         console.log('Disconnected from websocket. Check internet or server.')
-  //       } else {
-  //         // Cleanup initiated from app side, can return here, to not attempt a reconnect
-  //         console.log('ws closed by app component unmount');
-  //         return;
-  //       }
-
-  //       if (waitingToReconnect) {
-  //         return;
-  //       };
-
-  //       // Parse event code and log
-  //       setIsOpen(false);
-  //       console.log('ws closed');
-
-  //       setWaitingToReconnect(true);
-
-  //       setTimeout(() => setWaitingToReconnect(null), 5000);
-  //     };
-
-  //     client.onmessage = (e) => {
-  //       console.log("Received: " + e.data);
-  //       handleWebSocketPopUp(e.data);
-  //     };
-
-
-  //     return () => {
-  //       console.log('Cleanup');
-  //       // Dereference, so it will set up next time
-  //       clientRef.current = null;
-
-  //       client.close();
-  //     }
-  //   }
-
-  // }, [waitingToReconnect]);
-    
 //TODO on ios the tabbar si covering the screen SHOULD BE SOLVED
 
  ///////////SETTING THINGS UP AND VERIFYING LOGIN///////////
@@ -288,23 +225,30 @@ const WholeScreen = () => {
     const currentUserJWTTokenValid = (user) => {
       if (user) {
         console.log("USER: " + user.email);
-        user.getIdTokenResult().then((idTokenResult) => {
-          dispatch(setJWTToken(idTokenResult.token))
+        user.getIdTokenResult(true).then((idTokenResult) => {
+          dispatch(setJWTTokenResult(idTokenResult))
           const now = new Date().getTime();
-          if (idTokenResult.expirationTime < now) {
+          if (validation.isJWTTokenExpired(idTokenResult)) {
             console.error('Token is expired');
-            dispatch(resetAppState());
+            uiUtils.showPopUp("TOKEN", "A EXPIRAT, ACUM TE SCOTEAM AFARA", () => nothing, 6000)
+            //dispatch(resetAppState());
           } else {
             console.log('Token is valid');
             if(user.uid !== undefined)
             {
               console.log("urmeaza sa incerc databaseul pentru userul cu id => " + user.uid);
               dispatch(setUserId(user.uid));
-              dispatch(setJWTToken(idTokenResult.token));
-              Fetch.getUser(user.uid, (fetchedUser: User) => {
-                                  console.log("Fetched user with id: " + fetchedUser.id);
-                                  dispatch(setUser(fetchedUser)); setLoading(false);}
-                                  , () => setLoading(false))
+              dispatch(setJWTTokenResult(idTokenResult));
+              if(idTokenResult !== undefined && !validation.isJWTTokenExpired(idTokenResult))
+              {
+                Fetch.getUser(idTokenResult.token, user.uid, (fetchedUser: User) => {
+                  console.log("Fetched user with id: " + fetchedUser.id);
+                  dispatch(setUser(fetchedUser)); setLoading(false);}
+                  , () => setLoading(false))
+              }
+              else {
+                //TODO refresh token
+              }
             }
           }
         }).catch((err) => {

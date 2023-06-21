@@ -12,13 +12,14 @@ import { SpacingStyles } from '../styles';
 import { setCurrentRoute} from '../redux/appState';
 import { RootState } from '../redux/store';
 import { CommonActions } from '@react-navigation/native';
+import { validation } from '../utils';
 
 const PERSISTENCE_KEY = 'NAVIGATION_STATE_V1';
 
 const MainStack = () => {
 
   const [routeName, setRouteName] = useState<string>();
-  const { JWTToken } = useSelector((state: RootState) => state.appState)
+  const { JWTTokenResult } = useSelector((state: RootState) => state.appState)
   const [initialState, setInitialState] = React.useState();
   const Stack = createNativeStackNavigator();
   const navigationRef = createNavigationContainerRef();
@@ -58,7 +59,7 @@ const MainStack = () => {
   });
   
   const resetNavigationState = () => {
-    if(JWTToken !== undefined)
+    if(JWTTokenResult !== undefined)
     {
       console.log("RESET NAV STATE! (THIS GIVES ERROR WHEN USER IS NOT LOGGED IN)")
       navigationRef.dispatch(resetAction)
@@ -82,7 +83,7 @@ const MainStack = () => {
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {
-            (JWTToken !== undefined) ? (
+            (JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult)) ? (
               <>
                 <Stack.Screen name="AfterLogin" component={AfterLogin}/>
               </>

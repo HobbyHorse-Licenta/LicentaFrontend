@@ -17,7 +17,7 @@ const Events = ({navigation}) => {
 
     return (
         <Layout2PieceForNavigator 
-            header={<GeneralHeader onChat={() => console.log("chat")}></GeneralHeader>}
+            header={<GeneralHeader title="Event suggestions"></GeneralHeader>}
             body={<EventsBody></EventsBody>}
         ></Layout2PieceForNavigator>
     );

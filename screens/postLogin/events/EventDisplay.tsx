@@ -12,7 +12,7 @@ import { RootState } from "../../../redux/store";
 import { Fetch } from "../../../services";
 import { SpacingStyles } from "../../../styles";
 import { Event, SkateProfile } from "../../../types";
-import { filterUtils } from "../../../utils";
+import { filterUtils, validation } from "../../../utils";
 import { Layout2Piece } from "../../layouts";
 
 
@@ -20,23 +20,30 @@ const EventDisplay = ({route, navigation}) => {
 
   const event: Event = route.params.event;
 
-  const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+  const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
   const [suggestedSkateProfiles, setSuggestedSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
   const [attendingSkateProfiles, setAttendingSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
 
   useEffect(() => {
     if(currentSkateProfile !== undefined)
     {
-      Fetch.getSkateProfilesForEvent(
-        event.id,
-        (skateProf) => setAttendingSkateProfiles(filterUtils.excludeSkateProfile(skateProf, currentSkateProfile)),
-        () => console.log("Coudn't get attending skate profiles")
-      );
-      Fetch.getSuggestedSkateProfilesForEvent(
-        event.id,
-        (skateProf) =>  setSuggestedSkateProfiles(filterUtils.excludeSkateProfile(skateProf, currentSkateProfile)),
-        () => console.log("Coudn't get suggested skate profiles")
-      );
+      if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+      {
+        Fetch.getSkateProfilesForEvent(JWTTokenResult.token,
+          event.id,
+          (skateProf) => setAttendingSkateProfiles(filterUtils.excludeSkateProfile(skateProf, currentSkateProfile)),
+          () => console.log("Coudn't get attending skate profiles")
+        );
+        Fetch.getSuggestedSkateProfilesForEvent(JWTTokenResult.token,
+          event.id,
+          (skateProf) =>  setSuggestedSkateProfiles(filterUtils.excludeSkateProfile(skateProf, currentSkateProfile)),
+          () => console.log("Coudn't get suggested skate profiles")
+        );
+      }
+      else{
+          //TODO refresh token
+      }
+     
     }
   }, [])
 

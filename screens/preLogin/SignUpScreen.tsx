@@ -12,7 +12,7 @@ import {validation} from '../../utils';
 import {firebaseAuth} from '../../WholeScreen';
 import {uiUtils} from '../../utils';
 import { useDispatch } from 'react-redux';
-import { setJWTToken } from '../../redux/appState';
+import { setJWTTokenResult } from '../../redux/appState';
 import { User } from '../../types';
 import PasswordInput from '../../components/general/PasswordInput';
 
@@ -40,8 +40,8 @@ const SignUpScreen = () => {
                     createUserWithEmailAndPassword(firebaseAuth, email, password)
                     .then((userCredential) => {
                     // Signed in 
-                    userCredential.user.getIdToken().then((jwtToken) => {
-                    dispatch(setJWTToken(jwtToken))
+                    userCredential.user.getIdTokenResult().then((jwtTokenResult) => {
+                    dispatch(setJWTTokenResult(jwtTokenResult))
                     });
                     })
                     .catch((error) => {

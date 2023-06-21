@@ -24,8 +24,6 @@ const SkateProfilePresenceCard = ({skateProfile, inactive, allUsers, cardOpacity
 
     const [user, setUser] = useState<User>();
 
-    console.log("USER FROM PRESENCE CARD: " + JSON.stringify(skateProfile))
-
     useEffect(() => {
         findUserAndSetIt(allUsers);
     }, [allUsers])
@@ -52,7 +50,7 @@ const SkateProfilePresenceCard = ({skateProfile, inactive, allUsers, cardOpacity
         });
     }
     const assignedSkillsElements = skateProfile.assignedSkills?.map(assignedSkill => <AssignedSkillElement assignedSkill={assignedSkill}></AssignedSkillElement>)  
-    console.log("\n\nTO DISPLAY: " + JSON.stringify(skateProfile.assignedSkills)); 
+
     return(
         <PrimaryContainer styleInput={{...SpacingStyles.centeredContainer, height: 150, marginHorizontal: 5, opacity: cardOpacity !== undefined ? cardOpacity : 1}}>
             {

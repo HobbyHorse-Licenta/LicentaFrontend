@@ -1,13 +1,10 @@
-import https from 'https';
-import { AggresiveEvent, AssignedSkill, Event, Location, Schedule, SkateExperience, SkatePracticeStyles, SkateProfile, SkatesType, SportName, User } from "../types";
-import {basketUrl, tennisUrl} from '../assets/imageUrls'
+import { AggresiveEvent, AssignedSkill, Schedule, SkateExperience, SkatePracticeStyles, SkateProfile, User } from "../types";
 import {apiUrl} from '../assets/apiUrl'
-import { useSelector } from 'react-redux';
 
 const commentOn = true;
 
+
 const Fetch = {
-//delete/schedule/{scheduleId}"
 
     delete: async function(JWTToken: string, url: string, callBackFunction: Function, errorCallBackFunction: Function) {
       if(commentOn)
@@ -50,8 +47,7 @@ const Fetch = {
         }
       }
     },
-    deleteSchedule: async function(scheduleId: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    deleteSchedule: async function(jwtToken: string, scheduleId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.delete(jwtToken, `${apiUrl}/schedule/delete/schedule/${scheduleId}`, callBackFunction, errorCallBackFunction);
     },
     put: async function(JWTToken: string, url: string, updatedObject: any, callBackFunction: Function, errorCallBackFunction: Function) {
@@ -97,55 +93,45 @@ const Fetch = {
       }
     },
 
-    joinSkateProfileToEvent: function(currentSkateProfileId: string, eventId: string, callBackFunction: Function, errorCallBackFunction: Function)
+    joinSkateProfileToEvent: async function(jwtToken: string, currentSkateProfileId: string, eventId: string, callBackFunction: Function, errorCallBackFunction: Function)
     {
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
       this.get(jwtToken, apiUrl + `/event/get/joinSkateProfile/${eventId}/${currentSkateProfileId}`, callBackFunction, errorCallBackFunction, true)
     },
-    leaveSkateProfileFromEvent: function(currentSkateProfileId: string, eventId: string, callBackFunction: Function, errorCallBackFunction: Function)
+    leaveSkateProfileFromEvent: async function(jwtToken: string, currentSkateProfileId: string, eventId: string, callBackFunction: Function, errorCallBackFunction: Function)
     {
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
-      this.get(jwtToken, apiUrl + `/event/get/leaveSkateProfileFromEvent/${eventId}/${currentSkateProfileId}`, callBackFunction, errorCallBackFunction, true)
+      this.get(jwtToken, apiUrl + `/event/get/leaveSkateProfile/${eventId}/${currentSkateProfileId}`, callBackFunction, errorCallBackFunction, true)
     },
     
 
-    putSchedule: function(scheduleIdToUpdate: string, updatedSchedule: Schedule, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    putSchedule: async function(jwtToken: string, scheduleIdToUpdate: string, updatedSchedule: Schedule, callBackFunction: Function, errorCallBackFunction: Function){
       this.put(jwtToken, apiUrl + "/schedule/put/schedule/" + scheduleIdToUpdate, updatedSchedule, callBackFunction, errorCallBackFunction)
     },
 
-    putUser: function(userIdToUpdate: string, updatedUser: User, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    putUser: async function(jwtToken: string, userIdToUpdate: string, updatedUser: User, callBackFunction: Function, errorCallBackFunction: Function){
       this.put(jwtToken, apiUrl + "/user/put/" + userIdToUpdate, updatedUser, callBackFunction, errorCallBackFunction)
     },
 
-    putAssignedSkill: async function(assignedSkill: AssignedSkill, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    putAssignedSkill: async function(jwtToken: string, assignedSkill: AssignedSkill, callBackFunction: Function, errorCallBackFunction: Function){
       this.put(jwtToken, `${apiUrl}/skill/put/assignedSkill`, assignedSkill, callBackFunction, errorCallBackFunction);
     },
 
-    postUser: async function(user: User, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    postUser: async function(jwtToken: string, user: User, callBackFunction: Function, errorCallBackFunction: Function){
       this.post(jwtToken, apiUrl + "/user/post", user, callBackFunction, errorCallBackFunction)
     },
 
-    postSkateProfile: async function(skateProfile: SkateProfile, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    postSkateProfile: async function(jwtToken: string, skateProfile: SkateProfile, callBackFunction: Function, errorCallBackFunction: Function){
       this.post(jwtToken, apiUrl + "/skateProfile/post", skateProfile, callBackFunction, errorCallBackFunction);
     },
 
-    postAssignedSkill: async function(assignedSkill: AssignedSkill, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    postAssignedSkill: async function(jwtToken: string, assignedSkill: AssignedSkill, callBackFunction: Function, errorCallBackFunction: Function){
       this.post(jwtToken, `${apiUrl}/skill/post/assignedSkill`, assignedSkill, callBackFunction, errorCallBackFunction);
     },
 
-    postAggresiveSkatingEvent: async function(aggresiveSkatingEvent: AggresiveEvent, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    postAggresiveSkatingEvent: async function(jwtToken: string, aggresiveSkatingEvent: AggresiveEvent, callBackFunction: Function, errorCallBackFunction: Function){
       this.post(jwtToken, `${apiUrl}/event/postWithModifications`, aggresiveSkatingEvent, callBackFunction, errorCallBackFunction);
     },
 
-    postSchedule: async function(schedule: Schedule, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    postSchedule: async function(jwtToken: string, schedule: Schedule, callBackFunction: Function, errorCallBackFunction: Function){
       this.post(jwtToken, `${apiUrl}/schedule/post/schedule`, schedule, callBackFunction, errorCallBackFunction);
     },
 
@@ -188,6 +174,7 @@ const Fetch = {
     },
 
     get: async function(JWTToken: string, url: string, callBackFunction: Function, errorCallBackFunction: Function, noDataExpected?: boolean) {
+      console.log("\n\n\nUSING TOKEN: " + JWTToken + "\n\n\n")
       if(commentOn)
       {
         console.log("GET; endpoint => " + url + "\n");
@@ -233,91 +220,55 @@ const Fetch = {
       }
     },
 
-    getSuggestedSkateProfilesForEvent: async function(eventId: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getSuggestedSkateProfilesForEvent: async function(jwtToken: string, eventId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, `${apiUrl}/event/getSuggestedParticipants/${eventId}`, callBackFunction, errorCallBackFunction);
     },
 
-    getSkateProfilesForEvent: async function(eventId: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getSkateProfilesForEvent: async function(jwtToken: string, eventId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, `${apiUrl}/event/getParticipants/${eventId}`, callBackFunction, errorCallBackFunction);
     },
 
-    getUser: async function(userId: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getUser: async function(jwtToken: string, userId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/user/get/" + userId, callBackFunction, errorCallBackFunction);
     },
 
-    getUserBasicInfo: async function(userId: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getUserBasicInfo: async function(jwtToken: string, userId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/user/getBasicInfo/" + userId, callBackFunction, errorCallBackFunction);
     },
 
-    getAllSkateProfiles: async function(callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getAllSkateProfiles: async function(jwtToken: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/skateProfile/getAll", callBackFunction, errorCallBackFunction);
     },
 
-    getAllParkTrails: async function(callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getAllParkTrails: async function(jwtToken: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/trail/allParkTrails", callBackFunction, errorCallBackFunction);
     },
 
-    getAllUsers: async function(callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getAllUsers: async function(jwtToken: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/user/getAll", callBackFunction, errorCallBackFunction);
     },
 
-    getSkills: async function(callBackFunction: Function, errorCallBackFunction: Function) {   
-        const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
+    getSkills: async function(jwtToken: string, callBackFunction: Function, errorCallBackFunction: Function) {   
         this.get(jwtToken, apiUrl + "/skill/allSkills", callBackFunction, errorCallBackFunction);
     },
 
-    getSkillRecommendations: async function(practiceStyle: SkatePracticeStyles, experience: SkateExperience, callBackFunction: Function, errorCallBackFunction: Function) {   
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";
-      
+    getSkillRecommendations: async function(jwtToken: string, practiceStyle: SkatePracticeStyles, experience: SkateExperience, callBackFunction: Function, errorCallBackFunction: Function) {   
       const encodedPracticeStyle = encodeURIComponent(practiceStyle);
       const encodedExperience = encodeURIComponent(experience);
       this.get(jwtToken, `${apiUrl}/skill/skillRecomdations/${encodedPracticeStyle}/${encodedExperience}`, callBackFunction, errorCallBackFunction);
     },
     
-    getRecommendedEventsForSkateProfile: function(skateProfileId: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getRecommendedEventsForSkateProfile: async function(jwtToken: string, skateProfileId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/event/getRecommendedEvents/skateProfile/" + skateProfileId, callBackFunction, errorCallBackFunction);
     },
 
-    getEventsForSkateProfile: function(skateProfileId: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getEventsForSkateProfile: async function(jwtToken: string, skateProfileId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/event/getEvents/skateProfile/" + skateProfileId, callBackFunction, errorCallBackFunction);
     },
 
-
-    getLocation: function(nameOfLocation: string, callBackFunction: Function, errorCallBackFunction: Function){
-      const jwtToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImM4MjNkMWE0MTg5ZjI3NThjYWI4NDQ4ZmQ0MTIwN2ViZGZhMjVlMzkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vaG9iYnlob3JzZS0xNjQ1OCIsImF1ZCI6ImhvYmJ5aG9yc2UtMTY0NTgiLCJhdXRoX3RpbWUiOjE2ODExMzQxNzMsInVzZXJfaWQiOiIyNlNYYTR6bXV0TlR3bzN0MXBRR3Y1TVlqWkoyIiwic3ViIjoiMjZTWGE0em11dE5Ud28zdDFwUUd2NU1ZalpKMiIsImlhdCI6MTY4MTEzNDE3MywiZXhwIjoxNjgxMTM3NzczLCJlbWFpbCI6InZwb3BAeWFob28uY29tIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7ImVtYWlsIjpbInZwb3BAeWFob28uY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoicGFzc3dvcmQifX0.Jv4K-ZDOS5jGxjl5nBqs1CUJhJFUZo9qWLcMPQM3vQy3mTIEx9mVLkAS0ENp84R4Ymdhsp74ufkNpTFQ2BoG-lWs5a4YZiHqCS84dsG760DnAq6u5R9gm2PQNCbenF2Zge-oWqZvZQ4ImMGMvAVGpS-983zeCDgMCsdwYPivSM3JVovZ6u5O2O9Makl1bSH-Brzvxoc5jXyGsaVING7E1puq7EY6FgMxE6D2nTDjM9W3fxi47qFA8uovtlSaxCPF8wsU6TYA3ykaTDLo3SGEpI2qHA6o-pUyWoLEAYM8Xuk7RfqveixXkXiih9lhHxRH9zaTcXi8gnxA_pB9ufKO0Q";  
+    getLocation: async function(jwtToken: string, nameOfLocation: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/location/" + nameOfLocation, callBackFunction, errorCallBackFunction);  
     },
-    
-  //   getLocations: function(){
-  //     const events: Array<Location> = [
-  //         {
-  //             id:  '321312',
-  //             name: 'Gheorgheni Baza',
-  //             gpsPoint: {
-  //                 lat: 46.77159014009401, 
-  //                 long: 23.635888336315503,
-  //             }
-  //         },
-  //         {
-  //             id:  '3342434',
-  //             name: 'Parcul Rozelor',
-  //             gpsPoint: {
-  //                 lat: 46.7649101022356, 
-  //                 long: 23.552784857259145,
-  //             }
-  //         }
-  //     ]
-  // },
-
 };
 
 export default Fetch;

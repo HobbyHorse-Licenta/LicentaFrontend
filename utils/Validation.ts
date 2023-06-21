@@ -1,10 +1,18 @@
+import { IdTokenResult } from "firebase/auth";
 import { CreateScheduleState } from "../redux/createScheduleState";
 import uiUtils from "./UI";
 class Validation {
 
-    // areAllFieldsDefinedAndNotNull(object: CreateScheduleState) : boolean {
-    //     return Object.values(object).every(value => value !== undefined && value !== null);
-    // }
+    isJWTTokenExpired = (tokenResult: IdTokenResult) => {
+        const currentTimestamp = Date.now();
+        const expirationTimestamp = Date.parse(tokenResult.expirationTime);
+        if(expirationTimestamp < currentTimestamp)
+        {
+            console.log("\n\n\n\n_U_ TOKEN EXPIRED _U_\n\n\n\n")
+            return true;
+        }
+        else return false;
+    };
 
     isDefined(variable: any): boolean {
         if(Array.isArray(variable))

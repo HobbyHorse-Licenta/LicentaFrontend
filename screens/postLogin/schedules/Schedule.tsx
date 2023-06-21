@@ -32,7 +32,7 @@ const Schedule = ({route, navigation}) => {
   }
 
   const scheduleConfig = useSelector((state: RootState) => state.createScheduleState);
-  const {currentSkateProfile} = useSelector((state: RootState) => state.appState);
+  const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState);
   const {schedule} = useSelector((state: RootState) => state.walkthroughState);
 
   //const navigation = useNavigation();
@@ -165,15 +165,21 @@ const Schedule = ({route, navigation}) => {
         dispatch(addSchedule(newSchedule));
         navigation.navigate("MySchedules" as never);
 
-        Fetch.postSchedule(newSchedule, 
-        () => {
-          console.log("Schedule post success");
-        },
-        () => {
-          console.log("Schedule post fail; rever changes");
-          uiUtils.showPopUp("Error", "Coudn't create schedule");
-          dispatch(revertChangesInUser());
-        })
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+          Fetch.postSchedule(JWTTokenResult.token, newSchedule, 
+          () => {
+            console.log("Schedule post success");
+          },
+          () => {
+            console.log("Schedule post fail; rever changes");
+            uiUtils.showPopUp("Error", "Coudn't create schedule");
+            dispatch(revertChangesInUser());
+          })
+        }
+        else{
+            //TODO refresh token
+        }
       }
       
     }
@@ -211,18 +217,24 @@ const Schedule = ({route, navigation}) => {
         dispatch(updateSchedule(newSchedule));
         navigation.navigate("MySchedules" as never);
 
-        Fetch.putSchedule(scheduleToUpdate.id, newSchedule, 
-        (dbSchedule) => {
-          console.log("Schedule put success");
-          console.log("\n\nUPDATED SCHEDULE IN DB:\n" + JSON.stringify(dbSchedule));
-        dispatch(updateSchedule(dbSchedule));
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+          Fetch.putSchedule(JWTTokenResult.token, scheduleToUpdate.id, newSchedule, 
+          (dbSchedule) => {
+            console.log("Schedule put success");
+            console.log("\n\nUPDATED SCHEDULE IN DB:\n" + JSON.stringify(dbSchedule));
+          dispatch(updateSchedule(dbSchedule));
 
-        },
-        () => {
-          console.log("Schedule put fail; revert changes");
-          uiUtils.showPopUp("Error", "Coudn't update schedule");
-          dispatch(revertChangesInUser());
-        })
+          },
+          () => {
+            console.log("Schedule put fail; revert changes");
+            uiUtils.showPopUp("Error", "Coudn't update schedule");
+            dispatch(revertChangesInUser());
+          })
+        }
+        else{
+            //TODO refresh token
+        }
       }
     }
     else uiUtils.showPopUp("Error", "No skateProfile selected");

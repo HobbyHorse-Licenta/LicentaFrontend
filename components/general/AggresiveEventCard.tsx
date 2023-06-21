@@ -9,7 +9,7 @@ import { CustomTrail, Event, SkateProfile, User } from '../../types';
 import { SpacingStyles } from '../../styles';
 import EventInfoDisplay from '../events/EventInfoDisplay';
 import { defaultEventUrl } from '../../assets/imageUrls'
-import { filterUtils, resourceAccess, uiUtils } from '../../utils';
+import { filterUtils, resourceAccess, uiUtils, validation } from '../../utils';
 import { Fetch } from '../../services';
 import ProfilePicList from './ProfilePicList';
 import { useSelector } from 'react-redux';
@@ -50,7 +50,7 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
     const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
     const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [participatingSkateProfiles, setParticipatingSkateProfiles] = useState<Array<SkateProfile>>();
-    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
     
     //TODO REMOVE THIS
     useEffect(() => {
@@ -60,13 +60,19 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
 
       if(currentSkateProfile !== undefined)
       {
-        Fetch.getSuggestedSkateProfilesForEvent(event.id,
-        (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
-        () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't suggested skaters"));
-
-        Fetch.getSkateProfilesForEvent(event.id,
-            (skateProfiles) => setParticipatingSkateProfiles(skateProfiles),
-            () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't participating skaters"));
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+            Fetch.getSuggestedSkateProfilesForEvent(JWTTokenResult.token, event.id,
+                (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
+                () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't suggested skaters"));
+        
+            Fetch.getSkateProfilesForEvent(JWTTokenResult.token, event.id,
+                (skateProfiles) => setParticipatingSkateProfiles(skateProfiles),
+                () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't participating skaters"));
+        }
+        else{
+            //TODO refresh token
+        }
       }
     }, []);
 

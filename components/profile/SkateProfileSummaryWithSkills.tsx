@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { Fetch } from "../../services";
 import { SpacingStyles } from "../../styles";
-import { uiUtils } from "../../utils";
+import { uiUtils, validation } from "../../utils";
 
 import { AssignedSkill, MasteringLevel, RenderElement, SkateProfile, Skill, SkillRecommendation } from "../../types";
 import { PrimaryContainer, SelectionListModal, Tile, TileList } from "../general";
@@ -22,7 +22,7 @@ interface Input{
 
 const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
     
-    const {user} = useSelector((state: RootState) => state.appState)
+    const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState)
     let profileInfo = user?.skateProfiles.find((skateProfile) => skateProfile.id === skateProfileId)
 
     const [recommendedSkills, setRecommendedSkills] = useState<Array<SkillRecommendation> | undefined>(undefined);
@@ -35,7 +35,7 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
         {
             if(profileInfo !== undefined && profileInfo.assignedSkills !== undefined && profileInfo.assignedSkills !== null)
             {
-                if( profileInfo.assignedSkills.find(assignedSkill =>  assignedSkill.skill.id === recommendedSkill.skill.id) !== undefined)
+                if( profileInfo.assignedSkills.find(assignedSkill => assignedSkill.skill !== undefined && assignedSkill.skill.id === recommendedSkill.skill.id) !== undefined)
                 return false;
                 else return true;
             }
@@ -52,9 +52,17 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
                 setRecommendedSkills((prev) => removeAssignedSkillsFromRecommendations(prev))
             }
             else {
-                Fetch.getSkillRecommendations(profileInfo.skatePracticeStyle, profileInfo.skateExperience,
-                (skills) => setRecommendedSkills(removeAssignedSkillsFromRecommendations(skills)),
-                () => console.log("Coudn't get recommended skills for the shown profile"))
+                if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+                {
+                    Fetch.getSkillRecommendations(JWTTokenResult.token,
+                        profileInfo.skatePracticeStyle, profileInfo.skateExperience,
+                        (skills) => setRecommendedSkills(removeAssignedSkillsFromRecommendations(skills)),
+                        () => console.log("Coudn't get recommended skills for the shown profile"))
+                    
+                }
+                else{
+                    //TODO refresh token
+                }
             }
         }
         else {
@@ -67,7 +75,9 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
         if(profileInfo !== null && profileInfo !== undefined && profileInfo.assignedSkills !== undefined && profileInfo.assignedSkills !== null)
         {
             return profileInfo.assignedSkills.map((assignedSkill) => {
-                return(<Text>{assignedSkill.skill.name}</Text>)
+                if(assignedSkill !== undefined && assignedSkill.skill !== undefined)
+                    return(<Text>{assignedSkill.skill.name}</Text>)
+                else return null;
             })
         }
         else return null;
@@ -91,7 +101,19 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
             }
 
             if(user !==  undefined)
-                Fetch.postAssignedSkill(newAssignedSkill, (postedAssignedSkill) => dispatch(addAssignedSkill(postedAssignedSkill)), () => console.log("Coudn't post assigned skill"))
+            {
+                if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+                {
+                    Fetch.postAssignedSkill( JWTTokenResult.token,
+                        newAssignedSkill, 
+                        (postedAssignedSkill) => dispatch(addAssignedSkill(postedAssignedSkill)),
+                        () => console.log("Coudn't post assigned skill"))
+                }
+                else{
+                    //TODO refresh token
+                }
+            }
+                
 
         }
         setAddSkillModalVisible(false);

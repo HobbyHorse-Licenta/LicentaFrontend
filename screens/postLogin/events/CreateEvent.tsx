@@ -13,14 +13,14 @@ import ViewShot, { captureRef } from 'react-native-view-shot';
 
 import { Button, GeneralHeader, LoadingComponent, PrimaryContainer, RectangularPicture } from '../../../components/general';
 import { Layout2Piece } from '../../layouts';
-import { mapsUtils, uiUtils } from '../../../utils';
+import { mapsUtils, uiUtils, validation } from '../../../utils';
 import { CheckPoint, Location, Day, Gender, Event, SkateExperience, SkatePracticeStyles, CustomTrail, AggresiveEvent, MarkerType } from '../../../types';
 import { SpacingStyles } from '../../../styles';
 import { SelectAgeGap, SelectDays, SelectHourRange, SelectNumberOfPeople } from '../../../components/schedule';
 import SelectGender from '../../../components/createEvent/SelectGender';
 import { setMaxNumberOfPeople } from '../../../redux/createScheduleState';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAggresiveEventToUser } from '../../../redux/appState';
+import { addAggresiveEventToUser, setJWTTokenResult } from '../../../redux/appState';
 import { RootState } from '../../../redux/store';
 import { Fetch } from '../../../services';
 
@@ -28,7 +28,7 @@ const containersWidth = scale(290);
 
 const CreateEvent = () => {
 
-    const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
     const navigation =  useNavigation();
     const mapRef = useRef<MapView | null>(null);
     const theme = useTheme();
@@ -139,9 +139,17 @@ const CreateEvent = () => {
             }
             console.log("Adding event:\n" + JSON.stringify(newAggresiveSkatingEvent));
             //dispatch(addAggresiveEventToUser(newAggresiveSkatingEvent));
-            Fetch.postAggresiveSkatingEvent(newAggresiveSkatingEvent,
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.postAggresiveSkatingEvent(JWTTokenResult.token,
+                    newAggresiveSkatingEvent,
                 () => console.log("POSTED NEW AGGRESIVE EVEVNT SUCCESSFULLY"), 
                 () => console.log("POSTED NEW AGGRESIVE EVEVNT UNSUCCESSFULLY"))
+            }
+            else{
+                //TODO refresh token
+            }
+           
             //if event posted succesfully 
             navigation.navigate("Events" as never);
         }
@@ -285,8 +293,8 @@ const CreateEvent = () => {
     const getHelpComponent = () => {
         return(
             <View>
-                <Text>Press: add checkpoint</Text>
-                <Text>Hold on checkpoint: move checkpoint</Text>
+                <Text>Press: Add Checkpoint</Text>
+                <Text>Hold Checkpoint: Relocate Checkpoint</Text>
             </View>
         )
     }
@@ -428,8 +436,17 @@ const CreateEvent = () => {
     }
     return(
         <Layout2Piece
-            header={<GeneralHeader rightButtonEnable={canCreateEvent()}
-            onBack={() => onBackFunction()} onRightButtonPress={() => createEvent()} rightButtonText={"Create Event"}/>}
+            header={
+                fullScreenMap === false ? 
+                (
+                    <GeneralHeader rightButtonEnable={canCreateEvent()}
+                    onBack={() => onBackFunction()} onRightButtonPress={() => createEvent()} rightButtonText={"Create Event"}/>
+                ):(
+                    <GeneralHeader rightButtonEnable={true}
+                    onBack={() => onBackFunction()} onRightButtonPress={() => setFullScreenMap(false)} rightButtonText={"Continue"}/>
+                )
+           
+            }
             body={getBody()}
         ></Layout2Piece>
     );

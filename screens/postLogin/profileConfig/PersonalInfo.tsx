@@ -57,7 +57,7 @@ const PersonalInfo = () => {
             <View style={[StyleSheet.absoluteFill, {justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.primary}]}>
                     <Lottie lottieRequire={require('../../../assets/lottieAnimations/fingerprint.json')}
                     width={70} height={70} adjustMask={15} maskColor={theme.colors.primary}/>
-                    <Text variant="headlineLarge" >Make it about you</Text>
+                    <Text variant="headlineLarge" >Craft Your Unique Presence</Text>
                     <KeyboardAvoidingView style={{justifyContent: 'center', alignItems: 'center'}} behavior="padding">
                         <SelectNameAndDescription onNameChange={(name: string) => setChoseName(name)}
                         onDescriptionChange={(desc) => setDescription(desc)}></SelectNameAndDescription>

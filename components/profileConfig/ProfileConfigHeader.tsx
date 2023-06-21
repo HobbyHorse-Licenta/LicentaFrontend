@@ -15,7 +15,7 @@ import { resetAppState, setAddingSkateProfile, setInitialProfileConfigured, setU
 import { firebaseAuth } from "../../WholeScreen";
 import { AssignedSkill, SkateProfile, User } from "../../types";
 import { Fetch } from "../../services";
-import { authenticationUtils } from "../../utils";
+import { authenticationUtils, validation } from "../../utils";
 import { RootState } from "../../redux/store";
 import { resetConfigProfileState } from "../../redux/configProfileState";
 
@@ -28,7 +28,7 @@ interface ConfigHeaderInput {
 const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : ConfigHeaderInput) => {
 
     const {sport, skateType, skatePracticeStyle, skateExperience, age, gender, name, shortDescription } = useSelector((state: any) => state.configProfile)
-    const { userId, addingSkateProfile, user } = useSelector((state: RootState) => state.appState)
+    const { userId, addingSkateProfile, user, JWTTokenResult } = useSelector((state: RootState) => state.appState)
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
@@ -98,7 +98,14 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
         if(user !== null) //user created succesfully
         {
             console.log("///////////////////////\nPOSTING USER:\n" + JSON.stringify(user) + "\n/////////////////////////");
-            Fetch.postUser(user, (postedUser: User) => dispatch(setUser(postedUser)), () => console.log("Coudn't post user at profile creation"));
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.postUser(JWTTokenResult.token,
+                    user, (postedUser: User) => dispatch(setUser(postedUser)), () => console.log("Coudn't post user at profile creation"));
+            }
+            else{
+                //TODO refresh token
+            }
         }
         else {
             //TODO maybe remove also the created account in firebase
@@ -132,11 +139,18 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
                 const res = createSkateProfile();
                 if(res !== null)
                 {
-                    Fetch.postSkateProfile(res,
-                    (postedSkateProfile) => {
-                        dispatch(setUser({...user, skateProfiles: [...user.skateProfiles, postedSkateProfile]}))
-                    },
-                    () => console.log("Coudn't post skateProfile"))
+                    if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+                    {
+                        Fetch.postSkateProfile(JWTTokenResult.token, res,
+                        (postedSkateProfile) => {
+                            dispatch(setUser({...user, skateProfiles: [...user.skateProfiles, postedSkateProfile]}))
+                        },
+                        () => console.log("Coudn't post skateProfile"))
+                    }
+                    else{
+                        //TODO refresh token
+                    }
+                   
                 }
             }
             dispatch(resetConfigProfileState());

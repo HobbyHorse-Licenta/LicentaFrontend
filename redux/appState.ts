@@ -2,12 +2,13 @@ import {createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AssignedSkill, Schedule, SkatePracticeStyles, SkateProfile, Skill, User, Event, ParkTrail } from '../types';
 import produce from 'immer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { IdTokenResult } from 'firebase/auth';
 
 export interface AppState {
     userBackup: User | undefined,
     user: User | undefined,
     userId: string | undefined,
-    JWTToken: string | undefined,
+    JWTTokenResult: IdTokenResult | undefined,
     currentRoute: string | undefined,
     currentSkateProfile: SkateProfile | undefined,
     //mySchedules: Array<Schedule> | undefined,
@@ -15,14 +16,15 @@ export interface AppState {
     initialProfileConfigured: boolean,
     allSkills: Array<Skill> | undefined,
     allParkTrails: Array<ParkTrail> | undefined,
-    needsRefresh: boolean
+    needsEventsRefresh: boolean
+    needsRecommendedEventsRefresh: boolean
 }
 
 const initialState: AppState = {
     userBackup: undefined,
     user: undefined,
     userId: undefined,
-    JWTToken: undefined,
+    JWTTokenResult: undefined,
     currentRoute: undefined,
     currentSkateProfile: undefined,
     //mySchedules: undefined,
@@ -30,7 +32,8 @@ const initialState: AppState = {
     initialProfileConfigured: true,
     allSkills: undefined,
     allParkTrails: undefined,
-    needsRefresh: false
+    needsEventsRefresh: false,
+    needsRecommendedEventsRefresh: false
 }
 
 
@@ -271,8 +274,8 @@ export const appStateSlice = createSlice({
         setUserId:(state, action: PayloadAction<string | undefined>) => {
             state.userId = action.payload;
         },
-        setJWTToken: (state, action: PayloadAction<string | undefined>) => {
-            state.JWTToken = action.payload;
+        setJWTTokenResult: (state, action: PayloadAction<IdTokenResult>) => {
+            state.JWTTokenResult = action.payload;
         },
         setCurrentRoute: (state, action: PayloadAction<string | undefined>) => {
             state.currentRoute = action.payload;
@@ -296,8 +299,11 @@ export const appStateSlice = createSlice({
             }
             
         },
-        setNeedsRefresh: (state, action: PayloadAction<boolean>) => {
-            state.needsRefresh = action.payload;
+        setNeedsEventsRefresh: (state, action: PayloadAction<boolean>) => {
+            state.needsEventsRefresh = action.payload;
+        },
+        setNeedsRecommendedEventsRefresh: (state, action: PayloadAction<boolean>) => {
+            state.needsRecommendedEventsRefresh = action.payload;
         },
         resetAppState: state => initialState
       
@@ -309,10 +315,10 @@ export const appStateSlice = createSlice({
     },
 });
 
-export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTToken,
+export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTTokenResult,
     setInitialProfileConfigured, setAddingSkateProfile, 
     resetAppState,
-    setNeedsRefresh,
+    setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh,
     setUser, 
     revertChangesInUser, backupUser,
     setAllSkills, deleteAssignedSkill, addAssignedSkill, updateAssignedSkill,

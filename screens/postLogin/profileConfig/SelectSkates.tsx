@@ -13,10 +13,13 @@ import { aggresiveSkatesUrl, casualSkatesUrl, speedSkatesUrl } from "../../../as
 import { setSkateType } from "../../../redux/configProfileState";
 import SelectStyleAndExperience from "./SelectStyleAndExperience";
 import { ProfileConfigHeader } from "../../../components/profileConfig";
+import { RootState } from "../../../redux/store";
 
 const SelectSkates = () => {
 
     const {skateType} = useSelector((state: any) => state.configProfile)
+
+    const {addingSkateProfile} = useSelector((state: RootState) => state.appState);
 
     const [selectedSkateType, setSelectedSkateType] = useState<SkatesType | undefined>(skateType);
     const [goNextDisabled, setGoNextDisabled] = useState(true);
@@ -89,7 +92,9 @@ const SelectSkates = () => {
 
     return(
         <Layout2Piece
-            header={ <ProfileConfigHeader backButton={true} disabled={goNextDisabled}  nextScreen={'SelectStyleAndExperience'}></ProfileConfigHeader>}
+            header={ <ProfileConfigHeader backButton={true} disabled={goNextDisabled}
+            nextScreen={addingSkateProfile === true ? 'SelectStyleAndExperience' : 'PreSelectStyleAndExperience'}
+            ></ProfileConfigHeader>}
             body={getBody()}
         ></Layout2Piece>
     );

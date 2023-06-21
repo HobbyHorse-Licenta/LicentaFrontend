@@ -1,9 +1,11 @@
 import React from 'react';
 
 import NotificationPopup from 'react-native-push-notification-popup';
+import Color from 'color';
 
 import { MasteringLevel } from '../types';
 import { QuestionModal } from '../components/general';
+import { nothing } from 'immer';
 
 
 class UI {
@@ -53,33 +55,24 @@ class UI {
         return this.notificationRef;
     }
 
-    showPopUp ( title: string, messageBody: string, onPress?: Function, timeUntilDissapearance?: number) {
+    showPopUp ( title: string, messageBody: string, onPress?: Function, timeUntilDissapearanceInMiliseconds?: number) {
         if(this.notificationRef != null)
         {
-            if(onPress !== undefined)
-            {
-                this.notificationRef.current?.show({
-                    onPress: onPress(),
-                    appTitle: 'Notification',
-                    timeText: 'Now',
-                    title: title,
-                    body: messageBody,
-                    slideOutTime: timeUntilDissapearance !== undefined ? timeUntilDissapearance : 2000
-                });
-            }
-            else {
-                this.notificationRef.current?.show({
-                    appTitle: 'Notification',
-                    timeText: 'Now',
-                    title: title,
-                    body: messageBody,
-                    slideOutTime: timeUntilDissapearance !== undefined ? timeUntilDissapearance : 2000
-                });
-            }
-           
+            this.notificationRef.current?.show({
+                onPress: onPress !== undefined ? onPress() : nothing,
+                appTitle: 'Notification',
+                timeText: 'Now',
+                title: title,
+                body: messageBody,
+                slideOutTime: timeUntilDissapearanceInMiliseconds !== undefined ? timeUntilDissapearanceInMiliseconds : 2000
+            });
         }
         else console.error("No notificationPopUp ref set");
            
+    }
+
+    darkenColor(color: string, percentage: number){
+       return Color(color).darken(percentage/100).hex();
     }
 }
 const uiUtils = new UI();

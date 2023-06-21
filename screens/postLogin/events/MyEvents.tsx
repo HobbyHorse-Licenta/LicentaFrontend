@@ -7,19 +7,19 @@ import { Text } from 'react-native-paper'
 
 import { AggresiveEventCard, EventCard, GeneralHeader, InformationalSvgComponent, LoadingComponent, PrimaryContainer } from "../../../components/general";
 import { SkateProfiles } from "../../../components/profile";
-import { setCurrentSkateProfile } from "../../../redux/appState";
+import { setCurrentSkateProfile, setNeedsEventsRefresh } from "../../../redux/appState";
 import { RootState } from "../../../redux/store";
 import { Layout2PieceForNavigator } from "../../layouts";
 import { scale, verticalScale } from "react-native-size-matters";
 import { EmptyBoxSvg } from "../../../components/svg/general";
 import { Fetch } from "../../../services";
-import { uiUtils } from "../../../utils";
+import { uiUtils, validation } from "../../../utils";
 import { Event, SkatePracticeStyles } from "../../../types";
 import { SpacingStyles } from "../../../styles";
 
 const MyEvents = () => {
 
-  const {currentSkateProfile, user} = useSelector((state: RootState) => state.appState)
+  const {currentSkateProfile, user, needsEventsRefresh, JWTTokenResult} = useSelector((state: RootState) => state.appState);
   const [events, setEvents] = useState<Array<Event>>([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -32,6 +32,15 @@ const MyEvents = () => {
 
   }, [currentSkateProfile])  
 
+  useEffect(() => {
+    if(needsEventsRefresh === true)
+    {
+      getAndSetMyEvents();
+      getAndSetMyEvents();
+      dispatch(setNeedsEventsRefresh(false));
+    }
+  }, [needsEventsRefresh])
+
   const getAndSetMyEvents = () => {
     setLoading(true);
 
@@ -39,10 +48,17 @@ const MyEvents = () => {
       {
       // setLoading(true);
         console.log("Getting for skateProfile with id: " + currentSkateProfile.id);
-        Fetch.getEventsForSkateProfile(currentSkateProfile.id,
-            (joinedEvents) => {setEvents(joinedEvents), setLoading(false);},
-            () => {setEvents([]);  uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load user events"); setLoading(false);}
-        );
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+          Fetch.getEventsForSkateProfile(JWTTokenResult.token, currentSkateProfile.id,
+              (joinedEvents) => {setEvents(joinedEvents), setLoading(false);},
+              () => {setEvents([]);  uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load user events"); setLoading(false);}
+          );
+        }
+        else{
+            //TODO refresh token
+        }
+        
       }
       else setLoading(false);
   }
@@ -139,7 +155,7 @@ const MyEvents = () => {
   
   return (
     <Layout2PieceForNavigator 
-            header={ <GeneralHeader title="Your events" onChat={() => console.log("[MyEvents]: open chat")}></GeneralHeader>}
+            header={ <GeneralHeader title="My events"></GeneralHeader>}
             body={getBody()}
     ></Layout2PieceForNavigator>
   );

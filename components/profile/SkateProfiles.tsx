@@ -12,7 +12,7 @@ import { Fetch } from '../../services';
 
 import { SpacingStyles } from '../../styles';
 import { SkatePracticeStyles, SkateProfile, SkillRecommendation } from '../../types';
-import { GeneralModal, PrimaryContainer, SvgView } from '../general';
+import { AnimatedTyping, GeneralModal, PrimaryContainer, SvgView } from '../general';
 import { PlusSvg } from '../svg/general';
 import SkateProfileSummary from './SkateProfileSummary';
 import SkateProfileSummaryWithSkills from './SkateProfileSummaryWithSkills';
@@ -28,12 +28,17 @@ interface Input {
 const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureEnabled, style} : Input) => {
     
     const [heldProfile, setHeldProfile] = useState<SkateProfile | undefined>();
+    const [fakeState, setFakeState] = useState(["Add training skills", "by", "holding a skating profile"]);
 
     const theme = useTheme();
     const dispatch = useDispatch();
 
     const { canStart, start, stop, TourGuideZone } = useTourGuideController('heldskateProfile');
 
+    useEffect(() => {
+        console.log("Fake state changed")
+    }, [fakeState])
+    
     useEffect(() => {
       if(heldProfile !== undefined)
       {
@@ -77,10 +82,11 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
         }
         else return false;
     }
-
+//["Add training skills", "by", "holding a skating profile"]
     return(
         <PrimaryContainer styleInput={getStyle()}>
         <Text variant='headlineSmall'>Skate Profiles</Text>
+        {/* <AnimatedTyping text={fakeState} onComplete={() => setFakeState(["training skills"])}/> */}
             {
                 profiles != undefined &&
                 <View style={{height: SpacingStyles.skateProfileSummary.height + verticalScale(20)}}>
@@ -100,10 +106,12 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
                         }
                         {profiles.map((skateProfile, index) => {
                             return(
-                            <Pressable onLongPress={() => {if(holdFeatureEnabled === true){setHeldProfile(skateProfile)}}} key={index} onPress={() => onValueChange(skateProfile)}>
-                                    <SkateProfileSummary selected={checkIfSelected(value, skateProfile)} 
-                                    key={index} info={skateProfile}></SkateProfileSummary>
-                            </Pressable>
+                                    <SkateProfileSummary
+                                    key={index} 
+                                    onLongPress={() => {if(holdFeatureEnabled === true){setHeldProfile(skateProfile)}}}
+                                    onPress={() => onValueChange(skateProfile)}
+                                    selected={checkIfSelected(value, skateProfile)} 
+                                    info={skateProfile}></SkateProfileSummary>
                             );
                         })}
                     </ScrollView>

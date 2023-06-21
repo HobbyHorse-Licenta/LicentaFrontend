@@ -20,7 +20,7 @@ import constants from "../../../assets/constants";
 
 const EditProfile = () => {
 
-  const {user} = useSelector((state: RootState) => state.appState)
+  const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState)
   const [editedName, setEditedName] = useState<string>(user !== undefined ? user.name : "");
   const [editedAge, setEditedAge] = useState(user !== undefined ? user.age : 0)
   const [editedImage, setEditedImage] = useState(user !== undefined ? user.profileImageUrl : undefined)
@@ -46,9 +46,16 @@ const EditProfile = () => {
       }
       console.log("ID: " + user.id);
       console.log("Edited user: " + JSON.stringify(editedUser))
-      Fetch.putUser(user.id, editedUser, 
-      (updatedUser) => {dispatch(setUser(updatedUser))},
-      () => console.log("Coudn't update user after profile edit"));
+      if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+      {
+        Fetch.putUser(JWTTokenResult.token, user.id, editedUser, 
+        (updatedUser) => {dispatch(setUser(updatedUser))},
+        () => console.log("Coudn't update user after profile edit"));
+      }
+      else{
+          //TODO refresh token
+      }
+      
     }
     navigation.goBack();
   }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Pressable} from 'react-native'
 
-import { scale } from "react-native-size-matters";
+import { scale, verticalScale } from "react-native-size-matters";
 import {useTheme, Text} from 'react-native-paper'
 
 import { FemaleOption, GeneralHeader, GeneralModal, MaleOption, PrimaryContainer, RoundPicture } from "../../../components/general";
@@ -94,9 +94,9 @@ const MyProfile = () => {
     if(user !== undefined)
     return(
       <PrimaryContainer styleInput={styles.containerSize}>
-        <Text style={{fontWeight: 'bold'}} variant="headlineSmall">Short Description</Text>
-        <View style={[styles.shortDescription, {backgroundColor: theme.colors.backdrop}]}>
-        <Text>{user.shortDescription}</Text>
+        <Text style={{fontWeight: 'bold', marginBottom: verticalScale(10)}} variant="headlineSmall">Short Description</Text>
+        <View style={[styles.shortDescription, {backgroundColor: theme.colors.background}]}>
+        <Text style={{textAlign: "center"}}>{user.shortDescription}</Text>
         </View>
       </PrimaryContainer>
     )
@@ -162,6 +162,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       padding: scale(10),
+      paddingVertical: scale(20),
       borderRadius: 10
     }
 })

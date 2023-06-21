@@ -5,7 +5,7 @@ import { AssignedSkill, MasteringLevel } from '../../types';
 import { PlusSvg } from '../svg/general';
 
 import Tile from '../general/Tile'
-import { uiUtils } from '../../utils';
+import { uiUtils, validation } from '../../utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { Fetch } from '../../services';
@@ -18,7 +18,7 @@ interface Input {
 }
 const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
 
-    const {user} = useSelector((state: RootState) => state.appState)
+    const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState)
     const dispatch = useDispatch();
     let skateProfile = user?.skateProfiles.find((skateProfile) => skateProfile.id === skateProfileId)
 
@@ -59,7 +59,18 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
 
         //if one of this fails the state is reseted
         if(user !==  undefined)
-            Fetch.putAssignedSkill(updatedSkill, (putUpdatedSkill) => nothing, () =>{dispatch(revertChangesInUser()), uiUtils.showPopUp("Error", "Couldn't update skill level in profile")})
+        {
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.putAssignedSkill(JWTTokenResult.token,
+                    updatedSkill,
+                    (putUpdatedSkill) => nothing,
+                    () =>{dispatch(revertChangesInUser()), uiUtils.showPopUp("Error", "Couldn't update skill level in profile")})
+            }
+            else{
+                //TODO refresh token
+            }
+        }
     }
 
     const theme = useTheme();

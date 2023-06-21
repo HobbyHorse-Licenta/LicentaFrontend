@@ -17,7 +17,7 @@ const Maps = () => {
   
   return (
     <Layout2PieceForNavigator 
-            header={<GeneralHeader title="Maps" onChat={() => console.log("[Maps]: open chat")}></GeneralHeader>}
+            header={<GeneralHeader title="Maps"></GeneralHeader>}
             body={getBody()}
     ></Layout2PieceForNavigator>
   );

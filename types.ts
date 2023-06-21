@@ -33,7 +33,10 @@ export type RenderElement = {
 export enum MarkerType {
   Start,
   Finish,
-  Checkpoint
+  Checkpoint,
+  ParkTrail,
+  AttendedEvent,
+  RecommendedEvent
 }
 
 export enum SportName {
@@ -133,7 +136,7 @@ export type Outing = {
   endTime: number,
   skatePracticeStyle: SkatePracticeStyles,
  // trailType: 'ParkTrail' | 'CustomTrail',
-  trail: CustomTrail,
+  trail: CustomTrail | ParkTrail,
   booked: boolean
 }
 

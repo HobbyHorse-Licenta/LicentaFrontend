@@ -11,7 +11,8 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 
 
 import { Fetch } from '../services';
-import {setJWTToken, setUser} from '../redux/appState'
+import {setJWTTokenResult, setUser} from '../redux/appState'
+import validation from './Validation';
 
 class Authentication {
   
@@ -24,18 +25,28 @@ class Authentication {
     login = (email: string, password: string, finallyFunction?: Function) => {
       signInWithEmailAndPassword(firebaseAuth, email, password)
       .then((userCredential) => {
-        // Signed in 
-        userCredential.user.getIdToken().then((jwtToken) => {
-            this.dispatch(setJWTToken(jwtToken));
-        })
-        try {
-            console.log("set is loading to true");
-            Fetch.getUser(userCredential.user.uid, (user) => {
-                this.dispatch(setUser(user)); finallyFunction !== undefined && finallyFunction()}, () =>{finallyFunction !== undefined && finallyFunction()});
-        } catch (error) {
-            console.error("No user in database corresponding to this firebase user");
-            finallyFunction !== undefined && finallyFunction();
-        }
+            // Signed in 
+            userCredential.user.getIdTokenResult().then((jwtTokenResult) => {
+                this.dispatch(setJWTTokenResult(jwtTokenResult));
+
+                try {
+                    console.log("set is loading to true");
+                    if(jwtTokenResult !== undefined && !validation.isJWTTokenExpired(jwtTokenResult))
+                    {
+                        Fetch.getUser(jwtTokenResult.token,
+                            userCredential.user.uid, (user) => {
+                            this.dispatch(setUser(user)); finallyFunction !== undefined && finallyFunction()},
+                             () =>{finallyFunction !== undefined && finallyFunction()});
+                    }
+                    else 
+                    {
+                        //TODO refresh token
+                    }
+                } catch (error) {
+                    console.error("No user in database corresponding to this firebase user");
+                    finallyFunction !== undefined && finallyFunction();
+                }
+            })
             //TODO: add refresh token to appState;
         })
         .catch((error) => {

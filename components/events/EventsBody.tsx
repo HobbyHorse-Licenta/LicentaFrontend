@@ -14,11 +14,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { setEventsWalkthrough } from '../../redux/walkthroughState';
 import { Fetch } from '../../services';
-import { setAllParkTrails, setCurrentSkateProfile, setNeedsRefresh } from '../../redux/appState';
+import { setAllParkTrails, setCurrentSkateProfile, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
 import SearchingSvg from '../svg/general/SearchingSvg';
 import LeftArrowSvg from '../svg/general/LeftArrowSvg';
 import RightArrowSvg from '../svg/general/RightArrowSvg';
-import { uiUtils } from '../../utils';
+import { uiUtils, validation } from '../../utils';
 
 const EventsBody = () => {
 
@@ -26,10 +26,9 @@ const EventsBody = () => {
     const dispatch = useDispatch();
 
     const [refreshing, setRefreshing] = useState(false);
-    const {needsRefresh} = useSelector((state: RootState) => state.appState);
     const [loading, setLoading] = useState(false);
     const {walkthroughState} = useSelector((state: RootState) => state)
-    const {currentSkateProfile, user} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile, user, JWTTokenResult, needsRecommendedEventsRefresh} = useSelector((state: RootState) => state.appState)
     const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState(false);
     const [events, setEvents] = useState<Array<Event>>([]);
 
@@ -41,19 +40,26 @@ const EventsBody = () => {
     }, [currentSkateProfile])
 
     useEffect(() => {
-        if(needsRefresh === true)
+        if(needsRecommendedEventsRefresh === true)
         {
             getAndSetRecommendedEvents();
-            dispatch(setNeedsRefresh(false));
+            getAndSetRecommendedEvents();
+            dispatch(setNeedsRecommendedEventsRefresh(false));
         }
-    }, [needsRefresh])
+    }, [needsRecommendedEventsRefresh])
     
 
     useEffect(() => {
-        Fetch.getAllParkTrails(
-          (parkTrails) => {dispatch(setAllParkTrails(parkTrails));},
-          () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load the park trails")
-        );    
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+            Fetch.getAllParkTrails( JWTTokenResult.token,
+                (parkTrails) => dispatch(setAllParkTrails(parkTrails)),
+                () => uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load the park trails")
+            ); 
+        }
+        else {
+            //TODO refresh token
+        }
       }, [])
 
     const {
@@ -102,9 +108,16 @@ const EventsBody = () => {
         if(currentSkateProfile !== undefined)
         {
             setLoading(true);
-            Fetch.getRecommendedEventsForSkateProfile(currentSkateProfile.id,
-            (recommendedEvents) => { setEvents(recommendedEvents); setLoading(false); console.log("\n\n\nRecommended events I just got: " + JSON.stringify(recommendedEvents) + "\n\n\n")},
-            () => { setEvents([]); setLoading(false); uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load recommended events");});
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.getRecommendedEventsForSkateProfile( JWTTokenResult.token,
+                    currentSkateProfile.id,
+                    (recommendedEvents) => {console.log("GET; DATA RETURNED RECOMMENDED EVENTS\n " + JSON.stringify(recommendedEvents)); setEvents(recommendedEvents); setLoading(false); console.log("\n\n\nRecommended events I just got: " + JSON.stringify(recommendedEvents) + "\n\n\n")},
+                    () => { setEvents([]); setLoading(false); uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load recommended events");});
+            }
+            else{
+                //TODO refresh token
+            }
         }
         else setLoading(false);   
     }

@@ -1,18 +1,23 @@
 import React from 'react'
 import {RefObject} from 'react'
-import {Platform} from 'react-native'
-import { CheckPoint, Location, MarkerType, ParkTrail, Zone } from '../types';
-import MapView, { Circle, LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import {Platform, View, Button, TouchableOpacity, Text as ReactNativeText, ImageBackground, StyleSheet} from 'react-native'
+import { CheckPoint, Event, Location, MarkerType, ParkTrail, Zone } from '../types';
+import MapView, { Callout, Circle, LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
-import { useTheme } from 'react-native-paper';
+import { Text, useTheme } from 'react-native-paper';
 import Constants from 'expo-constants';
+import { nothing } from 'immer';
 
 import { COLORS } from '../assets/colors/colors';
 import MapViewDirections from 'react-native-maps-directions';
+import { defaultEventUrl } from '../assets/imageUrls';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import uuid from 'react-native-uuid'
 import { Image } from 'react-native';
+import { scale, verticalScale } from 'react-native-size-matters';
+import { SvgView } from '../components/general';
+import { BigLocationSvg } from '../components/svg/general';
 
 
 class Maps {
@@ -132,7 +137,7 @@ class Maps {
                 draggable={true}
                 onDragEnd={(e) => changedCoordinates !== undefined && changedCoordinates(e.nativeEvent.coordinate)}
                 title={markerTitle !== undefined ? markerTitle : ''}
-                image={require('../assets/mapMarkers/map_marker.png')}
+                image={{uri: "https://i.postimg.cc/kGGMkQrh/map-marker.png"}}
                 style={{width: 1, height: 1}}
                 pinColor={'wheat'}
             />
@@ -155,6 +160,15 @@ class Maps {
                     return {uri: "https://i.postimg.cc/Wz7wtsY3/start.png"}
                     return require('../assets/mapMarkers/start.png');
                     break;
+                case MarkerType.ParkTrail:
+                    return {uri: "https://i.postimg.cc/mrXQvdzc/running-track.png"}
+                    break;
+                case MarkerType.AttendedEvent:
+                    return {uri: "https://i.postimg.cc/hv9HKpJn/attended-Event.png"}
+                    break;
+                case MarkerType.RecommendedEvent:
+                    return {uri: "https://i.postimg.cc/rpsX51HG/recommended-Event.png"}
+                    break;
                 default: 
                     return {uri: "https://i.postimg.cc/63rmLJ1s/map-marker.png"}
                     return require('../assets/mapMarkers/map_marker.png'); 
@@ -176,6 +190,70 @@ class Maps {
                 pinColor={'wheat'}
             />
         )
+    }
+
+    getAttendingEvents(events: Array<Event>)
+    {
+        return events.map((evnt, index) => {
+            return this.getEventMarker(evnt, index);
+        })
+    }
+
+    getEventMarker(eventData: Event, key?: number)
+    {
+        if(eventData !== undefined && eventData.outing !== undefined && eventData.outing.trail !== undefined)
+        {
+            const trail: ParkTrail = eventData.outing.trail as ParkTrail;
+            if(trail.location !== undefined)
+            {
+                return(
+                    <Marker
+                        key={key !== undefined ? key : 1}
+                        coordinate={{
+                            latitude: trail.location.lat,
+                            longitude: trail.location.long
+                        }}
+                        title={eventData.name}
+                        image={{uri: "https://i.postimg.cc/hv9HKpJn/attended-Event.png"}}
+                        style={{width: 1, height: 1}}
+                        pinColor={'wheat'}
+                    >
+                        <Callout tooltip>
+                            {/* <ImageBackground 
+                            resizeMode="cover" style={{width: 200, height: 200}}
+                            source={{uri: (eventData.imageUrl !== undefined && eventData.imageUrl.length > 0) ? eventData.imageUrl : defaultEventUrl}}
+                            >
+                            </ImageBackground> */}
+                                <View style={{backgroundColor: "white", borderRadius: 20, height: 200, width: 220, padding: 20, justifyContent: "space-evenly", alignItems: "center"}}>
+                                
+                                    <Text variant="headlineSmall">{eventData.name}</Text>
+                                    <TouchableOpacity style={{backgroundColor:COLORS.aBackground, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 10}}
+                                    onPress={() => console.log('Button pressed')}>
+
+                                        <View style={[styles.rowContainer, {backgroundColor: COLORS.aBackground}]}>
+                                            <SvgView size='tiny'>
+                                                <BigLocationSvg color={COLORS.aPrimaryColorOverall}></BigLocationSvg>
+                                            </SvgView>
+                                            <Text style={[styles.descriptionText, {color: COLORS.aPrimaryColorOverall}]}>{eventData.outing.trail.name}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{backgroundColor:COLORS.aBackground, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 10}}
+                                    onPress={() => console.log('Button pressed')}>
+                                        <Text>Join</Text>
+                                    </TouchableOpacity>
+                                    
+                                </View>
+                           
+                           
+                            
+                        </Callout>
+                    </Marker>
+                )
+            }
+            else return null;
+        }
+        else return null;
+        
     }
 
     getDrawnRoute (startLocation: Location, endLocation: Location,  key?: number) {
@@ -263,6 +341,25 @@ class Maps {
     const mapsUtils = new Maps();
     export default mapsUtils;
   
+const styles = StyleSheet.create({
+    descriptionView: {
+        width:'80%',
+        padding: '6%',
+        flex: 3,
+        alignItems: 'flex-end'
+    },
+    descriptionText: {
+        fontSize: verticalScale(10) < 10 ? 10 : verticalScale(10),
+    },
+    rowContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 5,
+        margin: scale(4),
+        paddingHorizontal: scale(7)
+    }
+})
   
   
   

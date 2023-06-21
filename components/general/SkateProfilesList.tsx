@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
 import { Fetch } from "../../services";
 import { SkateProfile, User } from "../../types";
+import { validation } from "../../utils";
 import SkateProfileSummary from "../profile/SkateProfileSummary";
 import SkateProfilePresenceCard from "./SkateProfilePresenceCard";
 interface Input {
@@ -11,12 +14,20 @@ interface Input {
 const SkateProfilesList = ({suggestedSkateProfiles, attendingSkateProfiles} : Input) =>{
 
     const [allUsers, setAllUsers] = useState<Array<User>>([]);
+    const {JWTTokenResult} = useSelector((state: RootState) => state.appState);
 
     useEffect(() => {
-        Fetch.getAllUsers(
-            (users) => setAllUsers(users),
-            () => console.log("[SkateProfilesList]: coudn't get all Users")
-        );
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+            Fetch.getAllUsers(
+                JWTTokenResult.token,
+                (users) => setAllUsers(users),
+                () => console.log("[SkateProfilesList]: coudn't get all Users")
+            );
+        }
+        else{
+            //TODO refresh token
+        }
     }, [])
 
     return(

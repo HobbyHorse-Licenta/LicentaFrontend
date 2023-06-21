@@ -1,5 +1,4 @@
 import React, {useRef, useEffect, useState} from 'react'
-import {View} from 'react-native'
 
 import { SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,12 +8,10 @@ import NotificationPopup from 'react-native-push-notification-popup';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
-import { SpacingStyles } from '../styles';
 import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack } from './mainPages';
 import { navigationUtils } from '../utils';
-import { PersonalInfo, SelectSkates, SelectSport, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
+import { Intro, PersonalInfo, PreSelectStyleAndExperience, SelectSkates, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
 import { SvgView } from '../components/general';
-import { loadWalkthorughStateAsync } from '../redux/walkthroughState';
 
 
 const AfterLogin = () => {
@@ -48,9 +45,10 @@ const AfterLogin = () => {
     { 
       (user === undefined || addingSkateProfile === true) ?
       (
-        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='SelectSport'>
-          {addingSkateProfile !== true &&  <Stack.Screen name="SelectSport" component={SelectSport} />}    
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Intro'>
+          {addingSkateProfile !== true &&  <Stack.Screen name="Intro" component={Intro} />}    
           <Stack.Screen name="SelectSkates" component={SelectSkates} />
+          <Stack.Screen name="PreSelectStyleAndExperience" component={PreSelectStyleAndExperience} />
           <Stack.Screen name="SelectStyleAndExperience" component={SelectStyleAndExperience} />
           <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
         </Stack.Navigator>
@@ -101,7 +99,7 @@ const AfterLogin = () => {
                <AllEventsSvg></AllEventsSvg>
               </SvgView>
             ),
-            tabBarBadge: 3,
+            //tabBarBadge: 3,
           }}
         />
 
