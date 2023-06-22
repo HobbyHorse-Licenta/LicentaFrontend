@@ -3,6 +3,7 @@ import { AssignedSkill, Schedule, SkatePracticeStyles, SkateProfile, Skill, User
 import produce from 'immer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IdTokenResult } from 'firebase/auth';
+import { createFalse } from 'typescript';
 
 export interface AppState {
     userBackup: User | undefined,
@@ -18,6 +19,7 @@ export interface AppState {
     allParkTrails: Array<ParkTrail> | undefined,
     needsEventsRefresh: boolean
     needsRecommendedEventsRefresh: boolean
+    firstProfileConfig: boolean
 }
 
 const initialState: AppState = {
@@ -33,7 +35,8 @@ const initialState: AppState = {
     allSkills: undefined,
     allParkTrails: undefined,
     needsEventsRefresh: false,
-    needsRecommendedEventsRefresh: false
+    needsRecommendedEventsRefresh: false,
+    firstProfileConfig: false
 }
 
 
@@ -305,6 +308,9 @@ export const appStateSlice = createSlice({
         setNeedsRecommendedEventsRefresh: (state, action: PayloadAction<boolean>) => {
             state.needsRecommendedEventsRefresh = action.payload;
         },
+        setfirstProfileConfig: (state, action: PayloadAction<boolean>) => {
+            state.firstProfileConfig = action.payload;
+        },
         resetAppState: state => initialState
       
     },
@@ -319,7 +325,7 @@ export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTTokenRes
     setInitialProfileConfigured, setAddingSkateProfile, 
     resetAppState,
     setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh,
-    setUser, 
+    setUser, setfirstProfileConfig,
     revertChangesInUser, backupUser,
     setAllSkills, deleteAssignedSkill, addAssignedSkill, updateAssignedSkill,
     setAllParkTrails,

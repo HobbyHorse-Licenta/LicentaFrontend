@@ -10,10 +10,12 @@ import { Fetch } from "../../services";
 import { SpacingStyles } from "../../styles";
 import { uiUtils, validation } from "../../utils";
 
+import QuestionModal from '../general/QuestionModal'
 import { AssignedSkill, MasteringLevel, RenderElement, SkateProfile, Skill, SkillRecommendation } from "../../types";
 import { PrimaryContainer, SelectionListModal, Tile, TileList } from "../general";
 import AssignedSkillList from "./AssignedSkillList";
 import { addAssignedSkill } from "../../redux/appState";
+import { nothing } from "immer";
 
 interface Input{
     skateProfileId: string
@@ -29,19 +31,7 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
     const [addSkillModalVisible, setAddSkillModalVisible] = useState(false);
     const dispatch = useDispatch();
     
-    const removeAssignedSkillsFromRecommendations = (recomSkills: Array<SkillRecommendation> | undefined) => {
-        //all recommended skills that are not already assigned to the skateprofile
-        return recomSkills?.filter((recommendedSkill) => 
-        {
-            if(profileInfo !== undefined && profileInfo.assignedSkills !== undefined && profileInfo.assignedSkills !== null)
-            {
-                if( profileInfo.assignedSkills.find(assignedSkill => assignedSkill.skill !== undefined && assignedSkill.skill.id === recommendedSkill.skill.id) !== undefined)
-                return false;
-                else return true;
-            }
-            return true;
-        })
-    }
+    
 
     useEffect(() => {
         if(profileInfo !== undefined)
@@ -70,18 +60,32 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
         }
     }, [profileInfo])
 
-    const getAssignedSkillsAsTextArray = () => 
-    {
-        if(profileInfo !== null && profileInfo !== undefined && profileInfo.assignedSkills !== undefined && profileInfo.assignedSkills !== null)
-        {
-            return profileInfo.assignedSkills.map((assignedSkill) => {
-                if(assignedSkill !== undefined && assignedSkill.skill !== undefined)
-                    return(<Text>{assignedSkill.skill.name}</Text>)
-                else return null;
-            })
-        }
-        else return null;
+    // const getAssignedSkillsAsTextArray = () => 
+    // {
+    //     if(profileInfo !== null && profileInfo !== undefined && profileInfo.assignedSkills !== undefined && profileInfo.assignedSkills !== null)
+    //     {
+    //         return profileInfo.assignedSkills.map((assignedSkill) => {
+    //             if(assignedSkill !== undefined && assignedSkill.skill !== undefined)
+    //                 return(<Text>{assignedSkill.skill.name}</Text>)
+    //             else return null;
+    //         })
+    //     }
+    //     else return null;
         
+    // }
+
+    const removeAssignedSkillsFromRecommendations = (recomSkills: Array<SkillRecommendation> | undefined) => {
+        //all recommended skills that are not already assigned to the skateprofile
+        return recomSkills?.filter((recommendedSkill) => 
+        {
+            if(profileInfo !== undefined && profileInfo.assignedSkills !== undefined && profileInfo.assignedSkills !== null)
+            {
+                if( profileInfo.assignedSkills.find(assignedSkill => assignedSkill.skill !== undefined && assignedSkill.skill.id === recommendedSkill.skill.id) !== undefined)
+                return false;
+                else return true;
+            }
+            return true;
+        })
     }
 
     const addNewSkillToProfile = () =>{
@@ -152,9 +156,20 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
                         <AssignedSkillList skateProfileId={profileInfo.id} onPressAddSkill={() => addNewSkillToProfile()}></AssignedSkillList>
                     </View>
                     {
-                        recommendedSkills !== undefined && recommendedSkills.length > 0 &&
-                        <SelectionListModal visible={addSkillModalVisible}
-                        list={getRecommendedSkillsElements()}></SelectionListModal>
+                        addSkillModalVisible === true &&
+                        <View>
+                            {
+                                recommendedSkills !== undefined && recommendedSkills.length > 0 ? 
+                                (
+                                    <SelectionListModal visible={addSkillModalVisible}
+                                    list={getRecommendedSkillsElements()}></SelectionListModal>
+                                ):
+                                (
+                                    <QuestionModal question="No recommended event suggestions" button1Text="Ok" onButton1Press={() => setAddSkillModalVisible(false)} onDismiss={() => nothing}
+                                    visible={addSkillModalVisible}/>
+                                )
+                            }
+                        </View>
                     }
                 </View>
             }

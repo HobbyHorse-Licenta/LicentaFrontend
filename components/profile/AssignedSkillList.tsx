@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { View } from 'react-native';
+import { View} from 'react-native';
 import { useTheme, Text } from 'react-native-paper';
 import { AssignedSkill, MasteringLevel } from '../../types';
 import { PlusSvg } from '../svg/general';
@@ -21,14 +21,22 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
     const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState)
     const dispatch = useDispatch();
     let skateProfile = user?.skateProfiles.find((skateProfile) => skateProfile.id === skateProfileId)
-
+    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
+    const [currentTimoutId, setCurrentTimeoutId] = useState<NodeJS.Timeout | undefined>(undefined);
     useEffect(() => {
       dispatch(backupUser());
     }, [])
-    
 
-
-    const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
+    useEffect(() => {
+        if(selectedIndex !== undefined)
+        {
+            if(currentTimoutId !== undefined)
+            {
+                clearTimeout(currentTimoutId);
+            }
+           setCurrentTimeoutId(setTimeout(() => setSelectedIndex(undefined), 3000));
+        }
+    }, [selectedIndex])
     
     const getNextValue = (currentValue: string): string | undefined => {
         const keys = Object.keys(MasteringLevel);
@@ -39,7 +47,21 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
     }
 
     const skillDelete = (skill: AssignedSkill) => {
+        dispatch(backupUser());
         dispatch(deleteAssignedSkill(skill.id))
+
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+            Fetch.deleteAssignedSkill(JWTTokenResult.token,
+                skill.id, skateProfileId, 
+                () => console.log("Assigned skill was deleted successfully"),
+                () => {dispatch(revertChangesInUser()), uiUtils.showPopUp("Error", "Failed to delete assigned skill")}
+                );
+        }
+        else
+        {
+            //TODO refresh token
+        }
     }
 
     const advanceSkillLevel = (skill: AssignedSkill) => {
@@ -76,9 +98,13 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
     const theme = useTheme();
     return (
         <View style={{flexDirection: 'row'}}>
-            <Tile color={theme.colors.tertiary} isIcon={true} onPress={() => onPressAddSkill !== undefined && onPressAddSkill()}>
+            {
+                onPressAddSkill !== undefined &&
+                <Tile color={theme.colors.tertiary} isIcon={true} onPress={() => onPressAddSkill()}>
                     <PlusSvg></PlusSvg>
-            </Tile>
+                </Tile>
+            }
+           
             {skateProfile !== undefined && skateProfile.assignedSkills !== undefined && skateProfile.assignedSkills !== null &&
             skateProfile.assignedSkills.map((assignedSkill, index) => {
                 return(

@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import React, { useEffect } from "react";
+import { View, StyleSheet } from "react-native";
 
 import { Text } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import * as Animatable from 'react-native-animatable';
 
-
-import { PrimaryContainer, SelectionCard } from "../../../components/general";
 import { Layout2Piece } from "../../layouts";
 import { SpacingStyles } from "../../../styles";
-import { SportName } from "../../../types";
 import { InlineSkatesSvg } from "../../../components/svg/sports";
-import { setSport } from "../../../redux/configProfileState";
+import { resetConfigProfileState } from "../../../redux/configProfileState";
 import { ProfileConfigHeader } from "../../../components/profileConfig";
+import { setfirstProfileConfig } from "../../../redux/appState";
 
 const Intro = () => {
 
-    const {sport} = useSelector((state: any) => state.configProfile)
-
-    const [goNextDisabled, setGoNextDisabled] = useState(false);
-
     const dispatch = useDispatch();
+    
+    useEffect(() => {
+        dispatch(resetConfigProfileState());
+        dispatch(setfirstProfileConfig(true));
+    }, [])
+    
     
     const getBody = () => 
     {
@@ -43,34 +43,17 @@ const Intro = () => {
                             There is some setup involved so we can provide you with the best skating experience
                         </Text>
                     </View>
-
                 </View>
-
-                
             </View>
         );
     }
 
     return(
         <Layout2Piece
-            header={ <ProfileConfigHeader backButton={false} disabled={goNextDisabled}  nextScreen={'SelectSkates'}></ProfileConfigHeader>}
+            header={ <ProfileConfigHeader backButton={false} disabled={false}  nextScreen={'SelectSkates'}></ProfileConfigHeader>}
             body={getBody()}
         ></Layout2Piece>
     );
 };
 
 export default Intro;
-
-const styles = StyleSheet.create({
-    optionTile: {
-        height: verticalScale(230),
-        width: scale(150),
-        margin: scale(10),
-        padding: scale(20),
-    },
-    radioButtonContainer: {
-        position: 'absolute',
-        bottom: verticalScale(10),
-        left: scale(20)
-    }
-});

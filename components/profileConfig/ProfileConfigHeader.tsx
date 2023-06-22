@@ -9,7 +9,7 @@ import 'firebase/auth';
 import uuid from 'react-native-uuid';
 import { signOut } from "firebase/auth";
 
-import { AppHeader, Button, GeneralModal } from "../general";
+import { AppHeader, Button, GeneralModal, LoadingComponent } from "../general";
 import { useDispatch, useSelector } from "react-redux";
 import { resetAppState, setAddingSkateProfile, setInitialProfileConfigured, setUser } from "../../redux/appState";
 import { firebaseAuth } from "../../WholeScreen";
@@ -30,19 +30,63 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
     const {sport, skateType, skatePracticeStyle, skateExperience, age, gender, name, shortDescription } = useSelector((state: any) => state.configProfile)
     const { userId, addingSkateProfile, user, JWTTokenResult } = useSelector((state: RootState) => state.appState)
 
+    const [postedUser, setPostedUser] = useState<User | undefined>(undefined);
+    const [loading, setLoading] = useState(false);
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const theme = useTheme();
     const [infoModalVisible, setInfoModalVisible] = useState(false);
+    const [closing, setClosing] = useState(false);
     const displayModalForSeconds = 13;
     let timeoutId;
+
+   
     useEffect(() => {
         if(infoModalVisible === true)
         {
-            timeoutId = setTimeout(() => closeModalAndAdvance(), displayModalForSeconds * 1000);
+            postUserAndSkateProfile();
+            timeoutId = setTimeout(() => setClosing(true), displayModalForSeconds * 1000);
         }
-      }, [infoModalVisible]);
+    }, [infoModalVisible]);
 
+
+    useEffect(() => {
+        if(closing === true)
+        {
+            if(postedUser !== undefined)
+            {
+                setLoading(false);
+                clearTimeout(timeoutId);
+                setInfoModalVisible(false);
+
+                //this also advances navigation to EventsScreen
+                dispatch(setUser(postedUser)); 
+            }
+            else{
+                setLoading(true);
+            }
+        }
+    }, [closing, postedUser]);
+
+    const postUserAndSkateProfile = () => {
+        const user: User | null = createUserWithSkateProfile();
+        if(user !== null) //user created succesfully
+        {
+            console.log("///////////////////////\nPOSTING USER:\n" + JSON.stringify(user) + "\n/////////////////////////");
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.postUser(JWTTokenResult.token,
+                    user, (postedUser: User) => setPostedUser(postedUser), () => console.log("Coudn't post user at profile creation"));
+            }
+            else{
+                //TODO refresh token
+            }
+        }
+        else {
+            //TODO maybe remove also the created account in firebase
+            authenticationUtils.logOut();
+        }
+    }
     const goNext = () => {
         if(nextScreen != undefined)
             navigation.navigate(nextScreen as never);
@@ -91,28 +135,7 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
         else return null;
        
     }
-    const closeModalAndAdvance = () => {
-        clearTimeout(timeoutId);
-        setInfoModalVisible(false);
-        const user: User | null = createUserWithSkateProfile();
-        if(user !== null) //user created succesfully
-        {
-            console.log("///////////////////////\nPOSTING USER:\n" + JSON.stringify(user) + "\n/////////////////////////");
-            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-            {
-                Fetch.postUser(JWTTokenResult.token,
-                    user, (postedUser: User) => dispatch(setUser(postedUser)), () => console.log("Coudn't post user at profile creation"));
-            }
-            else{
-                //TODO refresh token
-            }
-        }
-        else {
-            //TODO maybe remove also the created account in firebase
-            authenticationUtils.logOut();
-        }
-       
-    }
+
     const createSkateProfile = () : SkateProfile | null =>
     {
         if(user !== undefined)
@@ -162,11 +185,7 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
 
     const getModalInfo = () => {
         return(
-            <View>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.textCategory}>Sport selected: </Text>
-                    <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{sport}</Text>
-                </View>
+            <View style={{justifyContent: "center", alignItems: "center"}}>
                 <View style={{flexDirection: 'row'}}>
                     <Text style={styles.textCategory}>Skates selected: </Text>
                     <Text style={[styles.textCategory,{color: theme.colors.tertiary}]}>{skateType}</Text>
@@ -193,27 +212,44 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
            
         );
     }
+
+    const getCountDownCircle = () => {
+        return(
+            <View style={styles.timer}>
+                <CountdownCircleTimer
+                    strokeWidth={4}
+                    isPlaying
+                    duration={displayModalForSeconds}
+                    colors={['#000000', '#000000']}
+                    colorsTime={[displayModalForSeconds, 1]}
+                    size={scale(60)}
+                >
+                    {({ remainingTime }) => <Text>{remainingTime}</Text>}
+                </CountdownCircleTimer>
+            </View>
+        )
+    }
     return(
         <AppHeader>
             {(backButton !== undefined && backButton === true) && <Appbar.BackAction style={{left: scale(20), position: 'absolute'}} onPress={goBack}/>}
             {(backButton === false) && <Button disabled={false} text="LOGOUT" onPress={authenticationUtils.logOut} style={{position: 'absolute', left: scale(20)}}/>}
             {(nextScreen !== undefined) && <Button disabled={disabled} text="NEXT" onPress={goNext} style={{position: 'absolute', right: scale(20)}}/>}
             {(doneConfig === true) && <Button disabled={disabled} text="DONE" onPress={endProfileConfiguration} style={{position: 'absolute', right: scale(20)}}/>}
-            <GeneralModal visible={infoModalVisible} onDismiss={closeModalAndAdvance}>
-                <View style={styles.timer}>
-                    <CountdownCircleTimer
-                        strokeWidth={4}
-                        isPlaying
-                        duration={displayModalForSeconds}
-                        colors={['#000000', '#000000']}
-                        colorsTime={[displayModalForSeconds, 1]}
-                        size={scale(60)}
-                    >
-                        {({ remainingTime }) => <Text>{remainingTime}</Text>}
-                    </CountdownCircleTimer>
-                </View>
-                
-                {getModalInfo()}
+            <GeneralModal visible={infoModalVisible} onDismiss={() => setClosing(true)}>
+                {
+                    loading === false ?
+                    (
+                        <View>
+                            {getCountDownCircle()}
+                            {getModalInfo()}
+                        </View>
+                    ):
+                    (
+                        <View style={{width: "100%", height: "100%"}}>
+                            <LoadingComponent width={300} height={300}></LoadingComponent>
+                        </View>
+                    )
+                }
             </GeneralModal>
         </AppHeader>
     );

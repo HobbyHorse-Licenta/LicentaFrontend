@@ -61,6 +61,8 @@ class Maps {
 
     getDistanceInKmBetweenLocations(location1: Location, location2: Location)
     {
+        //haversine formula
+        
         const earthRadiusKm: number = 6371; // Approximate radius of the Earth in kilometers
 
         const dLat: number = this.degreeToRadian(location1.lat - location2.lat);

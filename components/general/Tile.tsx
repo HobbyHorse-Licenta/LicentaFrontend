@@ -1,5 +1,5 @@
 import React, {ReactNode} from 'react'
-import { Pressable, View, StyleSheet} from 'react-native';
+import { Pressable, View, StyleSheet, Text, ViewStyle} from 'react-native';
 import Color from 'color';
 import { child } from 'react-native-extended-stylesheet'
 
@@ -8,6 +8,8 @@ import { scale } from 'react-native-size-matters';
 
 import { DeleteSvg } from '../svg/general';
 import SvgView from './SvgView';
+import { uiUtils } from '../../utils';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface Input {
     color?: string,
@@ -20,46 +22,58 @@ interface Input {
     isIcon?: boolean
 }
 const Tile = ({color, children, deleteEnabled, onLongPress, onDeleteTile, onPress, isIcon, withBorder} : Input) => {
-
+    
     const theme = useTheme();
+    const backgroundColor = color ? color : theme.colors.secondary;
+
+    const getStyleForIconTile = () : ViewStyle => {
+        let style = {backgroundColor: backgroundColor};
+        
+        if(withBorder === true)
+            return {borderColor: uiUtils.darkenColor(backgroundColor, 10), borderWidth: 1, ...style}
+        else return style;
+    }
+
+    const getStyleForTextTile = () : ViewStyle => {
+        let style = {...styles.tile, backgroundColor: backgroundColor};
+      
+        if(withBorder === true)
+            return {borderColor: uiUtils.darkenColor(backgroundColor, 10), borderWidth: 1, ...style}
+        else return style;
+    }
+
+    
     return (
         <View>
-            <Pressable onPress={() => onPress && onPress()} onLongPress={() => onLongPress && onLongPress()}>
             {
                 isIcon === true ? 
                 (
-                    withBorder === true ? (
-                    <SvgView size='small' style={{backgroundColor: color ? color : theme.colors.secondary, borderColor: Color(color).darken(10/100).hex(), borderWidth: 1}}>
-                        {children}
-                    </SvgView>
-                    )
-                    : (
-                    <SvgView size='small' style={{backgroundColor: color ? color : theme.colors.secondary}}>
-                        {children}
-                    </SvgView>
-                    )  
+                    <Pressable onPress={() => onPress && onPress()} onLongPress={() => onLongPress && onLongPress()}>
+                        <SvgView size='small' style={getStyleForIconTile()}>
+                            {children}
+                        </SvgView>
+                    </Pressable>
                 ):
                 (
-                    withBorder === true ? (
-                    <View style={{...styles.tile, backgroundColor: color ? color : theme.colors.secondary, borderColor: Color(color).darken(10/100).hex(), borderWidth: 1}}>
+                    <View style={getStyleForTextTile()}>
+                        {
+                            deleteEnabled === true &&
+                            <Pressable onPress={() => onDeleteTile && onDeleteTile()}>
+                                <Text style={{color: "white"}}>Delete</Text>
+                            </Pressable>
+                        }
+                        <Pressable onPress={() => onPress && onPress()} onLongPress={() => onLongPress && onLongPress()}>
                         {children}
+                        </Pressable>
                     </View>
-                    )
-                    : (
-                    <View style={{...styles.tile, backgroundColor: color ? color : theme.colors.secondary}}>
-                        {children}
-                    </View>
-                    )  
-                    
                 )
             }
-            </Pressable>
-            {
+            {/* {
                 deleteEnabled === true &&
                 <SvgView size='small' onPress={() => onDeleteTile && onDeleteTile()} style={styles.deleteTile}>
                     <DeleteSvg></DeleteSvg>
                 </SvgView>
-            }
+            } */}
         </View>
            
     )
