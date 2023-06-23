@@ -9,10 +9,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BeforeLogin from './BeforeLogin';
 import AfterLogin from './AfterLogin';
 import { SpacingStyles } from '../styles';
-import { setCurrentRoute} from '../redux/appState';
 import { RootState } from '../redux/store';
 import { CommonActions } from '@react-navigation/native';
 import { validation } from '../utils';
+import { setCurrentRoute } from '../redux/globalState';
 
 const PERSISTENCE_KEY = 'NAVIGATION_STATE_V1';
 

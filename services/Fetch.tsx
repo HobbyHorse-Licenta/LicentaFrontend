@@ -1,7 +1,7 @@
 import { AggresiveEvent, AssignedSkill, Schedule, SkateExperience, SkatePracticeStyles, SkateProfile, User } from "../types";
 import {apiUrl} from '../assets/apiUrl'
 
-const commentOn = true;
+const commentOn = false;
 
 
 const Fetch = {

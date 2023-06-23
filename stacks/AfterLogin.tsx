@@ -12,12 +12,15 @@ import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack
 import { navigationUtils } from '../utils';
 import { Intro, PersonalInfo, PreSelectStyleAndExperience, SelectSkates, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
 import { SvgView } from '../components/general';
+import { RootState } from '../redux/store';
 
 
 const AfterLogin = () => {
 
   const {windowHeight} = useSelector((state: any) => state.ui);
-  const {currentRoute, user, addingSkateProfile} = useSelector((state: any) => state.appState);
+  const {user, addingSkateProfile} = useSelector((state: RootState) => state.appState);
+  const {currentRoute} = useSelector((state: RootState) => state.globalState);
+
   const [tabBarVisible, setTabBarVisible] = useState(true);
   const Tab = createBottomTabNavigator();
   const theme = useTheme();
@@ -33,8 +36,8 @@ const AfterLogin = () => {
   
   
   useEffect(() => {
-    //console.log("Route updated " + currentRoute);
-    setTabBarVisible(navigationUtils.ShouldHaveTabBar(currentRoute));
+    console.log("Route updated " + currentRoute);
+    //setTabBarVisible(navigationUtils.ShouldHaveTabBar(currentRoute));
     //dispatch(setMySchedules(Fetch.getSchedules()));
   }, [currentRoute])
 

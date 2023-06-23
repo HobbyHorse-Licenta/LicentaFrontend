@@ -10,9 +10,7 @@ export interface AppState {
     user: User | undefined,
     userId: string | undefined,
     JWTTokenResult: IdTokenResult | undefined,
-    currentRoute: string | undefined,
     currentSkateProfile: SkateProfile | undefined,
-    //mySchedules: Array<Schedule> | undefined,
     addingSkateProfile:  boolean,
     initialProfileConfigured: boolean,
     allSkills: Array<Skill> | undefined,
@@ -27,9 +25,7 @@ const initialState: AppState = {
     user: undefined,
     userId: undefined,
     JWTTokenResult: undefined,
-    currentRoute: undefined,
     currentSkateProfile: undefined,
-    //mySchedules: undefined,
     addingSkateProfile: false,
     initialProfileConfigured: true,
     allSkills: undefined,
@@ -280,9 +276,6 @@ export const appStateSlice = createSlice({
         setJWTTokenResult: (state, action: PayloadAction<IdTokenResult>) => {
             state.JWTTokenResult = action.payload;
         },
-        setCurrentRoute: (state, action: PayloadAction<string | undefined>) => {
-            state.currentRoute = action.payload;
-        },
         setAllParkTrails: (state, action: PayloadAction<Array<ParkTrail> | undefined>) => { 
             state.allParkTrails = action.payload;
         },
@@ -321,7 +314,7 @@ export const appStateSlice = createSlice({
     },
 });
 
-export const {setCurrentRoute, setUserId, setCurrentSkateProfile, setJWTTokenResult,
+export const {setUserId, setCurrentSkateProfile, setJWTTokenResult,
     setInitialProfileConfigured, setAddingSkateProfile, 
     resetAppState,
     setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh,

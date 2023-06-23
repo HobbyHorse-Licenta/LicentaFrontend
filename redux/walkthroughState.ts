@@ -51,15 +51,12 @@ export const walkthroughStateSlice = createSlice({
     reducers: {
         setScheduleWalkthrough: (state, action: PayloadAction<boolean>) => {
             state.schedule = action.payload;
-            console.log("walkthrough state: " + JSON.stringify(state));
         },
         setEventsWalkthrough: (state, action: PayloadAction<boolean>) => {
             state.events = action.payload;
-            console.log("walkthrough state: " + JSON.stringify(state));
         },
         setMyProfileWalkthrough: (state, action: PayloadAction<boolean>) => {
             state.myProfile = action.payload;
-            console.log("walkthrough state: " + JSON.stringify(state));
         },
         resetWalkthroughState: state => initialState
 

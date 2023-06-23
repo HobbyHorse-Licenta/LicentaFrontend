@@ -112,7 +112,7 @@ const EventsBody = () => {
             {
                 Fetch.getRecommendedEventsForSkateProfile( JWTTokenResult.token,
                     currentSkateProfile.id,
-                    (recommendedEvents) => {console.log("GET; DATA RETURNED RECOMMENDED EVENTS\n " + JSON.stringify(recommendedEvents)); setEvents(recommendedEvents); setLoading(false); console.log("\n\n\nRecommended events I just got: " + JSON.stringify(recommendedEvents) + "\n\n\n")},
+                    (recommendedEvents) => {/*console.log("GET; DATA RETURNED RECOMMENDED EVENTS\n " + JSON.stringify(recommendedEvents));*/ setEvents(recommendedEvents); setLoading(false); /*console.log("\n\n\nRecommended events I just got: " + JSON.stringify(recommendedEvents) + "\n\n\n")*/},
                     () => { setEvents([]); setLoading(false); uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load recommended events");});
             }
             else{
