@@ -65,6 +65,7 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
     }
 
     const advanceSkillLevel = (skill: AssignedSkill) => {
+        console.log("\n\n\nAAHFDJS\n\n\n");
         const nextSkillLevel = getNextValue(skill.masteringLevel);
         let newMasteringLevel;
         if(nextSkillLevel === undefined)
@@ -79,7 +80,7 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
         //optimistic UI update
         dispatch(updateAssignedSkill(updatedSkill))
 
-        //if one of this fails the state is reseted
+        // //if one of this fails the state is reseted
         if(user !==  undefined)
         {
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))

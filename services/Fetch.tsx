@@ -50,7 +50,7 @@ const Fetch = {
     deleteSchedule: async function(jwtToken: string, scheduleId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.delete(jwtToken, `${apiUrl}/schedule/delete/schedule/${scheduleId}`, callBackFunction, errorCallBackFunction);
     },
-    
+
     deleteAssignedSkill: async function(jwtToken: string, assignedSkillId: string, skateProfileId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.delete(jwtToken, `${apiUrl}/skill/delete/assignedSkill/${assignedSkillId}/fromSkateProfile/${skateProfileId}`, callBackFunction, errorCallBackFunction);
     },
@@ -180,7 +180,6 @@ const Fetch = {
     },
 
     get: async function(JWTToken: string, url: string, callBackFunction: Function, errorCallBackFunction: Function, noDataExpected?: boolean) {
-      console.log("\n\n\nUSING TOKEN: " + JWTToken + "\n\n\n")
       if(commentOn)
       {
         console.log("GET; endpoint => " + url + "\n");

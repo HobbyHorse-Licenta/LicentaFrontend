@@ -69,6 +69,10 @@ const ScheduleContainer = ({children, styleInput, onPress, index, onDelete, onUp
                             <Text style={[styles.deleteText, {alignSelf: 'flex-end', color: theme.colors.tertiary}]}>Update</Text>
                         </Pressable>
                     }
+                    {
+                        optionsShown === false &&
+                        <Text style={{alignSelf: "flex-end", fontSize: 12}}>Hold to edit</Text>
+                    }
                     <View style={[SpacingStyles.centeredContainer, {alignSelf: 'center'}]}>
                         {children}
                     </View> 

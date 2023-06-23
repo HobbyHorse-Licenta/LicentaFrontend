@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import {View, StyleSheet, ScrollView, Pressable, ViewStyle} from 'react-native'
+import React, { ClassicComponent, RefObject, useEffect, useRef, useState } from 'react'
+import {View, StyleSheet, ScrollView, Pressable, ViewStyle, TextStyle, TextProps} from 'react-native'
 
 import {Text, useTheme } from 'react-native-paper'
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -7,15 +7,17 @@ import { getStyle } from 'react-native-svg/lib/typescript/xml';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTourGuideController } from 'rn-tourguide';
 import { setAddingSkateProfile } from '../../redux/appState';
+import * as Animatable from 'react-native-animatable';
 import { resetConfigProfileState } from '../../redux/configProfileState';
 import { Fetch } from '../../services';
 
 import { SpacingStyles } from '../../styles';
 import { SkatePracticeStyles, SkateProfile, SkillRecommendation } from '../../types';
-import { AnimatedTyping, GeneralModal, PrimaryContainer, SvgView } from '../general';
+import { AnimatedTyping, GeneralModal, HorizontalTextScroll, PrimaryContainer, SvgView } from '../general';
 import { PlusSvg } from '../svg/general';
 import SkateProfileSummary from './SkateProfileSummary';
 import SkateProfileSummaryWithSkills from './SkateProfileSummaryWithSkills';
+import { th } from 'date-fns/locale';
 
 interface Input {
     profiles: Array<SkateProfile>,
@@ -28,16 +30,21 @@ interface Input {
 const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureEnabled, style} : Input) => {
     
     const [heldProfile, setHeldProfile] = useState<SkateProfile | undefined>();
-    const [fakeState, setFakeState] = useState(["Add training skills", "by", "holding a skating profile"]);
 
     const theme = useTheme();
     const dispatch = useDispatch();
+    const animationRef = useRef(null);
 
+    const slideInAndOut = {
+    0: {
+        left: -300
+
+    },
+    1: {
+        left: 300
+    },
+    };
     const { canStart, start, stop, TourGuideZone } = useTourGuideController('heldskateProfile');
-
-    useEffect(() => {
-        console.log("Fake state changed")
-    }, [fakeState])
     
     useEffect(() => {
       if(heldProfile !== undefined)
@@ -82,15 +89,23 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
         }
         else return false;
     }
-//["Add training skills", "by", "holding a skating profile"]
+
     return(
-        <PrimaryContainer styleInput={getStyle()}>
+        <PrimaryContainer styleInput={{...getStyle(), overflow:"hidden"}}>
         <Text variant='headlineSmall'>Skate Profiles</Text>
+        {/* {   holdFeatureEnabled === true &&
+            <Animatable.Text ref={animationRef} animation={slideInAndOut} iterationCount={Infinity} duration={10000} easing={'linear'}
+            style={{fontSize: 12}}
+            >Add training skills by holding a skating profile</Animatable.Text>
+        } */}
+         {   holdFeatureEnabled === true &&
+            <HorizontalTextScroll text={"Add training skills by holding a skating profile"} />
+        }
         {/* <AnimatedTyping text={fakeState} onComplete={() => setFakeState(["training skills"])}/> */}
             {
                 profiles != undefined &&
-                <View style={{height: SpacingStyles.skateProfileSummary.height + verticalScale(20)}}>
-                    <ScrollView style={{margin: scale(5)}} horizontal={true}
+                <View style={{height: SpacingStyles.skateProfileSummary.height + verticalScale(20),width: "106%"}}>
+                    <ScrollView style={{marginVertical: scale(5)}} horizontal={true}
                     >
                         { profiles.length < Object.keys(SkatePracticeStyles).length && addEnabled === true &&
                             <Pressable onPress={() => addNewSkateProfile()}>
@@ -131,6 +146,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: scale(8),
-        margin: scale(3)
+        margin: scale(3),
     }
 });

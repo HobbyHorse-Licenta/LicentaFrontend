@@ -130,7 +130,7 @@ const MyProfile = () => {
             header={
             <GeneralHeader title="My Profile" 
             menuItems={[
-              {text: 'Edit', function: () => navigation.navigate('EditProfile' as never)},
+              {text: 'Edit Profile', function: () => navigation.navigate('EditProfile' as never)},
               {text: 'Logout', function: () => authenticationUtils.logOut()}
             ]}
             ></GeneralHeader>}

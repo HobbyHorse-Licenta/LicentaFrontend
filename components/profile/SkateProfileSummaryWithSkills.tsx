@@ -14,8 +14,9 @@ import QuestionModal from '../general/QuestionModal'
 import { AssignedSkill, MasteringLevel, RenderElement, SkateProfile, Skill, SkillRecommendation } from "../../types";
 import { PrimaryContainer, SelectionListModal, Tile, TileList } from "../general";
 import AssignedSkillList from "./AssignedSkillList";
-import { addAssignedSkill } from "../../redux/appState";
+import { addAssignedSkill, backupUser, revertChangesInUser } from "../../redux/appState";
 import { nothing } from "immer";
+import OutsidePressHandler from "react-native-outside-press";
 
 interface Input{
     skateProfileId: string
@@ -37,28 +38,22 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
         if(profileInfo !== undefined)
         {
             ///get recomended skills for the skateProfile shown in modal
-            if(recommendedSkills !== undefined)
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
             {
-                setRecommendedSkills((prev) => removeAssignedSkillsFromRecommendations(prev))
+                Fetch.getSkillRecommendations(JWTTokenResult.token,
+                    profileInfo.skatePracticeStyle, profileInfo.skateExperience,
+                    (skills) => setRecommendedSkills(removeAssignedSkillsFromRecommendations(skills)),
+                    () => console.log("Coudn't get recommended skills for the shown profile"))
+                
             }
-            else {
-                if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-                {
-                    Fetch.getSkillRecommendations(JWTTokenResult.token,
-                        profileInfo.skatePracticeStyle, profileInfo.skateExperience,
-                        (skills) => setRecommendedSkills(removeAssignedSkillsFromRecommendations(skills)),
-                        () => console.log("Coudn't get recommended skills for the shown profile"))
-                    
-                }
-                else{
-                    //TODO refresh token
-                }
+            else{
+                //TODO refresh token
             }
         }
         else {
             setRecommendedSkills(undefined)
         }
-    }, [profileInfo])
+    }, [profileInfo, user])
 
     // const getAssignedSkillsAsTextArray = () => 
     // {
@@ -92,6 +87,28 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
        setAddSkillModalVisible(true);
     }
 
+    const getSystemGuide = () => {
+        const masteringLevelValues = Object.values(MasteringLevel);
+        return(
+            <View style={{alignItems: "center", borderRadius: 20, paddingVertical: scale(15), paddingHorizontal: scale(22)}}>
+                <Text variant="headlineSmall" style={{marginBottom: verticalScale(10)}}>System Guide</Text>
+                <View>
+                    {
+                        masteringLevelValues.map((value, index) => {
+                            return(
+                                <View style={{flexDirection: 'row', alignItems: "center"}}>
+                                    <View style={{marginRight: scale(5), width: 10, height: 10, borderRadius: 50, backgroundColor: uiUtils.getColorBasedOnSkillLevel(value)}}></View>
+                                    <Text key={index}>{value}</Text>
+                                </View>
+                            )
+                        })
+                    }
+                </View>
+            </View>
+        )
+        return 
+    }
+
     const addSkill = (recommendedSkill: SkillRecommendation) =>
     {
         if(profileInfo !== undefined)
@@ -104,14 +121,20 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
                 masteringLevel: MasteringLevel.Novice
             }
 
+            const skillForOptimisticUpdate: AssignedSkill = {skill: recommendedSkill.skill, ...newAssignedSkill};
+
             if(user !==  undefined)
             {
                 if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
                 {
+                    //optimistic update
+                    dispatch(backupUser());
+                    dispatch(addAssignedSkill(skillForOptimisticUpdate));
+
                     Fetch.postAssignedSkill( JWTTokenResult.token,
                         newAssignedSkill, 
-                        (postedAssignedSkill) => dispatch(addAssignedSkill(postedAssignedSkill)),
-                        () => console.log("Coudn't post assigned skill"))
+                        (postedAssignedSkill) => console.log("added skill successfully"),
+                        () => {uiUtils.showPopUp("Error", "Coudn't add skill to current skating profile"); dispatch(revertChangesInUser())})
                 }
                 else{
                     //TODO refresh token
@@ -149,11 +172,18 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
             {
                 profileInfo !== undefined &&
                 <View style={SpacingStyles.centeredContainer}>
-                    <Text variant='labelSmall'>{profileInfo.skateType}</Text>
-                    <Text variant='labelSmall'>{profileInfo.skatePracticeStyle}</Text>
-                    <Text variant='labelSmall'>{profileInfo.skateExperience}</Text>
+                    <View style={{justifyContent: 'center', alignItems: "center", paddingVertical: scale(10), paddingHorizontal: scale(30), backgroundColor: "white", borderRadius: 22}}>
+
+                        <Text variant='headlineSmall'>Current profile</Text>
+                        <Text variant="bodyLarge">{profileInfo.skateType}</Text>
+                        <Text variant='bodyLarge'>{profileInfo.skatePracticeStyle}</Text>
+                        <Text variant='bodyLarge'>{profileInfo.skateExperience}</Text>
+                        <View style={styles.skillsContainer}>
+                            <AssignedSkillList skateProfileId={profileInfo.id} onPressAddSkill={() => addNewSkillToProfile()}></AssignedSkillList>
+                        </View>
+                    </View>
                     <View style={styles.skillsContainer}>
-                        <AssignedSkillList skateProfileId={profileInfo.id} onPressAddSkill={() => addNewSkillToProfile()}></AssignedSkillList>
+                        {getSystemGuide()}
                     </View>
                     {
                         addSkillModalVisible === true &&
@@ -161,8 +191,10 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
                             {
                                 recommendedSkills !== undefined && recommendedSkills.length > 0 ? 
                                 (
-                                    <SelectionListModal visible={addSkillModalVisible}
-                                    list={getRecommendedSkillsElements()}></SelectionListModal>
+                                    //<OutsidePressHandler disabled={false} onOutsidePress={() =>{ console.log("\n\n\nPRESSED OUTISDE\n\n\n"); setAddSkillModalVisible(false)}}>
+                                        <SelectionListModal visible={addSkillModalVisible}
+                                        list={getRecommendedSkillsElements()}></SelectionListModal>
+                                    //</OutsidePressHandler>
                                 ):
                                 (
                                     <QuestionModal question="No recommended event suggestions" button1Text="Ok" onButton1Press={() => setAddSkillModalVisible(false)} onDismiss={() => nothing}

@@ -30,8 +30,9 @@ import InformationalSvgComponent from "./InformationalSvgComponent";
 import ArrowList from "./ArrowList";
 import AssignedSkillElement from "./AssignedSkillElement";
 import AnimatedTyping from "./AnimatedTyping";
+import HorizontalTextScroll from "./HorizontalTextScroll";
 export {TextImage, Button, EventCard, ProfilePicList, RoundPicture, PlusTile,
      AppHeader, PrimaryContainer, SelectTime, LoadingComponent, PasswordInput, MaleOption, FemaleOption,
     SvgView, GeneralModal, SelectionListModal, SelectedDaysDisplay, RectangularPicture, AggresiveEventCard,
     SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu,UserSummary, SelectNumber, QuestionModal,
-    InformationalSvgComponent, ArrowList, AssignedSkillElement, AnimatedTyping}
+    InformationalSvgComponent, ArrowList, AssignedSkillElement, AnimatedTyping, HorizontalTextScroll}

@@ -31,7 +31,7 @@ const MyProfileHeader = ({backButtonVisible, children} : Input) => {
             <Text variant='headlineMedium' style={{position: 'absolute', alignSelf: 'center', color: theme.colors.primary}}>{children}</Text>
             <PopupMenu
             items={[
-                {text: 'Edit', function: () => navigation.navigate('EditProfile' as never)},
+                {text: 'Edit Profile', function: () => navigation.navigate('EditProfile' as never)},
                 {text: 'Logout', function: () => authenticationUtils.logOut()}
             ]}
             />

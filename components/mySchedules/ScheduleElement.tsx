@@ -4,7 +4,7 @@ import { Text } from "react-native-paper";
 import { format, parse } from "date-fns";
 
 import {Schedule} from '../../types';
-import { SelectedDaysDisplay } from "../general";
+import { HorizontalTextScroll, SelectedDaysDisplay } from "../general";
 import ScheduleContainer from "./ScheduleContainer";
 
 interface ScheduleElementInput {
@@ -19,7 +19,7 @@ const ScheduleElement = ({schedule, onPress, index, onDelete, onUpdate} : Schedu
 
 
     return (
-        <ScheduleContainer onDelete={onDelete} onUpdate={onUpdate} onPress={() => onPress !== undefined && onPress()} index={index}>
+        <ScheduleContainer onDelete={onDelete} onUpdate={onUpdate} onPress={() => onPress !== undefined && onPress()} index={index}>  
             <SelectedDaysDisplay selectedDays={schedule.days}></SelectedDaysDisplay>
             <Text>{format(schedule.startTime, "HH")}:{format(schedule.startTime, "mm")}
             -{format(schedule.endTime, "HH")}:{format(schedule.endTime, "mm")}</Text>

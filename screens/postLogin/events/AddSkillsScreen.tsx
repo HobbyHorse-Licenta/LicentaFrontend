@@ -15,7 +15,7 @@ import AssignedSkillList from '../../../components/profile/AssignedSkillList';
 import { nothing } from 'immer';
 import { Fetch } from '../../../services';
 import { AssignedSkill, MasteringLevel, SkillRecommendation } from '../../../types';
-import { validation } from '../../../utils';
+import { uiUtils, validation } from '../../../utils';
 import { addAssignedSkill, backupUser, revertChangesInUser, setfirstProfileConfig } from '../../../redux/appState';
 import { COLORS } from '../../../assets/colors/colors';
 
@@ -33,36 +33,30 @@ const AddSkillsScreen = () => {
         if(currentSkateProfile !== undefined)
         {
             ///get recomended skills for the skateProfile shown in modal
-            if(recommendedSkills !== undefined)
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
             {
-                setRecommendedSkills((prev) => removeAssignedSkillsFromRecommendations(prev))
+                Fetch.getSkillRecommendations(JWTTokenResult.token,
+                    currentSkateProfile.skatePracticeStyle, currentSkateProfile.skateExperience,
+                    (skills) => setRecommendedSkills(removeAssignedSkillsFromRecommendations(skills)),
+                    () => console.log("Coudn't get recommended skills for the shown profile"))
+                
             }
-            else {
-                if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-                {
-                    Fetch.getSkillRecommendations(JWTTokenResult.token,
-                        currentSkateProfile.skatePracticeStyle, currentSkateProfile.skateExperience,
-                        (skills) => setRecommendedSkills(removeAssignedSkillsFromRecommendations(skills)),
-                        () => console.log("Coudn't get recommended skills for the shown profile"))
-                    
-                }
-                else{
-                    //TODO refresh token
-                }
+            else{
+                //TODO refresh token
             }
         }
         else {
             setRecommendedSkills(undefined)
         }
-    }, [])
-
-
-    useEffect(() => {
-        if(recommendedSkills !== undefined)
-        {
-            setRecommendedSkills((prev) => removeAssignedSkillsFromRecommendations(prev))
-        }
     }, [currentSkateProfile])
+
+
+    // useEffect(() => {
+    //     if(recommendedSkills !== undefined)
+    //     {
+    //         setRecommendedSkills((prev) => removeAssignedSkillsFromRecommendations(prev))
+    //     }
+    // }, [currentSkateProfile])
     
 
     const getRecommendedSkillsElements = () => {
@@ -84,7 +78,6 @@ const AddSkillsScreen = () => {
 
     const addSkill = (recommendedSkill: SkillRecommendation) =>
     {
-        dispatch(backupUser());
         if(currentSkateProfile !== undefined)
         {
             // //add recommended skill to assigned skills in curent skate profile, mastering level should be begginer
@@ -95,16 +88,19 @@ const AddSkillsScreen = () => {
                 masteringLevel: MasteringLevel.Novice
             }
 
+            const skillForOptimisticUpdate: AssignedSkill = {skill: recommendedSkill.skill, ...newAssignedSkill};
+
             if(user !==  undefined)
             {
                 if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
                 {
-                    dispatch(addAssignedSkill(newAssignedSkill));
+                    dispatch(backupUser());
+                    dispatch(addAssignedSkill(skillForOptimisticUpdate));
 
                     Fetch.postAssignedSkill( JWTTokenResult.token,
                         newAssignedSkill, 
                         (postedAssignedSkill) => nothing,
-                        () => {dispatch(revertChangesInUser()); console.log("Coudn't post assigned skill")})
+                        () => {dispatch(revertChangesInUser()); uiUtils.showPopUp("Error", "Coudn't add skill to current skating profile")})
                 }
                 else{
                     //TODO refresh token
@@ -170,7 +166,6 @@ const AddSkillsScreen = () => {
                     <Text variant="bodyLarge" style={{textAlign: "center"}}>Select specific training skate skills to showcase your current focus</Text>
                     <Text variant='bodyLarge' style={{textAlign: "center"}}>By doing so, others can gain insight into your ongoing training endeavors and witness the progression of your abilities</Text>
                 </View>
-                
                 {
                     currentSkateProfile !== undefined &&
                     getCurrentSkills()

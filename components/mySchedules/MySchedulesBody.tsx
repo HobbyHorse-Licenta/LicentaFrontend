@@ -13,14 +13,14 @@ import { RootState } from '../../redux/store';
 import { backupUser, deleteSchedule, revertChangesInUser, setCurrentSkateProfile } from '../../redux/appState';
 import { Fetch } from '../../services';
 import { nothing } from 'immer';
-import { uiUtils } from '../../utils';
+import { uiUtils, validation } from '../../utils';
 import { setExistingScheduleState } from '../../redux/createScheduleState';
 import { Schedule as ScheduleType } from '../../types';
 
 const MySchedulesBody = () => {
 
     const navigation = useNavigation();
-    const {currentSkateProfile, user} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile, user, JWTTokenResult} = useSelector((state: RootState) => state.appState)
 
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -31,11 +31,19 @@ const MySchedulesBody = () => {
             dispatch(backupUser());
             const scheduleId = currentSkateProfile.schedules[scheduleIndex].id;
             dispatch(deleteSchedule(scheduleId));
-            Fetch.deleteSchedule(scheduleId,
-                () => nothing, () => {
-                    dispatch(revertChangesInUser());
-                    uiUtils.showPopUp("Error", "Coudn't delete schedule");
-                })
+
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.deleteSchedule(JWTTokenResult.token, scheduleId,
+                    () => nothing, () => {
+                        dispatch(revertChangesInUser());
+                        uiUtils.showPopUp("Error", "Coudn't delete schedule");
+                    })
+            }
+            else{
+                //TODO refresh token
+            }
+           
         }
         
 
