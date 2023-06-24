@@ -14,11 +14,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { setEventsWalkthrough } from '../../redux/walkthroughState';
 import { Fetch } from '../../services';
-import { setAllParkTrails, setCurrentSkateProfile, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
+import { setAllParkTrails, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
 import SearchingSvg from '../svg/general/SearchingSvg';
 import LeftArrowSvg from '../svg/general/LeftArrowSvg';
 import RightArrowSvg from '../svg/general/RightArrowSvg';
 import { uiUtils, validation } from '../../utils';
+import { setCurrentSkateProfile } from '../../redux/globalState';
 
 const EventsBody = () => {
 
@@ -28,7 +29,8 @@ const EventsBody = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const {walkthroughState} = useSelector((state: RootState) => state)
-    const {currentSkateProfile, user, JWTTokenResult, needsRecommendedEventsRefresh} = useSelector((state: RootState) => state.appState)
+    const { user, JWTTokenResult, needsRecommendedEventsRefresh} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState(false);
     const [events, setEvents] = useState<Array<Event>>([]);
 
@@ -184,12 +186,12 @@ const EventsBody = () => {
                                 {
                                     return(
                                         <AggresiveEventCard key={evnt.id} event={evnt} joined={false}
-                                        onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt} as never)}></AggresiveEventCard>
+                                        onPress={() => navigation.navigate('AggresiveEventDisplay' as never, {event: evnt, joined: false} as never)}></AggresiveEventCard>
                                     )
                                 }
                                 else return(
                                     <EventCard key={evnt.id} event={evnt} joined={false}
-                                    onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt} as never)}></EventCard>
+                                    onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: false} as never)}></EventCard>
                                 );
                             })
                             }

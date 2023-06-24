@@ -32,7 +32,8 @@ const Schedule = ({route, navigation}) => {
   }
 
   const scheduleConfig = useSelector((state: RootState) => state.createScheduleState);
-  const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState);
+  const {JWTTokenResult} = useSelector((state: RootState) => state.appState);
+  const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
   const {schedule} = useSelector((state: RootState) => state.walkthroughState);
 
   //const navigation = useNavigation();

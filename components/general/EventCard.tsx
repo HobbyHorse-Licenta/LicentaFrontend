@@ -49,7 +49,8 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
     const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [participatingSkateProfiles, setParticipatingSkateProfiles] = useState<Array<SkateProfile>>();
     const [reversed, setReversed] = useState(false);
-    const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const { JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     //TODO REMOVE THIS
     useEffect(() => {
       if(event.imageUrl == undefined || event.imageUrl.length === 0)
@@ -123,44 +124,37 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
     }
 
     function joinEvent(){
-        console.log(`Change skateprofile with id ${currentSkateProfile?.id} from suggestined to attending in event with id ${event.id}`);
         if(currentSkateProfile !== undefined)
         {
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
             {
                 Fetch.joinSkateProfileToEvent(JWTTokenResult.token,
                     currentSkateProfile.id, event.id,
-                    () => console.log("\n\nEvent joined SUCCESSFULLY"),
+                    () => {console.log("\n\nEvent joined SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true));
+                            dispatch(setNeedsRecommendedEventsRefresh(true));},
                     () => console.log("\n\nEvent join FAILED")
                     );
-                }
             }
             else{
                 //TODO refresh token
             }
-           
-            dispatch(setNeedsEventsRefresh(true));
-            dispatch(setNeedsRecommendedEventsRefresh(true));
+        }
     }
 
     function leaveEvent(){
         if(currentSkateProfile !== undefined)
         {
-            dispatch(setNeedsEventsRefresh(true));
-            dispatch(setNeedsRecommendedEventsRefresh(true));
-
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
             {
                 Fetch.leaveSkateProfileFromEvent(JWTTokenResult.token,
                     currentSkateProfile.id, event.id,
-                () => console.log("\n\nEvent left SUCCESSFULLY"),
+                () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));},
                 () => console.log("\n\nEvent left FAILED")
                 );
             }
             else{
                 //TODO refresh token
             }
-            
         }
     }
 

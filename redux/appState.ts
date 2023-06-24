@@ -10,7 +10,6 @@ export interface AppState {
     user: User | undefined,
     userId: string | undefined,
     JWTTokenResult: IdTokenResult | undefined,
-    currentSkateProfile: SkateProfile | undefined,
     addingSkateProfile:  boolean,
     initialProfileConfigured: boolean,
     allSkills: Array<Skill> | undefined,
@@ -25,7 +24,6 @@ const initialState: AppState = {
     user: undefined,
     userId: undefined,
     JWTTokenResult: undefined,
-    currentSkateProfile: undefined,
     addingSkateProfile: false,
     initialProfileConfigured: true,
     allSkills: undefined,
@@ -264,9 +262,6 @@ export const appStateSlice = createSlice({
         setAddingSkateProfile: (state, action: PayloadAction<boolean>) => {
             state.addingSkateProfile = action.payload;
         },
-        setCurrentSkateProfile: (state, action: PayloadAction<SkateProfile>) => {
-            state.currentSkateProfile = action.payload;
-        },
         setUser: (state, action: PayloadAction<User | undefined>) => {
             state.user = action.payload;
         },
@@ -314,7 +309,7 @@ export const appStateSlice = createSlice({
     },
 });
 
-export const {setUserId, setCurrentSkateProfile, setJWTTokenResult,
+export const {setUserId, setJWTTokenResult,
     setInitialProfileConfigured, setAddingSkateProfile, 
     resetAppState,
     setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh,

@@ -12,16 +12,16 @@ import { Gender, User } from "../../../types";
 import { useNavigation } from "@react-navigation/native";
 import { authenticationUtils, uiUtils } from "../../../utils";
 import { SpacingStyles } from "../../../styles";
-import { setCurrentSkateProfile } from "../../../redux/appState";
 import { RootState } from "../../../redux/store";
 import {SMILING_FACE_WITH_OPEN_MOUTH} from "../../../assets/emotes"
 import { TourGuideZoneByPosition, useTourGuideController } from "rn-tourguide";
 import { setMyProfileWalkthrough } from "../../../redux/walkthroughState";
+import { setCurrentSkateProfile } from "../../../redux/globalState";
 
 const MyProfile = () => {
   const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState(false);
   const {user}= useSelector((state: RootState) => state.appState);
-  const {currentSkateProfile} = useSelector((state: RootState) => state.appState)
+  const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
   const {myProfile} = useSelector((state: RootState) => state.walkthroughState)
   const theme = useTheme();
   const navigation = useNavigation();

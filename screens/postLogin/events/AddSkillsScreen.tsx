@@ -22,7 +22,8 @@ import { COLORS } from '../../../assets/colors/colors';
 
 const AddSkillsScreen = () => {
 
-    const {currentSkateProfile, user, JWTTokenResult} = useSelector((state: RootState) => state.appState);
+    const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState);
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
     const [goNextDisabled, setGoNextDisabled] = useState(true);
     const [recommendedSkills, setRecommendedSkills] = useState<Array<SkillRecommendation> | undefined>(undefined);
     const dispatch = useDispatch();

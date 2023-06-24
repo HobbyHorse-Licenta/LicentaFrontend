@@ -16,6 +16,10 @@ class DaySchedule {
         const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         return this.getDayOfWeekFromDayOfMonth(dayOfMonth, daysOfWeek);
     }
+    getDayOfWeekFromDayOfMonthMediumForm(dayOfMonth: number): string {
+        const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        return this.getDayOfWeekFromDayOfMonth(dayOfMonth, daysOfWeek);
+    }
     getDayOfWeekFromDayOfMonthMinimumForm(dayOfMonth: number): string {
         const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
         return this.getDayOfWeekFromDayOfMonth(dayOfMonth, daysOfWeek);

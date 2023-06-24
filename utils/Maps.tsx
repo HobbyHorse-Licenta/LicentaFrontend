@@ -93,11 +93,11 @@ class Maps {
     }
 
     /* Returns JSX element */
-    getParkTrailMarkers (parkTrails: Array<ParkTrail>) {
+    getParkTrailMarkers (parkTrails: Array<ParkTrail>, startingValueForKeys: number) {
         return parkTrails.map((parkTrail, index) => {
             return(
                 <Marker
-                key={index}
+                key={startingValueForKeys + index}
                 coordinate={{
                     latitude: parkTrail.location.lat,
                     longitude: parkTrail.location.long
@@ -114,9 +114,10 @@ class Maps {
     }
 
     /* Returns JSX element */
-    getCircle (location: Location, rangeInKm: number) {
+    getCircle (location: Location, rangeInKm: number, key: number) {
         return(
             <Circle 
+            key={key}
             strokeWidth={2}
             strokeColor={COLORS.aPrimaryColorOverall}
             fillColor={'rgba(248,95,96,0.2)'}
@@ -131,7 +132,7 @@ class Maps {
     getMarker (location: Location, markerTitle: string | undefined, key?: number, changedCoordinates?: Function) {
         return(
             <Marker
-                key={key !== undefined ? key : 1}
+                key={key !== undefined ? key : 2}
                 coordinate={{
                     latitude: location.lat,
                     longitude: location.long
@@ -179,7 +180,7 @@ class Maps {
         }
         return(
             <Marker
-                key={key !== undefined ? key : 1}
+                key={key !== undefined ? key : 10}
                 coordinate={{
                     latitude: location.lat,
                     longitude: location.long
@@ -194,10 +195,11 @@ class Maps {
         )
     }
 
-    getAttendingEvents(events: Array<Event>)
+    getAttendingEvents(events: Array<Event>, startingValueForKeys: number)
     {
+        const startingIndex = startingValueForKeys !== undefined ? startingValueForKeys : 0;
         return events.map((evnt, index) => {
-            return this.getEventMarker(evnt, index);
+            return this.getEventMarker(evnt, startingIndex + index);
         })
     }
 
@@ -210,7 +212,7 @@ class Maps {
             {
                 return(
                     <Marker
-                        key={key !== undefined ? key : 1}
+                        key={key !== undefined ? key : 20}
                         coordinate={{
                             latitude: trail.location.lat,
                             longitude: trail.location.long
@@ -265,7 +267,7 @@ class Maps {
         return(
             <MapViewDirections
             mode="WALKING"
-            key={key !== undefined ? key : 1}
+            key={key !== undefined ? key : 30}
             origin={{latitude: startLocation.lat, longitude: startLocation.long}}
             destination={{latitude: endLocation.lat, longitude: endLocation.long}}
             apikey={googleApiKey}
@@ -276,21 +278,25 @@ class Maps {
     }
 
     /** draws route using checkpoints*/
-    drawRoute (checkPoints: Array<CheckPoint>) {
+    drawRoute (checkPoints: Array<CheckPoint>, startingValueForKeys: number) {
+       
         const smallRoutes: Array<JSX.Element> = []
         if(checkPoints === undefined)
             return null;
-        if(checkPoints.length < 2)
+
+        const orderedCheckPoints = checkPoints.sort((checkpoint1, checkpoint2) => checkpoint1.order - checkpoint2.order);
+         
+        if(orderedCheckPoints.length < 2)
             return null;
-        for (let i = 0; i < checkPoints.length - 1; i++) {
-            const element = this.getDrawnRoute(checkPoints[i].location, checkPoints[i+1].location, i);
+        for (let i = 0; i < orderedCheckPoints.length - 1; i++) {
+            const element = this.getDrawnRoute(orderedCheckPoints[i].location, orderedCheckPoints[i+1].location, startingValueForKeys + i);
             smallRoutes.push(element);
         }
         return smallRoutes;
     }
 
     /** draws checkpoints from a custom trail*/
-    getCustomTrailMarkers(checkPoints: Array<CheckPoint>, updateCheckpointCoordinates: ((indexOfChekpoint: number, changedCoordinates: LatLng) => void)){
+    getCustomTrailMarkers(checkPoints: Array<CheckPoint>, updateCheckpointCoordinates: ((indexOfChekpoint: number, changedCoordinates: LatLng) => void), startingValueForKeys: number){
         if(checkPoints !== undefined)
         {
             return checkPoints.map(
@@ -308,7 +314,7 @@ class Maps {
                 else{
                     markerType = MarkerType.Checkpoint;
                 }
-                return mapsUtils.getCustomMarker(markerType, checkpoint.location, undefined, index,
+                return mapsUtils.getCustomMarker(markerType, checkpoint.location, undefined, startingValueForKeys + index,
                 (changedCoordinates) => {
                     updateCheckpointCoordinates(index, changedCoordinates);
                 });
@@ -320,7 +326,8 @@ class Maps {
 
     /** wraps to size of parent */
     getUneditableCustomTrailMap (mapRef:  React.RefObject<MapView>, centeredLocation: Location, 
-        checkPoints: Array<CheckPoint>, updateCheckpoint: (checkpointIndex: number, newCheckpointCoordinates: LatLng) => void) {
+        checkPoints: Array<CheckPoint>, updateCheckpoint: (checkpointIndex: number, newCheckpointCoordinates: LatLng) => void, 
+        startingValueForKeys: number) {
         return(
             <MapView ref={mapRef} style={{height: '100%', width: '100%', zIndex: 0}}
             scrollEnabled={false}
@@ -333,8 +340,8 @@ class Maps {
             }}
             provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
             >
-                {this.getCustomTrailMarkers(checkPoints, updateCheckpoint)}
-                {this.drawRoute(checkPoints)}
+                {this.getCustomTrailMarkers(checkPoints, updateCheckpoint, startingValueForKeys)}
+                {this.drawRoute(checkPoints, startingValueForKeys + (checkPoints !== undefined ? checkPoints.length : 0) + 2)}
             </MapView>
         );
     }

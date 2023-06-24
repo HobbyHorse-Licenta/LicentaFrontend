@@ -3,14 +3,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import {createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AsyncLocalStorage } from 'async_hooks'
 import { Console } from 'console'
+import { SkateProfile } from '../types'
 
 export interface GlobalState {
     currentRoute: string | undefined,
-
+    currentSkateProfile: SkateProfile | undefined,
+    
 }
 
 const initialState: GlobalState = {
     currentRoute: undefined,
+    currentSkateProfile: undefined,
 }
 
 const loadState = async () =>{
@@ -48,6 +51,9 @@ export const globalStateSlice = createSlice({
         setCurrentRoute: (state, action: PayloadAction<string | undefined>) => {
             state.currentRoute = action.payload;
         },
+        setCurrentSkateProfile: (state, action: PayloadAction<SkateProfile>) => {
+            state.currentSkateProfile = action.payload;
+        },
         resetWalkthroughState: state => initialState
 
       
@@ -59,6 +65,6 @@ export const globalStateSlice = createSlice({
       },
 });
 
-export const {setCurrentRoute, resetWalkthroughState} = globalStateSlice.actions
+export const {setCurrentRoute, setCurrentSkateProfile, resetWalkthroughState} = globalStateSlice.actions
 
 export default globalStateSlice.reducer;

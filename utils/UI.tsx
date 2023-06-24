@@ -74,6 +74,10 @@ class UI {
     darkenColor(color: string, percentage: number){
        return Color(color).darken(percentage/100).hex();
     }
+
+    getTimeRange (startTime: number, endtime: number) {
+        return `${new Date(startTime).getHours()}:${new Date(startTime).getMinutes()} - ${new Date(endtime).getHours()}:${new Date(endtime).getMinutes()}`
+    }
 }
 const uiUtils = new UI();
 export default uiUtils;

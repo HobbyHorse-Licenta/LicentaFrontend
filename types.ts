@@ -134,8 +134,8 @@ export type Outing = {
   eventId: string,
   startTime: number,
   endTime: number,
+  days: Array<Day>,
   skatePracticeStyle: SkatePracticeStyles,
- // trailType: 'ParkTrail' | 'CustomTrail',
   trail: CustomTrail | ParkTrail,
   booked: boolean
 }
@@ -230,6 +230,7 @@ export type Location = {
 export type CheckPoint = {
   id: string,
   name?: string,
+  order: number,
   customTrailId: string,
   location: Location
 }

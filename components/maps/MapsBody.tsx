@@ -14,13 +14,17 @@ import { Button } from '../general';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { SpacingStyles } from '../../styles';
 
+let mapsElementCount = 0;
+
 const MapsBody = () => {
 
     const theme = useTheme();
     const [events, setEvents] = useState<Array<Event>>([]);
     const [parkTrailsVisible, setParkTrailsVisible] = useState(false);
-    const {needsEventsRefresh, currentSkateProfile, allParkTrails, JWTTokenResult} = useSelector((state: RootState) => state.appState);
+    const {needsEventsRefresh, allParkTrails, JWTTokenResult} = useSelector((state: RootState) => state.appState);
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
 
+    
     const [initialRegion, setInitialRegion] = useState({
         latitude:  46.771069, 
         longitude: 23.596883,
@@ -41,6 +45,7 @@ const MapsBody = () => {
     }, [needsEventsRefresh])
 
     useEffect(() => {
+        
         (async () => {
           
           let { status } = await Location.requestForegroundPermissionsAsync();
@@ -80,7 +85,8 @@ const MapsBody = () => {
     {
         if(allParkTrails !== undefined && allParkTrails !== null)
         {
-            return mapsUtils.getParkTrailMarkers(allParkTrails);
+            mapsElementCount = allParkTrails.length;
+            return mapsUtils.getParkTrailMarkers(allParkTrails, 0);
         }
     }
 
@@ -108,12 +114,12 @@ const MapsBody = () => {
                 getAllParkTrailMarkers()
             } 
             {
-                mapsUtils.getAttendingEvents(events)
+                mapsUtils.getAttendingEvents(events, mapsElementCount + 1)
             }
             {
                 myLocation !== undefined &&
                 mapsUtils.getMarker({id: 'smth', lat: myLocation.coords.latitude,
-                 long: myLocation.coords.longitude},'Your location', 1)
+                 long: myLocation.coords.longitude},'Your location', mapsElementCount + events.length + 1)
             }
             </MapView>
             {

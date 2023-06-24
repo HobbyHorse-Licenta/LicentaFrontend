@@ -3,4 +3,5 @@ import MyEvents from "./MyEvents";
 import EventDisplay from "./EventDisplay";
 import CreateEvent from "./CreateEvent";
 import AddSkillsScreen from "./AddSkillsScreen";
-export {Events, MyEvents, EventDisplay, CreateEvent}
+import AggresiveEventDisplay from "./AggresiveEventDisplay";
+export {Events, MyEvents, EventDisplay, CreateEvent, AggresiveEventDisplay}

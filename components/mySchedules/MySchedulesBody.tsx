@@ -10,17 +10,19 @@ import AddScheduleElement from './AddScheduleElement';
 import { useDispatch, useSelector } from 'react-redux';
 import { SkateProfiles } from '../profile';
 import { RootState } from '../../redux/store';
-import { backupUser, deleteSchedule, revertChangesInUser, setCurrentSkateProfile } from '../../redux/appState';
+import { backupUser, deleteSchedule, revertChangesInUser } from '../../redux/appState';
 import { Fetch } from '../../services';
 import { nothing } from 'immer';
 import { uiUtils, validation } from '../../utils';
 import { setExistingScheduleState } from '../../redux/createScheduleState';
 import { Schedule as ScheduleType } from '../../types';
+import { setCurrentSkateProfile } from '../../redux/globalState';
 
 const MySchedulesBody = () => {
 
     const navigation = useNavigation();
-    const {currentSkateProfile, user, JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
 
     const dispatch = useDispatch();
     const theme = useTheme();

@@ -22,13 +22,14 @@ import MainStack from './stacks/MainStack';
 import { Fetch } from './services';
 import {authenticationUtils, uiUtils, validation} from './utils';
 import { firebaseConfig } from './firebaseConfig';
-import { resetAppState, setCurrentSkateProfile, setJWTTokenResult, setNeedsRecommendedEventsRefresh, setUser, setUserId } from './redux/appState';
+import { resetAppState, setJWTTokenResult, setNeedsRecommendedEventsRefresh, setUser, setUserId } from './redux/appState';
 import { User } from './types';
 import LoadingScreen from './screens/preLogin/LoadingScreen';
 import { RootState } from './redux/store';
 import { CheckInternetScreen } from './screens/preLogin';
 import { Subscription } from 'expo-modules-core';
 import { useTourGuideController } from 'rn-tourguide';
+import { setCurrentSkateProfile } from './redux/globalState';
 
 const windowH = Dimensions.get("window").height;
 

@@ -6,6 +6,7 @@ import { scale, verticalScale } from "react-native-size-matters";
 
 import { SpacingStyles } from "../../styles";
 import { Event, ParkTrail } from "../../types";
+import { uiUtils } from "../../utils";
 import SvgView from "../general/SvgView";
 import { BigLocationSvg, LevelSvg } from "../svg/general";
 
@@ -17,10 +18,9 @@ const EventInfoDisplay = ({event}: EventInput) => {
     const parkTrail: ParkTrail = (event.outing.trail as ParkTrail);
     const theme = useTheme();
 
-    const getTimeRange = () : string => {
-        return `${new Date(event.outing.startTime).getHours()}:${new Date(event.outing.startTime).getMinutes()} - 
-        ${new Date(event.outing.endTime).getHours()}:${new Date(event.outing.endTime).getMinutes()}`
-    }
+    console.log("EVENT: " + JSON.stringify(event));
+
+    
     return(
             <View style={[ styles.descriptionView, SpacingStyles.centeredContainer]}>
                 
@@ -33,16 +33,31 @@ const EventInfoDisplay = ({event}: EventInput) => {
                 </View>
 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
+                    <Text style={[styles.descriptionText]}>{uiUtils.getTimeRange(event.outing.startTime, event.outing.endTime)}</Text>
+                </View>
+
+                <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
+                    <Text style={[styles.descriptionText]}>Days: </Text>
+                    {
+                        event.outing.days.map((dayObject, index) => {
+                            
+                            return(
+                                <View style={{flexDirection: 'row'}}>
+                                    { index !== 0 && <Text key={index} style={[styles.descriptionText]}>, </Text>}
+                                    <Text key={index} style={[styles.descriptionText]}>{dayObject.dayOfMonth}</Text>
+                                </View>
+                            )
+                        })
+                    }
+                </View>
+
+                <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                     <Text style={[styles.descriptionText]}>
                         Age range: {event.minimumAge} - {event.maximumAge}</Text>
                 </View>
 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                     <Text style={[styles.descriptionText]}>Gender: {event.gender}</Text>
-                </View>
-
-                <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
-                    <Text style={[styles.descriptionText]}>{getTimeRange()}</Text>
                 </View>
                 
                 <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>

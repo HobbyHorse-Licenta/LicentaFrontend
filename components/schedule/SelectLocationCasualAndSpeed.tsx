@@ -37,7 +37,8 @@ interface Input {
 
 const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelected, setParkSelected} : Input) => {
 
-    const {currentSkateProfile, allParkTrails} = useSelector((state: RootState) => state.appState)
+    const {allParkTrails} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     const [localZone, setLocalZone] = useState<Zone>();
     const [parkTrailsInRange, setParkTrailsInRange] = useState<Array<ParkTrail>>([]);
     const [range, setRange] = useState<number>(1);
@@ -305,9 +306,9 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
                             })}
                             provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
                             >
-                            {mapsUtils.getMarker(selectedLocation, selectedLocation.name)}
-                            {mapsUtils.getCircle(selectedLocation, range)}
-                            {allParkTrails !== undefined && mapsUtils.getParkTrailMarkers(allParkTrails)}
+                            {mapsUtils.getMarker(selectedLocation, selectedLocation.name, 0)}
+                            {mapsUtils.getCircle(selectedLocation, range, 1)}
+                            {allParkTrails !== undefined && mapsUtils.getParkTrailMarkers(allParkTrails, 3)}
                             </MapView>
                         </TourGuideZone>                        
                     ):

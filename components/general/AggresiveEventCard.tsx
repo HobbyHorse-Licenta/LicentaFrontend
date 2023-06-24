@@ -12,10 +12,11 @@ import { defaultEventUrl } from '../../assets/imageUrls'
 import { filterUtils, resourceAccess, uiUtils, validation } from '../../utils';
 import { Fetch } from '../../services';
 import ProfilePicList from './ProfilePicList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { uiSlice } from '../../redux/ui';
 import { AggresiveEventInfoDisplay } from '../events';
+import { setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -45,12 +46,15 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
         screen: screenDimensions,
       });
 
+    const dispatch = useDispatch();
+    
     const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
     const [recommendedUsersImagesUrl, setRecommendedUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
     const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [participatingSkateProfiles, setParticipatingSkateProfiles] = useState<Array<SkateProfile>>();
-    const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     
     //TODO REMOVE THIS
     useEffect(() => {
@@ -121,13 +125,38 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
     }
 
     function joinEvent(){
-        console.log("join aggresive event");
-        //console.log(propertiesOf<EventDescription>(basketEventDescription))
+        if(currentSkateProfile !== undefined)
+        {
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.joinSkateProfileToEvent(JWTTokenResult.token,
+                    currentSkateProfile.id, event.id,
+                    () => {console.log("\n\nEvent joined SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true));
+                            dispatch(setNeedsRecommendedEventsRefresh(true));},
+                    () => console.log("\n\nEvent join FAILED")
+                    );
+            }
+            else{
+                //TODO refresh token
+            }
+        }
     }
 
     function leaveEvent(){
-        console.log("leave aggresive event");
-        //console.log(propertiesOf<EventDescription>(basketEventDescription))
+        if(currentSkateProfile !== undefined)
+        {
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.leaveSkateProfileFromEvent(JWTTokenResult.token,
+                    currentSkateProfile.id, event.id,
+                () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));},
+                () => console.log("\n\nEvent left FAILED")
+                );
+            }
+            else{
+                //TODO refresh token
+            }
+        }
     }
 
     return(

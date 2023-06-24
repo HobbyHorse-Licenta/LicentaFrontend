@@ -17,7 +17,7 @@ interface Input {
 const AddAggresiveSkatingEvent = ({onPress} : Input) =>
 {
 
-    const {currentSkateProfile} = useSelector((state: RootState) => state.appState);
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
     const theme = useTheme();
     const isAggresiveSkatingProfile = () => {
         if(currentSkateProfile !== undefined && currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.AggresiveSkating)

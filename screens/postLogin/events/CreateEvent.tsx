@@ -28,7 +28,8 @@ const containersWidth = scale(290);
 
 const CreateEvent = () => {
 
-    const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     const navigation =  useNavigation();
     const mapRef = useRef<MapView | null>(null);
     const theme = useTheme();
@@ -186,6 +187,7 @@ const CreateEvent = () => {
             }
             const newCheckPoint: CheckPoint = {
                 id: uuid.v4().toString(),
+                order: checkPointsArray.length,
                 customTrailId:  customTrailId, //TODO to be fixed later on
                 location: selectedLocation
             }
@@ -257,8 +259,8 @@ const CreateEvent = () => {
             onPress={({nativeEvent}) => showAddMarkerButton(nativeEvent)}
             provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
             >
-                {mapsUtils.getCustomTrailMarkers(checkPointsArray, (index, changedCoordinated) => updateCheckpointCoordinates(index, changedCoordinated))}
-                {mapsUtils.drawRoute(checkPointsArray)}
+                {mapsUtils.getCustomTrailMarkers(checkPointsArray, (index, changedCoordinated) => updateCheckpointCoordinates(index, changedCoordinated), 0)}
+                {mapsUtils.drawRoute(checkPointsArray, checkPointsArray.length + 2)}
             </MapView>
         );
 

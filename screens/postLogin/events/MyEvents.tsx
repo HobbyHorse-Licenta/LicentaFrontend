@@ -7,7 +7,7 @@ import { Text } from 'react-native-paper'
 
 import { AggresiveEventCard, EventCard, GeneralHeader, InformationalSvgComponent, LoadingComponent, PrimaryContainer } from "../../../components/general";
 import { SkateProfiles } from "../../../components/profile";
-import { setCurrentSkateProfile, setNeedsEventsRefresh } from "../../../redux/appState";
+import { setNeedsEventsRefresh } from "../../../redux/appState";
 import { RootState } from "../../../redux/store";
 import { Layout2PieceForNavigator } from "../../layouts";
 import { scale, verticalScale } from "react-native-size-matters";
@@ -16,10 +16,12 @@ import { Fetch } from "../../../services";
 import { uiUtils, validation } from "../../../utils";
 import { Event, SkatePracticeStyles } from "../../../types";
 import { SpacingStyles } from "../../../styles";
+import { setCurrentSkateProfile } from "../../../redux/globalState";
 
 const MyEvents = () => {
 
-  const {currentSkateProfile, user, needsEventsRefresh, JWTTokenResult} = useSelector((state: RootState) => state.appState);
+  const { user, needsEventsRefresh, JWTTokenResult} = useSelector((state: RootState) => state.appState);
+  const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
   const [events, setEvents] = useState<Array<Event>>([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -125,7 +127,7 @@ const MyEvents = () => {
                     {
                         return(
                             <AggresiveEventCard key={index} event={evnt} joined={true}
-                            onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt} as never)}></AggresiveEventCard>
+                            onPress={() => navigation.navigate('AggresiveEventDisplay' as never, {event: evnt, joined: true} as never)}></AggresiveEventCard>
                           
                         )
                     }
@@ -133,7 +135,7 @@ const MyEvents = () => {
                     {
                       return(
                           <EventCard key={index} event={evnt} joined={true}
-                          onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt} as never)}></EventCard>
+                          onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: true} as never)}></EventCard>
                       );
                     } 
                   })

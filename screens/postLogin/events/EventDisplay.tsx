@@ -19,8 +19,10 @@ import { Layout2Piece } from "../../layouts";
 const EventDisplay = ({route, navigation}) => {
 
   const event: Event = route.params.event;
+  const joined: boolean = route.params.joined;
 
-  const {currentSkateProfile, JWTTokenResult} = useSelector((state: RootState) => state.appState)
+  const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
+  const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
   const [suggestedSkateProfiles, setSuggestedSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
   const [attendingSkateProfiles, setAttendingSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
 
@@ -76,7 +78,11 @@ const EventDisplay = ({route, navigation}) => {
   
   return (
     <Layout2Piece
-      header={<GeneralHeader onBack={() => navigation.goBack()} title={event.name}></GeneralHeader>}
+      header={<GeneralHeader onBack={() => navigation.goBack()} title={event.name}
+      rightButtonEnable={true}
+      onRightButtonPress={() => joined === true ? console.log("ceva"): console.log("altceva")}
+      rightButtonText={joined === true ? "Leave" : "Join"}
+      ></GeneralHeader>}
       body={getBody()}
     ></Layout2Piece>
   );
