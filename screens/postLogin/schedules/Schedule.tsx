@@ -15,7 +15,7 @@ import { RootState } from "../../../redux/store";
 import { uiUtils, validation } from "../../../utils";
 import { Fetch } from "../../../services";
 import { addSchedule, backupUser, revertChangesInUser, updateSchedule } from "../../../redux/appState";
-import { setEndTime, setSelectedDaysState, setStartTime } from "../../../redux/createScheduleState";
+import { resetCreateScheduleState, setEndTime, setSelectedDaysState, setStartTime } from "../../../redux/createScheduleState";
 import { Day } from "../../../types";
 import { setScheduleWalkthrough } from "../../../redux/walkthroughState";
 import { useTourGuideController } from "rn-tourguide";
@@ -49,10 +49,10 @@ const Schedule = ({route, navigation}) => {
   const [startTime, setStarTTime] = useState<Date>(scheduleConfig.startTime !== undefined ? new Date(scheduleConfig.startTime) : new Date())
   const [endTime, setEnDTime] = useState<Date>(scheduleConfig.endTime !== undefined ? new Date(scheduleConfig.endTime) : new Date())
 
-  const [selectedGender, setSelectedGender] = useState<Gender | undefined>(scheduleConfig.gender !== undefined ? scheduleConfig.gender : undefined);
-  const [numberOfPartners, setNumberOfPartners] = useState<number>(scheduleConfig.maxNumberOfPeople !== undefined ? scheduleConfig.maxNumberOfPeople : 1);
-  const [minimumAge, setMinimumAgee] = useState<number>(scheduleConfig.minimumAge !== undefined ? scheduleConfig.minimumAge : constants.minimumAge);
-  const [maximumAge, setMaximumAgee] = useState<number>(scheduleConfig.maximumAge !== undefined ? scheduleConfig.maximumAge : constants.maximumAge);
+  const [selectedGender, setSelectedGender] = useState<Gender | undefined>(scheduleConfig.gender);
+  const [numberOfPartners, setNumberOfPartners] = useState<number | undefined>(scheduleConfig.maxNumberOfPeople);
+  const [minimumAge, setMinimumAgee] = useState<number | undefined>(scheduleConfig.minimumAge);
+  const [maximumAge, setMaximumAgee] = useState<number | undefined>(scheduleConfig.maximumAge);
 
   const {
     canStart, // a boolean indicate if you can start tour guide
@@ -160,6 +160,8 @@ const Schedule = ({route, navigation}) => {
           gender: scheduleConfig.gender,
           maxNumberOfPeople: scheduleConfig.maxNumberOfPeople
         }
+
+        console.log("\n\n\nNEW CREATED SCHEDULE :  " + JSON.stringify(newSchedule));
         dispatch(backupUser());
         
         //optimistic update
@@ -183,6 +185,8 @@ const Schedule = ({route, navigation}) => {
         }
       }
       
+
+      dispatch(resetCreateScheduleState());
     }
     else uiUtils.showPopUp("Error", "No skateProfile selected");
 
@@ -217,6 +221,8 @@ const Schedule = ({route, navigation}) => {
         //optimistic update
         dispatch(updateSchedule(newSchedule));
         navigation.navigate("MySchedules" as never);
+
+        dispatch(resetCreateScheduleState());
 
         if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
         {

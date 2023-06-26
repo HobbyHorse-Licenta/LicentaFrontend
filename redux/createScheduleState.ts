@@ -63,12 +63,13 @@ export const createScheduleStateSlice = createSlice({
             state.gender = action.payload.gender;
             state.maxNumberOfPeople = action.payload.maxNumberOfPeople;
         },
+        resetCreateScheduleState: state => initialState
       
     }
 });
 
 export const {setSelectedDaysState, setZone, setStartTime, setEndTime,
             setMinimumAge, setMaximumAge, setGender, setMaxNumberOfPeople,
-            setExistingScheduleState} = createScheduleStateSlice.actions
+            setExistingScheduleState, resetCreateScheduleState} = createScheduleStateSlice.actions
 
 export default createScheduleStateSlice.reducer;

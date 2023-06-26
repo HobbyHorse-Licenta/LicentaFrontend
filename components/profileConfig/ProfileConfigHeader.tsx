@@ -239,7 +239,7 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
                 {
                     loading === false ?
                     (
-                        <View>
+                        <View style={{justifyContent: "center", alignItems:"center"}}>
                             {getCountDownCircle()}
                             {getModalInfo()}
                         </View>

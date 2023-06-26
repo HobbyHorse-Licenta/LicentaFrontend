@@ -136,6 +136,8 @@ export type Outing = {
   endTime: number,
   days: Array<Day>,
   skatePracticeStyle: SkatePracticeStyles,
+  votedDay: Day,
+  votedStartTime: number,
   trail: CustomTrail | ParkTrail,
   booked: boolean
 }
@@ -168,6 +170,7 @@ export type Event = {
   outing: Outing,
   skateProfiles?: Array<SkateProfile>,
   recommendedSkateProfiles?: Array<SkateProfile>,
+  scheduleRefrences: Array<ScheduleRefrence>,
   imageUrl?: string,
   description?: string,
   gender: Gender,
@@ -183,13 +186,22 @@ export type AggresiveEvent = {
   skateExperience: SkateExperience,
   outing: AggresiveOuting,
   skateProfiles?: Array<SkateProfile>,
+  scheduleRefrences: Array<ScheduleRefrence>
   days?: Array<Day>,
   imageUrl?: string,
   description?: string,
   gender: Gender,
   minimumAge: number,
   maximumAge: number
- 
+}
+
+
+export type ScheduleRefrence = {
+  id: string,
+  scheduleId?: string,
+  skateProfileId: string,
+  eventOwner: boolean,
+  yesVote: boolean
 }
 
 export type Day = {

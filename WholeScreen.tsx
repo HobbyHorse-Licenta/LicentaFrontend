@@ -67,17 +67,17 @@ const WholeScreen = () => {
 
 
     ////EXPO PUSH////
-    const [expoPushToken, setExpoPushToken] = useState('');
+   // const [expoPushToken, setExpoPushToken] = useState('');
     const notificationListener = useRef<Subscription>();
 
-    useEffect(() => {
-    console.log("Expo token obtained: " + expoPushToken);
-    }, [expoPushToken])
+    // useEffect(() => {
+    //   postExpoPushToken();
+    // }, [expoPushToken, user])
 
     useEffect(() => {
     if(user !== null && user !== undefined)
     {
-      registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+      registerForPushNotificationsAsync().then(token => postExpoPushToken(token, user));
     }
 
     Notifications.setNotificationHandler({
@@ -104,7 +104,34 @@ const WholeScreen = () => {
     };
   }, [user]);
 
-  
+  const postExpoPushToken = (expoPushToken: string, connectedUser: User) => {
+    if(expoPushToken !== undefined && expoPushToken !== null)
+    {
+      if(connectedUser !== undefined && connectedUser !== null && (connectedUser.pushNotificationToken === null || connectedUser.pushNotificationToken === undefined || connectedUser.pushNotificationToken.length === 0))
+      {
+        const updatedUser: User = {
+          ...connectedUser,
+          pushNotificationToken: expoPushToken
+        }
+
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+    console.log("\n\n\n\n\n\nNE pregatim sa postam: =>> >> >>" +  JSON.stringify(updatedUser) +  "\n\n\n\n\n")
+
+          Fetch.putUser(JWTTokenResult.token,
+            connectedUser.id, updatedUser, 
+            () => console.log("Posted user notificationToken succesfully"),
+            () => uiUtils.showPopUp("Error", "Couldn't post notification token to database"))
+        }
+        else {
+          //TODO refresh token
+          console.log("\n\n\nTHERE IS NO JWT TOKEN YET\n\n\n");
+        }
+        
+      }
+      else console.log("User undefined at this moment; can't post notification token");
+    }
+  }
   async function registerForPushNotificationsAsync() {
     let token;
   
@@ -127,30 +154,6 @@ const WholeScreen = () => {
         token = (await Notifications.getExpoPushTokenAsync()).data;
       } catch (error) {
         console.log("Coudn't get token")
-      }
-
-      if(token !== undefined && token !== null)
-      {
-        if(user !== undefined && user !== null && (user.pushNotificationToken === null || user.pushNotificationToken === undefined))
-        {
-          const updatedUser: User = {
-            ...user,
-            pushNotificationToken: token
-          }
-
-          if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-          {
-            Fetch.putUser(JWTTokenResult.token,
-              user.id, updatedUser, 
-              () => console.log("Posted user notificationToken succesfully"),
-              () => uiUtils.showPopUp("Error", "Couldn't post notification token to database"))
-          }
-          else {
-            //TODO refresh token
-          }
-          
-        }
-        else console.log("User undefined at this moment; can't post notification token");
       }
     return token;
   }

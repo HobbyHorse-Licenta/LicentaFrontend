@@ -41,8 +41,6 @@ const AfterLogin = () => {
     //dispatch(setMySchedules(Fetch.getSchedules()));
   }, [currentRoute])
 
-
-
   return ( 
     <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
     { 

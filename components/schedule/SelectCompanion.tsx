@@ -23,20 +23,14 @@ interface Input {
     setSelectedGender: Function,
     numberOfPartners: number | undefined,
     setNumberOfPartners: Function,
-    minimumAge: number | undefined,
+    minimumAge?: number | undefined,
     setMinimumAgee: Function,
-    maximumAge: number | undefined,
+    maximumAge?: number | undefined,
     setMaximumAgee: Function
 }
 const SelectCompanion = ({selectedGender, setSelectedGender, numberOfPartners, setNumberOfPartners,
                             minimumAge, setMinimumAgee, maximumAge, setMaximumAgee} : Input) => {
     
-    // const [selectedGender, setSelectedGender] = useState<Gender | undefined>(undefined);
-    // const [numberOfPartners, setNumberOfPartners] = useState<number>();
-    // const [minimumAge, setMinimumAgee] = useState<number>();
-    // const [maximumAge, setMaximumAgee] = useState<number>();
-    console.log(`\n\nMIN: ${minimumAge}, MAX: ${maximumAge}\n\n`);
-
     const theme = useTheme();
     const dispatch = useDispatch();
 

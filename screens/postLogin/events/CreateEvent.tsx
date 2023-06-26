@@ -136,6 +136,14 @@ const CreateEvent = () => {
                         ...currentSkateProfile,
                         schedules: undefined
                     }
+                ],
+                scheduleRefrences: [
+                    {
+                        id: uuid.v4().toString(),
+                        skateProfileId: currentSkateProfile.id,
+                        eventOwner: true,
+                        yesVote: false
+                    }
                 ]
             }
             console.log("Adding event:\n" + JSON.stringify(newAggresiveSkatingEvent));

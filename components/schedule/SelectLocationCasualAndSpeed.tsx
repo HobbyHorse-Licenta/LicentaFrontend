@@ -305,11 +305,16 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
                                 return newLocation;
                             })}
                             provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
-                            >
+                            >  
                             {mapsUtils.getMarker(selectedLocation, selectedLocation.name, 0)}
                             {mapsUtils.getCircle(selectedLocation, range, 1)}
                             {allParkTrails !== undefined && mapsUtils.getParkTrailMarkers(allParkTrails, 3)}
                             </MapView>
+                            <PrimaryContainer styleInput={styles.helpComponent}>
+                                <View>
+                                    <Text variant="labelSmall">Hold on Map: Relocate Marker</Text>
+                                </View>
+                            </PrimaryContainer>
                         </TourGuideZone>                        
                     ):
                     (
@@ -329,7 +334,16 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
 
 export default SelectLocationCasualAndSpeed;
 
+
+
 const styles = StyleSheet.create({
+    helpComponent: {
+        zIndex: 1,
+        position: "absolute",
+        top: scale(10),
+        left: scale(10),
+        opacity: 0.7
+    },
     picker: {
         justifyContent: 'center',
         alignItems: 'center',

@@ -137,7 +137,7 @@ class Maps {
                     latitude: location.lat,
                     longitude: location.long
                 }}
-                draggable={true}
+                draggable={changedCoordinates !== undefined ? true : false}
                 onDragEnd={(e) => changedCoordinates !== undefined && changedCoordinates(e.nativeEvent.coordinate)}
                 title={markerTitle !== undefined ? markerTitle : ''}
                 image={{uri: "https://i.postimg.cc/kGGMkQrh/map-marker.png"}}
