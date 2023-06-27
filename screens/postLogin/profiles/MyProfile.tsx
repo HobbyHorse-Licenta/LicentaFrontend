@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Pressable} from 'react-native'
+import { View, StyleSheet} from 'react-native'
 
 import { scale, verticalScale } from "react-native-size-matters";
 import {useTheme, Text} from 'react-native-paper'
-
-import { FemaleOption, GeneralHeader, GeneralModal, MaleOption, PrimaryContainer, RoundPicture } from "../../../components/general";
-import {MyProfileHeader, SkateProfiles } from "../../../components/profile";
-import { Layout2PieceForNavigator } from "../../layouts";
 import { useDispatch, useSelector } from "react-redux";
-import { Gender, User } from "../../../types";
 import { useNavigation } from "@react-navigation/native";
+import { useTourGuideController } from "rn-tourguide";
+
+import { FemaleOption, GeneralHeader, MaleOption, PrimaryContainer, RoundPicture } from "../../../components/general";
+import {SkateProfiles } from "../../../components/profile";
+import { Layout2PieceForNavigator } from "../../layouts";
+import { Gender } from "../../../types";
 import { authenticationUtils, uiUtils } from "../../../utils";
 import { SpacingStyles } from "../../../styles";
 import { RootState } from "../../../redux/store";
 import {SMILING_FACE_WITH_OPEN_MOUTH} from "../../../assets/emotes"
-import { TourGuideZoneByPosition, useTourGuideController } from "rn-tourguide";
 import { setMyProfileWalkthrough } from "../../../redux/walkthroughState";
 import { setCurrentSkateProfile } from "../../../redux/globalState";
 

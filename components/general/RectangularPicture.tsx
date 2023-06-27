@@ -2,11 +2,10 @@ import React, { useState} from 'react'
 import { View, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
 import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles';
-import { Fetch, ImageService } from '../../services';
+import { ImageService } from '../../services';
 import { blankProfilePictureUrl } from '../../assets/imageUrls';
 
 interface Input {

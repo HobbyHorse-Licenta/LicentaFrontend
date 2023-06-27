@@ -1,5 +1,5 @@
-import React, {useState, useContext, useEffect } from 'react';
-import { KeyboardAvoidingView, View, StyleSheet, ScrollView} from 'react-native';
+import React, {useState } from 'react';
+import { View, StyleSheet, ScrollView} from 'react-native';
 
 import { Text, TextInput, useTheme } from 'react-native-paper';
 import * as Animatable from 'react-native-animatable';
@@ -13,7 +13,6 @@ import {firebaseAuth} from '../../WholeScreen';
 import {uiUtils} from '../../utils';
 import { useDispatch } from 'react-redux';
 import { setJWTTokenResult } from '../../redux/appState';
-import { User } from '../../types';
 import PasswordInput from '../../components/general/PasswordInput';
 
 const SignUpScreen = () => {
@@ -152,8 +151,5 @@ const styles = StyleSheet.create({
     button: {
         width: scale(250),
         marginVertical: scale(10)
-    },
-    actionText: {
-        marginLeft: scale(10)
     }
 });

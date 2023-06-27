@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from 'react'
 import { Platform, View } from 'react-native';
 
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import { Text, useTheme } from 'react-native-paper';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import { useTheme } from 'react-native-paper';
 import * as Location from 'expo-location';
 import { useSelector } from 'react-redux';
+
 import { RootState } from '../../redux/store';
 import { mapsUtils, uiUtils, validation } from '../../utils';
-import { Event, MarkerType } from '../../types';
+import { Event } from '../../types';
 import { Fetch } from '../../services';
-import { tokens } from 'react-native-paper/lib/typescript/src/styles/themes/v3/tokens';
 import { Button } from '../general';
 import { scale, verticalScale } from 'react-native-size-matters';
 import { SpacingStyles } from '../../styles';
@@ -32,10 +32,8 @@ const MapsBody = () => {
     const [myLocation, setMyLocation] = useState<Location.LocationObject>();
 
     useEffect(() => {
-        console.log("\n\n\n\nFUCKINGGGG CHNAGED\n\n\n\n")
-    
         getAndSetMyEvents();
-        }, [currentSkateProfile])
+    }, [currentSkateProfile])
     
     useEffect(() => {
         if(needsEventsRefresh === true)

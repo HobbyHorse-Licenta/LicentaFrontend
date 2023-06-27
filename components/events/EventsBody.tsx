@@ -36,8 +36,6 @@ const EventsBody = () => {
 
 
     useEffect(() => {
-    console.log("\n\n\n\nFUCKINGGGG CHNAGED\n\n\n\n")
-
         getAndSetRecommendedEvents();
     }, [currentSkateProfile])
 

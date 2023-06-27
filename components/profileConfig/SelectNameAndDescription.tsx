@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from 'react'
-import {View, StyleSheet, Keyboard} from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
+import React, {useState} from 'react'
+import {StyleSheet, Keyboard} from 'react-native'
 
 import {Text, TextInput, useTheme} from 'react-native-paper'
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -17,8 +16,6 @@ const SelectNameAndDescription = ({onNameChange, onDescriptionChange} : Input) =
     
     const [name, setName] = useState<string>();
     const [description, setDescription] = useState<string>();
-    //const [descriptionHeight, setDescriptionHeight] = useState(scale(20));
-    const [scrollViewHeight, setScrollViewHeight] = useState(scale(20));
 
   
 
@@ -74,16 +71,12 @@ const SelectNameAndDescription = ({onNameChange, onDescriptionChange} : Input) =
             />
             <Text style={{margin: scale(5)}}>Tell us a bit about yourself</Text>
               <TextInput
-              //onSubmitEditing={() => Keyboard.dismiss()}
               style={[styles.descriptionInput, {backgroundColor: theme.colors.primary}]}
               multiline={true}
               selectionColor={theme.colors.tertiary}
               label="Give a short description of yourself"
               value={description}
               numberOfLines={7}
-              // onContentSizeChange={(event) => {
-              //   setDescriptionHeight(event.nativeEvent.contentSize.height);
-              // }}
               onChangeText={updateDescription}
               />
         </PrimaryContainer>

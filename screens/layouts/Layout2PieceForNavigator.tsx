@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 
 import { SafeAreaView } from 'react-navigation';
 import { useSelector } from 'react-redux';

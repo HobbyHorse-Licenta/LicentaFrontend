@@ -56,7 +56,6 @@ const ScheduleContainer = ({children, styleInput, onPress, index, onDelete, onUp
                 <View onLayout={(event) => setHeight(event.nativeEvent.layout.height)} 
                 style={[styles.scheduleContainer, { backgroundColor: PAIRCOLORS[index % 5].main}, styleInput !== undefined && styleInput]}
                 >
-                    {/* <Button textColor={'red'} text="Delete" style={{width: scale(100)}} onPress={() => nothing}/> */}
                     {
                         optionsShown === true && onDelete !== undefined &&
                         <Pressable onPress={deleteSchedule}>

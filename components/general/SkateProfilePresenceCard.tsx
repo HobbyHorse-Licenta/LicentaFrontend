@@ -4,8 +4,6 @@ import { View, ViewStyle, StyleSheet} from "react-native";
 import { Text } from "react-native-paper";
 import { scale } from 'react-native-size-matters';
 
-
-import { Fetch } from "../../services";
 import { SpacingStyles } from "../../styles";
 import { SkateProfile, User } from "../../types";
 import ArrowList from "./ArrowList";

@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, ImageBackground } from "react-native";
 
 import { Text } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 
 import { Layout2Piece } from "../../layouts";
-import { SpacingStyles } from "../../../styles";
 import { ProfileConfigHeader } from "../../../components/profileConfig";
-import { COLORS } from "../../../assets/colors/colors";
 
 const PreSelectStyleAndExperience = () => {
 
-    const [goNextDisabled, setGoNextDisabled] = useState(false);
-    
     const getBody = () => 
     {
         return(
@@ -53,7 +49,7 @@ const PreSelectStyleAndExperience = () => {
     return(
         <Layout2Piece
             header={
-                <ProfileConfigHeader backButton={true} disabled={goNextDisabled}
+                <ProfileConfigHeader backButton={true} disabled={false}
                 nextScreen={'SelectStyleAndExperience'}
                  ></ProfileConfigHeader>}
             body={getBody()}

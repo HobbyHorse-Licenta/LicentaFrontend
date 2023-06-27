@@ -1,5 +1,4 @@
-import React, {useState, useEffect} from 'react'
-import {View} from 'react-native'
+import React, {useState} from 'react'
 
 import {Text, useTheme} from 'react-native-paper'
 import { scale } from 'react-native-size-matters';

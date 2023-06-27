@@ -1,15 +1,13 @@
-import React, {useRef, useEffect, useState} from 'react'
+import React, { useState } from 'react'
 
 import { SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useTheme } from 'react-native-paper';
-import NotificationPopup from 'react-native-push-notification-popup';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
 import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack } from './mainPages';
-import { navigationUtils } from '../utils';
 import { Intro, PersonalInfo, PreSelectStyleAndExperience, SelectSkates, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
 import { SvgView } from '../components/general';
 import { RootState } from '../redux/store';
@@ -19,27 +17,12 @@ const AfterLogin = () => {
 
   const {windowHeight} = useSelector((state: any) => state.ui);
   const {user, addingSkateProfile} = useSelector((state: RootState) => state.appState);
-  const {currentRoute} = useSelector((state: RootState) => state.globalState);
 
   const [tabBarVisible, setTabBarVisible] = useState(true);
   const Tab = createBottomTabNavigator();
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const popUp = useRef<NotificationPopup | null>(null);
 
   const Stack = createNativeStackNavigator();
-
-  // useEffect(() => {
-  //   console.log("We'll prepare loading")
-  //   dispatch(loadWalkthorughStateAsync());
-  // }, [])
-  
-  
-  useEffect(() => {
-    console.log("Route updated " + currentRoute);
-    //setTabBarVisible(navigationUtils.ShouldHaveTabBar(currentRoute));
-    //dispatch(setMySchedules(Fetch.getSchedules()));
-  }, [currentRoute])
 
   return ( 
     <SafeAreaView style={[{width: '100%', height: windowHeight}]}>

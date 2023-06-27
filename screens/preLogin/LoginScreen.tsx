@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { View, StyleSheet, TouchableOpacity, KeyboardAvoidingView} from 'react-native';
 
 import * as Animatable from 'react-native-animatable';
@@ -23,20 +23,6 @@ const LoginScreen = () => {
 
     const handleEmailInput = (typedText: string) => {setEmail(typedText)};
     const handlePasswordInput = (typedText: string) => {setPassword(typedText)};
-    
-    // onAuthStateChanged(firebaseAuth, (user) => {
-    // if (user) {
-    //     // User is signed in, see docs for a list of available properties
-    //     // https://firebase.google.com/docs/reference/js/firebase.User
-    //     const uid = user.uid;
-    //     // ...
-    //     console.log("[LoginScreen]: user is singed in");
-    // } else {
-    //     // User is signed out
-    //     // ...
-    //     console.log("[LoginScreen]: user is singed out");
-    // }
-    // });
 
     const handleLogin = async () => {
         if(email !== undefined && password !== undefined)

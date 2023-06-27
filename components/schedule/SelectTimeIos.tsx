@@ -1,13 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Pressable, View, StyleSheet} from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet} from "react-native";
 
-import {useTheme, Text} from 'react-native-paper'
 import { scale } from "react-native-size-matters";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { format } from "date-fns";
 
-import { SpacingStyles } from '../../styles'
 import Strings from './../../assets/strings'
 import { SelectTime } from "../general";
 

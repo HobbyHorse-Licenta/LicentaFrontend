@@ -7,13 +7,11 @@ import { scale } from "react-native-size-matters";
 import { CountdownCircleTimer } from 'react-native-countdown-circle-timer'
 import 'firebase/auth';
 import uuid from 'react-native-uuid';
-import { signOut } from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 import { AppHeader, Button, GeneralModal, LoadingComponent } from "../general";
-import { useDispatch, useSelector } from "react-redux";
-import { resetAppState, setAddingSkateProfile, setInitialProfileConfigured, setUser } from "../../redux/appState";
-import { firebaseAuth } from "../../WholeScreen";
-import { AssignedSkill, SkateProfile, User } from "../../types";
+import { setAddingSkateProfile, setUser } from "../../redux/appState";
+import { SkateProfile, User } from "../../types";
 import { Fetch } from "../../services";
 import { authenticationUtils, validation } from "../../utils";
 import { RootState } from "../../redux/store";
@@ -27,7 +25,7 @@ interface ConfigHeaderInput {
 }
 const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : ConfigHeaderInput) => {
 
-    const {sport, skateType, skatePracticeStyle, skateExperience, age, gender, name, shortDescription } = useSelector((state: any) => state.configProfile)
+    const {skateType, skatePracticeStyle, skateExperience, age, gender, name, shortDescription } = useSelector((state: any) => state.configProfile)
     const { userId, addingSkateProfile, user, JWTTokenResult } = useSelector((state: RootState) => state.appState)
 
     const [postedUser, setPostedUser] = useState<User | undefined>(undefined);
@@ -109,7 +107,6 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
         {
             const skateProfileId = uuid.v4().toString();
 
-            // const assignedSkillsArray: Array<AssignedSkill> = [];
             const skateProfile:  SkateProfile = {
                 id: skateProfileId,
                 userId: userId,

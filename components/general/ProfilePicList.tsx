@@ -1,5 +1,5 @@
-import React, { useState, useEffect, ReactNode} from 'react'
-import { View, StyleSheet, Image, Dimensions } from 'react-native';
+import React from 'react'
+import { View, StyleSheet, Image } from 'react-native';
 
 import { scale } from 'react-native-size-matters';
 import {Text} from 'react-native-paper'

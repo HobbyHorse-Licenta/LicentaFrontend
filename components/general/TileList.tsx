@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
 import { View } from 'react-native';
+
 import { useTheme } from 'react-native-paper';
+
 import { RenderElement } from '../../types';
 import { PlusSvg } from '../svg/general';
-
 import Tile from './Tile'
 
 interface Input {
@@ -14,6 +15,7 @@ interface Input {
     tileColor?: string,
     tileWithBorder?: boolean,
 }
+
 const TileList = ({objectsArray, onPressAdd, tileColor, tileWithBorder, onTilePress, onDeleteTile} : Input) => {
 
     const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);

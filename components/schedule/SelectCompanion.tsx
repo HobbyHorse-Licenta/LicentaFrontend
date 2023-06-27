@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -13,10 +13,6 @@ import { useDispatch } from 'react-redux';
 import { setGender, setMaximumAge, setMaxNumberOfPeople, setMinimumAge } from '../../redux/createScheduleState';
 import { SpacingStyles } from '../../styles';
 
-interface Distance {
-    label: string,
-    value: number
-}
 
 interface Input {
     selectedGender: Gender | undefined, 
@@ -120,7 +116,6 @@ const SelectCompanion = ({selectedGender, setSelectedGender, numberOfPartners, s
                             onMaximumAgeChange={(age) => setMaximumAgee(age)}/>
             {getGenderPrefrence()}
         </PrimaryContainer>
-        //TO DO SO THAT UPDATE SCHEDULE WORKS (IT TRIES TOT CREATE A NEW SCHEDULE NOW INSTEAD)
     );
 };
 

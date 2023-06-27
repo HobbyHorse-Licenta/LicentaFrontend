@@ -5,8 +5,7 @@ import {Text, useTheme} from 'react-native-paper'
 import { scale } from 'react-native-size-matters';
 import { Gender } from '../../types';
 
-import { FemaleOption, MaleOption, PrimaryContainer, SvgView } from '../general';
-import { FemaleSvg, MaleSvg } from '../svg/general';
+import { FemaleOption, MaleOption, PrimaryContainer } from '../general';
 
 interface SelectGenderInput{
     initialValue: Gender,

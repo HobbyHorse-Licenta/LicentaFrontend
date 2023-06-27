@@ -1,9 +1,13 @@
 import {createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AssignedSkill, Schedule, SkatePracticeStyles, SkateProfile, Skill, User, Event, ParkTrail } from '../types';
+import { AssignedSkill, Schedule, SkatePracticeStyles, Skill, User, Event, ParkTrail } from '../types';
 import produce from 'immer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IdTokenResult } from 'firebase/auth';
-import { createFalse } from 'typescript';
+
+interface SetSchedulesInterface {
+    schedules: Array<Schedule>,
+    skateProfileId: string
+}
 
 export interface AppState {
     userBackup: User | undefined,
@@ -16,6 +20,7 @@ export interface AppState {
     allParkTrails: Array<ParkTrail> | undefined,
     needsEventsRefresh: boolean
     needsRecommendedEventsRefresh: boolean
+    needsSchedulesRefresh: boolean
     firstProfileConfig: boolean
 }
 
@@ -30,6 +35,7 @@ const initialState: AppState = {
     allParkTrails: undefined,
     needsEventsRefresh: false,
     needsRecommendedEventsRefresh: false,
+    needsSchedulesRefresh: false,
     firstProfileConfig: false
 }
 
@@ -70,9 +76,7 @@ export const appStateSlice = createSlice({
             state.userBackup = produce(state.user, draft => {
             }); //make backup
         },
-        // updateSkateProfile: (state, action: PayloadAction<SkateProfile>) => {
-            
-        // },
+      
         addAggresiveEventToUser: (state, action: PayloadAction<Event>) => {
             //payload == Event
             const eventToAdd = action.payload;
@@ -120,8 +124,26 @@ export const appStateSlice = createSlice({
                         }
                     )
                 }
-            }
-            
+            }  
+        },
+        setSchedules: (state, action: PayloadAction<SetSchedulesInterface>) => {
+            const schedulesToSet = action.payload.schedules;
+            const idOfSkateProfileToUpdate = action.payload.skateProfileId;
+            if(state.user !== undefined)
+            {
+                state.user = {
+                    ...state.user,
+                    skateProfiles: state.user.skateProfiles.map(
+                        (skateProfile) => {
+                            if(skateProfile.id === idOfSkateProfileToUpdate)
+                            {
+                                return { ...skateProfile, schedules: schedulesToSet};
+                            }
+                            else return skateProfile;
+                        }
+                    )
+                }
+            }  
         },
         deleteAssignedSkill: (state, action: PayloadAction<string>) => {
             //payload == assignedSkillId
@@ -274,9 +296,6 @@ export const appStateSlice = createSlice({
         setAllParkTrails: (state, action: PayloadAction<Array<ParkTrail> | undefined>) => { 
             state.allParkTrails = action.payload;
         },
-        // setMySchedules: (state, action: PayloadAction<Array<Schedule>>) => {
-        //     state.mySchedules = action.payload;
-        // },
         setInitialProfileConfigured: (state, action: PayloadAction<boolean>) => {
             state.initialProfileConfigured = action.payload;
         },
@@ -296,6 +315,9 @@ export const appStateSlice = createSlice({
         setNeedsRecommendedEventsRefresh: (state, action: PayloadAction<boolean>) => {
             state.needsRecommendedEventsRefresh = action.payload;
         },
+        setNeedsSchedulesRefresh: (state, action: PayloadAction<boolean>) => {
+            state.needsSchedulesRefresh = action.payload;
+        },
         setfirstProfileConfig: (state, action: PayloadAction<boolean>) => {
             state.firstProfileConfig = action.payload;
         },
@@ -311,13 +333,13 @@ export const appStateSlice = createSlice({
 
 export const {setUserId, setJWTTokenResult,
     setInitialProfileConfigured, setAddingSkateProfile, 
-    resetAppState,
-    setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh,
+    resetAppState, 
+    setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh, setNeedsSchedulesRefresh,
     setUser, setfirstProfileConfig,
     revertChangesInUser, backupUser,
     setAllSkills, deleteAssignedSkill, addAssignedSkill, updateAssignedSkill,
     setAllParkTrails,
-    deleteSchedule, addSchedule, updateSchedule,
+    deleteSchedule, addSchedule, updateSchedule, setSchedules,
     addAggresiveEventToUser
 } = appStateSlice.actions
 

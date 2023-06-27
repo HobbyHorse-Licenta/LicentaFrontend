@@ -11,7 +11,6 @@ import { SpacingStyles } from "../../../styles";
 import { SkatesType } from "../../../types";
 import { aggresiveSkatesUrl, casualSkatesUrl, speedSkatesUrl } from "../../../assets/imageUrls";
 import { setSkateType } from "../../../redux/configProfileState";
-import SelectStyleAndExperience from "./SelectStyleAndExperience";
 import { ProfileConfigHeader } from "../../../components/profileConfig";
 import { RootState } from "../../../redux/store";
 

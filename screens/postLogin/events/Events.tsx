@@ -6,15 +6,6 @@ import { GeneralHeader } from '../../../components/general';
 
 const Events = ({navigation}) => {
 
-    useEffect(() => {
-        console.log("MERGEM LA PAGINA DORITA");
-         //TODO: MERGEM LA PAGINA DORITA
-         //navigation.navigate('EventsStack', { screen: 'CreateEvent'});
-         navigation.navigate('EventsStack', { screen: 'Events'});
-         //navigation.navigate('MySchedulesStack', { screen: 'MySchedules'});
-         
-      }, [])
-
     return (
         <Layout2PieceForNavigator 
             header={<GeneralHeader title="Event suggestions"></GeneralHeader>}

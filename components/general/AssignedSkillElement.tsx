@@ -15,10 +15,6 @@ const AssignedSkillElement = ({assignedSkill} : Input) => {
         <Tile
         color={uiUtils.getColorBasedOnSkillLevel(assignedSkill.masteringLevel)}
         withBorder={true}
-        //deleteEnabled={index === selectedIndex} 
-        // onDeleteTile={() => skillDelete(assignedSkill)}
-        // onPress={() => advanceSkillLevel(assignedSkill)}
-        //onLongPress={() => setSelectedIndex(index)}
         >
             {
                 assignedSkill.skill !== undefined && assignedSkill.skill !== null &&

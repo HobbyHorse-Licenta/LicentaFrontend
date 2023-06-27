@@ -1,9 +1,7 @@
-import TextImage from "./TextImage";
 import Button from "./Button";
 import EventCard from "./EventCard";
 import ProfilePicList from "./ProfilePicList";
 import RoundPicture from './RoundPicture';
-import PlusTile from "./PlusTile";
 import AppHeader from "./AppHeader";
 import PrimaryContainer from "./PrimaryContainer";
 import SelectTime from "./SelectTime";
@@ -29,10 +27,9 @@ import AggresiveEventCard from "./AggresiveEventCard";
 import InformationalSvgComponent from "./InformationalSvgComponent";
 import ArrowList from "./ArrowList";
 import AssignedSkillElement from "./AssignedSkillElement";
-import AnimatedTyping from "./AnimatedTyping";
 import HorizontalTextScroll from "./HorizontalTextScroll";
-export {TextImage, Button, EventCard, ProfilePicList, RoundPicture, PlusTile,
+export {Button, EventCard, ProfilePicList, RoundPicture,
      AppHeader, PrimaryContainer, SelectTime, LoadingComponent, PasswordInput, MaleOption, FemaleOption,
     SvgView, GeneralModal, SelectionListModal, SelectedDaysDisplay, RectangularPicture, AggresiveEventCard,
     SelectionCard, Lottie, Tile, TileList, GeneralHeader, PopupMenu,UserSummary, SelectNumber, QuestionModal,
-    InformationalSvgComponent, ArrowList, AssignedSkillElement, AnimatedTyping, HorizontalTextScroll}
+    InformationalSvgComponent, ArrowList, AssignedSkillElement, HorizontalTextScroll}

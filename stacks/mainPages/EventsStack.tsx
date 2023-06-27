@@ -12,8 +12,6 @@ const EventsStack = () => {
   const Stack = createNativeStackNavigator();
   const {firstProfileConfig} = useSelector((state: RootState) => state.appState)
 
-
-  console.log("First profil config: " + firstProfileConfig);
   return ( 
     <Stack.Navigator screenOptions={{ headerShown: false }}>
         {firstProfileConfig === true && <Stack.Screen name="AddSkillsScreen" component={AddSkillsScreen}/>}

@@ -7,19 +7,18 @@ import {Text, useTheme} from 'react-native-paper'
 import * as ExpoLocation from 'expo-location';
 import uuid from 'react-native-uuid';
 import WheelPickerExpo from 'react-native-wheel-picker-expo';
+import { useDispatch, useSelector } from 'react-redux';
 import {
 useTourGuideController,
 } from 'rn-tourguide'
 
 import { LocationSvg } from '../svg/general';
-import { Location, ParkTrail, Zone } from '../../types';
+import { Location, Zone } from '../../types';
 import { PrimaryContainer, SvgView } from '../general';
 import {mapsUtils} from '../../utils';
 import LoadingComponent from '../general/LoadingComponent';
-import { useDispatch, useSelector } from 'react-redux';
 import { setZone } from '../../redux/createScheduleState';
 import { RootState } from '../../redux/store';
-
 
 interface Distance {
     label: string,

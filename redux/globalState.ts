@@ -1,8 +1,5 @@
-import { async } from '@firebase/util'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { AsyncLocalStorage } from 'async_hooks'
-import { Console } from 'console'
 import { SkateProfile } from '../types'
 
 export interface GlobalState {

@@ -66,18 +66,6 @@ const AggresiveEventDisplay = ({route, navigation}) => {
             latitudeDelta: 0.00001,
             longitudeDelta: mapsUtils.kMToLongitudes(2, customTrail.checkPoints[0].location.lat)
         }}
-        // onLongPress={({nativeEvent}) => setSelectedLocation((prevLocation) => {
-        //     const {coordinate} = nativeEvent;
-        //     const newLocation :  Location = {
-        //         ...prevLocation,
-        //         id: uuid.v4().toString(),
-        //         lat: coordinate.latitude,
-        //     long: coordinate.longitude
-        // };
-        //     return newLocation;
-        // })}
-        //onPress={handleMapPress}
-        // onPress={({nativeEvent}) => showAddMarkerButton(nativeEvent)}
         provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : undefined}
         >
             {mapsUtils.getCustomTrailMarkers(customTrail.checkPoints, (index, changedCoordinated) => nothing, 0)}
@@ -142,7 +130,6 @@ const AggresiveEventDisplay = ({route, navigation}) => {
   const getBody = () => {
     return(
       <ScrollView>
-        {/* <EventImage event={event}></EventImage> */}
         {getMap()}
         {skatersInfo()}
       </ScrollView>

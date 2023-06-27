@@ -5,13 +5,11 @@ import { scale, verticalScale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
 import {Text, TextInput, useTheme } from 'react-native-paper'
 
-import { EditProfileHeader, MyProfileHeader } from "../../../components/profile";
 import { GeneralHeader, PrimaryContainer, RoundPicture, SelectNumber } from "../../../components/general";
 import { Layout2Piece } from "../../layouts";
 import { RootState } from "../../../redux/store";
 import { validation } from "../../../utils";
 import { useNavigation } from "@react-navigation/native";
-import { verifyBeforeUpdateEmail } from "firebase/auth";
 import { SpacingStyles } from "../../../styles";
 import {User} from '../../../types'
 import { Fetch } from "../../../services";

@@ -19,14 +19,6 @@ const Layout2Piece = ({header, body} : Params) => {
     const headerHeight = verticalScale(50);
 
     return (
-        // <SafeAreaView style={{width: '100%', height: windowHeight, display: 'flex'}}>
-        //     <View style={{height: verticalScale(50), width: '100%'}}>
-        //         {header}
-        //     </View>
-        //     <View style={{height: windowHeight - verticalScale(50), width: '100%'}}>
-        //         {body}
-        //     </View>
-        // </SafeAreaView>
         <SafeAreaView style={[StyleSheet.absoluteFill]}>
             <View style={{height: headerHeight, width: '100%', position: 'absolute'}}>
                 {header}

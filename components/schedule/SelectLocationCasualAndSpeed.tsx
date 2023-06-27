@@ -6,7 +6,6 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import {Text, useTheme} from 'react-native-paper'
 import * as ExpoLocation from 'expo-location';
 import uuid from 'react-native-uuid';
-import WheelPickerExpo from 'react-native-wheel-picker-expo';
 import {
 useTourGuideController,
 } from 'rn-tourguide'
@@ -21,7 +20,6 @@ import { setZone } from '../../redux/createScheduleState';
 import { RootState } from '../../redux/store';
 import OutsidePressHandler from 'react-native-outside-press';
 import DropDownPicker from 'react-native-dropdown-picker';
-
 
 interface Distance {
     label: string,
@@ -201,29 +199,6 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
             )
         }
     }    
-
-    const renderWheelPickerItem = (itemToRender) => {
-        return(
-            <Text style={{ alignSelf: 'center'}}>{itemToRender.label}</Text>
-        );
-    }
-    
-    // const getWheelPicker = () => {
-    //     return
-    //     (
-    //         <WheelPickerExpo
-    //             ref={wheelPickerRef}
-    //             height={verticalScale(100)}
-    //             width={scale(40)}
-    //             initialSelectedIndex={0}
-    //             items={rangeArray}
-    //             onChange={( range ) => {onTouchOutside && onTouchOutside(); setRange(range.item.value); }}
-    //             selectedStyle={{borderColor: theme.colors.tertiary, borderWidth: 1}}
-    //             renderItem={(itemToRender) => renderWheelPickerItem(itemToRender)}
-    //             haptics={false}
-    //         /> 
-    //     );
-    // }
 
     const getDropDownPicker = () => {
         return(

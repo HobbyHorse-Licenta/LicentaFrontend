@@ -1,10 +1,10 @@
 import React from "react";
 import { Text } from "react-native-paper";
 
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 
 import {Schedule} from '../../types';
-import { HorizontalTextScroll, SelectedDaysDisplay } from "../general";
+import { SelectedDaysDisplay } from "../general";
 import ScheduleContainer from "./ScheduleContainer";
 
 interface ScheduleElementInput {

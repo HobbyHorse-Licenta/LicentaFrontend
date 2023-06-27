@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, KeyboardAvoidingView } from "react-native";
 
 import { Text, useTheme } from "react-native-paper";
-import { scale, verticalScale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
 
 
@@ -82,26 +81,3 @@ const PersonalInfo = () => {
 };
 
 export default PersonalInfo;
-
-const styles = StyleSheet.create({
-    mainContainer: {
-        height: verticalScale(520),
-        width: scale(300),
-        margin: scale(10),
-        padding: scale(20),
-    },
-    radioButtonContainer: {
-        position: 'absolute',
-        bottom: verticalScale(10),
-        left: scale(20)
-    },
-    genderIcon: {
-        width: scale(50),
-        height: scale(50),
-        backgroundColor: 'green'
-    },
-    iconWithLabel: {
-        justifyContent: 'center',
-        alignItems:'center'
-    }
-});

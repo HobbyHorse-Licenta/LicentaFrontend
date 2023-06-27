@@ -3,14 +3,14 @@ import { ScrollView, View } from 'react-native';
 
 import { scale } from "react-native-size-matters";
 import uuid from 'react-native-uuid';
+import { useTourGuideController } from "rn-tourguide";
+import { useDispatch, useSelector } from "react-redux";
 
 import { SpacingStyles } from '../../../styles';
-import { AddSports, ScheduleHeader, SelectDays, SelectLocationAggresive, SelectLocationCasualAndSpeed, SelectHourRange, SelectCompanion} from '../../../components/schedule';
+import { SelectDays, SelectLocationAggresive, SelectLocationCasualAndSpeed, SelectHourRange, SelectCompanion} from '../../../components/schedule';
 import { Layout2Piece } from '../../layouts';
-import { Gender, Schedule as ScheduleType, SkatePracticeStyles, SportName } from "../../../types";
-import { GeneralHeader, QuestionModal } from "../../../components/general";
-import { useNavigation } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
+import { Gender, Schedule as ScheduleType, SkatePracticeStyles } from "../../../types";
+import { GeneralHeader } from "../../../components/general";
 import { RootState } from "../../../redux/store";
 import { uiUtils, validation } from "../../../utils";
 import { Fetch } from "../../../services";
@@ -18,8 +18,6 @@ import { addSchedule, backupUser, revertChangesInUser, updateSchedule } from "..
 import { resetCreateScheduleState, setEndTime, setSelectedDaysState, setStartTime } from "../../../redux/createScheduleState";
 import { Day } from "../../../types";
 import { setScheduleWalkthrough } from "../../../redux/walkthroughState";
-import { useTourGuideController } from "rn-tourguide";
-import constants from "../../../assets/constants";
 
 const Schedule = ({route, navigation}) => {
 
@@ -36,12 +34,9 @@ const Schedule = ({route, navigation}) => {
   const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
   const {schedule} = useSelector((state: RootState) => state.walkthroughState);
 
-  //const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState<boolean>(false);
-  // const [sportPickerVisible, setSportPickerVisible] =  useState<boolean>(false);
-  // const [selectedSports, setSelectedSports] = useState<Array<SportName>>([]);
   const [parkSelected, setParkSelected] = useState(false);
   const [scrollEnable, setScrollEnable] = useState(true);
   const [canCreateSchedule, setCanCreateSchedule] = useState(false);

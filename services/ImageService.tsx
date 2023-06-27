@@ -2,8 +2,6 @@ import { imgurConfig } from "../imgurConfig";
 
 const ImageService = {
 
-    
-
     /**
      * Returns image url through callBackFunction 
      */
@@ -37,43 +35,6 @@ const ImageService = {
         console.log(error.message);
         }
     },
-
-    postPicture: async function(imageUrl: string){
-        const freeImageHostAPIKey = '6d207e02198a847aa98d0a2a901485a5';
-
-        const data = new FormData();
-        data.append('key', freeImageHostAPIKey);
-        data.append('action', 'upload');
-        data.append('source', imageUrl);
-        data.append('format', 'json');
-
-
-        await fetch('https://freeimage.host/api/1/upload', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            body: data,
-        }).then((value) => console.log("response: " + JSON.stringify(value)));
-    },
-    // const uploadImage = (file, callback) => {
-    //     const formData = new FormData();
-    //     formData.append('image', file);
-      
-    //     axios.post('https://freeimage.host/api/1/upload', formData, {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data'
-    //       }
-    //     })
-    //     .then(response => {
-    //       callback(response.data);
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-    //   };
-
-   
 };
 
 export default ImageService;

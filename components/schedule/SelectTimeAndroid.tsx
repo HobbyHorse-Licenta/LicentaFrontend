@@ -15,17 +15,6 @@ const SelectTimeAndroid = ({textAbovePicker, time, setTime} : timePickerInput) =
 
   const [dataPickerVisible, setDatePickerVisible] = useState(false);
 
-  const handleChangeTime = () => {
-    // DateTimePickerAndroid.open({
-    //   display: "clock",
-    //   value: time,
-    //   onChange: (event, selectedTime) => onChangeDate(event, selectedTime),
-    //   mode: "time",
-    //   is24Hour: true,
-    // });
-  };
-
-
   return (
     <View>
       <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={() => setDatePickerVisible(true)}/>

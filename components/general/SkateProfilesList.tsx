@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
+
 import { useSelector } from "react-redux";
+
 import { RootState } from "../../redux/store";
 import { Fetch } from "../../services";
 import { SkateProfile, User } from "../../types";
 import { validation } from "../../utils";
-import SkateProfileSummary from "../profile/SkateProfileSummary";
 import SkateProfilePresenceCard from "./SkateProfilePresenceCard";
+
 interface Input {
     suggestedSkateProfiles: Array<SkateProfile>
     attendingSkateProfiles: Array<SkateProfile>
 }
+
 const SkateProfilesList = ({suggestedSkateProfiles, attendingSkateProfiles} : Input) =>{
 
     const [allUsers, setAllUsers] = useState<Array<User>>([]);

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {TouchableWithoutFeedback, View, StyleSheet, Pressable, ViewStyle, TextStyle} from 'react-native'
+import {View, StyleSheet, Pressable, TextStyle} from 'react-native'
 
 import { useDispatch, useSelector } from 'react-redux';
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -12,7 +12,6 @@ import { Layout2Piece } from '../../layouts';
 import { ProfileConfigHeader } from '../../../components/profileConfig';
 import { setSkatePracticeStyle, setSkateExperience } from '../../../redux/configProfileState';
 import { HandDownSvg } from '../../../components/svg/general';
-import PersonalInfo from './PersonalInfo';
 import { RootState } from '../../../redux/store';
 
 
@@ -194,12 +193,6 @@ const SelectStyleAndExperience = () => {
 export default SelectStyleAndExperience;
 
 const styles = StyleSheet.create({
-    skateStyleOptions: {
-        height: verticalScale(260),
-        width: scale(210),
-        margin: scale(10),
-        padding: scale(20),
-    },
     experienceOptions: {
         height: verticalScale(200),
         width: scale(210),

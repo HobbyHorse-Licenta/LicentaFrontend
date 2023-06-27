@@ -1,14 +1,11 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { Pressable, StyleSheet} from "react-native";
 
 import {useTheme, Text} from 'react-native-paper'
 import { scale } from "react-native-size-matters";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { format, parse } from "date-fns";
+import { format } from "date-fns";
 
 import { SpacingStyles } from '../../styles'
-import Strings from './../../assets/strings'
 
 interface timePickerInput {
   textAbovePicker: string,

@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {View, StyleSheet} from 'react-native'
+
 import { Divider } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+
 import { UserSummary } from '../../../components/general';
 import { RootState } from '../../../redux/store';
-
 import { Fetch } from '../../../services'
 import { User } from '../../../types';
 import { validation } from '../../../utils';

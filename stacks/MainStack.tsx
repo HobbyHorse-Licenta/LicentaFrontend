@@ -4,13 +4,12 @@ import {View} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions } from '@react-navigation/native';
 
 import BeforeLogin from './BeforeLogin';
 import AfterLogin from './AfterLogin';
 import { SpacingStyles } from '../styles';
 import { RootState } from '../redux/store';
-import { CommonActions } from '@react-navigation/native';
 import { validation } from '../utils';
 import { setCurrentRoute } from '../redux/globalState';
 

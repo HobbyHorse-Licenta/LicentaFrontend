@@ -1,15 +1,11 @@
 import React, {ReactNode} from 'react'
 import { Pressable, View, StyleSheet, Text, ViewStyle} from 'react-native';
-import Color from 'color';
-import { child } from 'react-native-extended-stylesheet'
 
 import { useTheme } from 'react-native-paper';
 import { scale } from 'react-native-size-matters';
 
-import { DeleteSvg } from '../svg/general';
 import SvgView from './SvgView';
 import { uiUtils } from '../../utils';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 interface Input {
     color?: string,
@@ -68,12 +64,6 @@ const Tile = ({color, children, deleteEnabled, onLongPress, onDeleteTile, onPres
                     </View>
                 )
             }
-            {/* {
-                deleteEnabled === true &&
-                <SvgView size='small' onPress={() => onDeleteTile && onDeleteTile()} style={styles.deleteTile}>
-                    <DeleteSvg></DeleteSvg>
-                </SvgView>
-            } */}
         </View>
            
     )
@@ -83,12 +73,6 @@ export default Tile;
 
 
 const styles = StyleSheet.create({
-    svgTile: {
-        padding: scale(2),
-        borderRadius: 20,
-        height: scale(50),
-        width: scale(50)
-    },
     deleteTile: {
         width: scale(30),
         height: scale(30),

@@ -1,16 +1,13 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import { Platform, View } from "react-native";
 
-import {useDispatch} from 'react-redux';
-import uuid from 'react-native-uuid';
+import { scale } from "react-native-size-matters";
+import { useTourGuideController } from "rn-tourguide";
 
-import { setStartTime, setEndTime } from "../../redux/createScheduleState";
 import { SpacingStyles } from "../../styles";
 import { PrimaryContainer } from "../general";
 import SelectTimeAndroid from './SelectTimeAndroid';
 import SelectTimeIos from './SelectTimeIos';
-import { scale } from "react-native-size-matters";
-import { useTourGuideController } from "rn-tourguide";
 
 interface Input {
   startTime: Date,
@@ -24,8 +21,6 @@ const SelectHourRange = ({startTime, endTime, onStartTimeChange, onEndTimeChange
     const {
       TourGuideZone
     } = useTourGuideController('schedule')
-
-
 
     const setEndTimeSchedule = (selectedEndTime: Date) => {
       if(selectedEndTime > startTime)

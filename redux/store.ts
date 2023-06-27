@@ -23,17 +23,6 @@ export interface RootState {
   globalState: GlobalState
 }
 
-///We use the serializer to make it ignore circular references when serializing and deserializing
-//which caused the error "non serializable value in redux store" ALTHOUGH IT DIDNT FIX IT :))
-// const serializer = {
-//   serialize: (state) => CircularJSON.stringify(state),
-//   deserialize: (serializedState) => CircularJSON.parse(serializedState),
-//   options: {
-//     ignoreCirculcarReferences: true,
-//   },
-// };
-
-
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,

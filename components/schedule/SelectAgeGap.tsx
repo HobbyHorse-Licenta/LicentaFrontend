@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import {View} from 'react-native';
 
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -18,25 +18,13 @@ const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange, minimumAge, maxim
 
     const minAge = 12;
     const [open, setOpen] = useState(false);
-   // const [value, setValue] = useState<number | null>(null);
     const [items, setItems] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minAge).toString(), value: (i + minAge)}}));
 
     const [open2, setOpen2] = useState(false);
-   // const [value2, setValue2] = useState<number | null>(null);
     const [items2, setItems2] = useState(Array.from({length: 80}, (_, i) => { return {label: (i + minAge).toString(), value: (i + minAge)}}));
  
     const theme = useTheme();
 
-    // useEffect(() => {
-    //     if(value !== null)
-    //         onMinimumAgeChange(value);
-    // }, [value])
-
-    // useEffect(() => {
-    //     if(value2 !== null)
-    //         onMaximumAgeChange(value2);
-    // }, [value2])
-  
     return(
         <View style={[{flexDirection: 'row'}, SpacingStyles.centeredContainer]}>
             <DropDownPicker

@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Gender, SkateExperience, SkatePracticeStyles, SkatesType, SportName, User } from '../types';
+import { Gender, SkateExperience, SkatePracticeStyles, SkatesType, SportName } from '../types';
 
 interface ConfigProfileState {
     sport: SportName | undefined,

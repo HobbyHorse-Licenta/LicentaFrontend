@@ -1,9 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
-import { Pressable, View, StyleSheet} from "react-native";
+import React, { useCallback } from "react";
+import { Pressable, View} from "react-native";
 
 import { useTheme, Text } from "react-native-paper";
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { useDispatch } from 'react-redux';
 import uuid from 'react-native-uuid'
 
 
@@ -11,7 +10,6 @@ import { SpacingStyles } from '../../styles'
 import {Day} from '../../types';
 import { scale } from "react-native-size-matters";
 import { PrimaryContainer } from "../general";
-import { setSelectedDaysState } from "../../redux/createScheduleState";
 import dayScheduleUtils from "../../utils/DaySchedule";
 
 interface Input {

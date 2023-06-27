@@ -53,7 +53,6 @@ export const createScheduleStateSlice = createSlice({
             state.maxNumberOfPeople = action.payload;
         },
         setExistingScheduleState: (state, action: PayloadAction<Schedule>) => {
-            console.log("SETTING STATES");
             state.selectedDays = action.payload.days;
             state.zone = action.payload.zones[0];
             state.startTime = action.payload.startTime;

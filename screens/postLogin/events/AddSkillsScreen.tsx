@@ -5,14 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { scale, verticalScale } from 'react-native-size-matters';
 import uuid from 'react-native-uuid';
 import {Text, useTheme} from 'react-native-paper'
+import { nothing } from 'immer';
 
-import { GeneralHeader, PrimaryContainer, SelectionListModal, Tile } from '../../../components/general';
+import { GeneralHeader, PrimaryContainer, Tile } from '../../../components/general';
 import { SpacingStyles } from '../../../styles';
 import { Layout2Piece } from '../../../screens/layouts';
-import { ProfileConfigHeader } from '../../../components/profileConfig';
 import { RootState } from '../../../redux/store';
 import AssignedSkillList from '../../../components/profile/AssignedSkillList';
-import { nothing } from 'immer';
 import { Fetch } from '../../../services';
 import { AssignedSkill, MasteringLevel, SkillRecommendation } from '../../../types';
 import { uiUtils, validation } from '../../../utils';
@@ -24,7 +23,6 @@ const AddSkillsScreen = () => {
 
     const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState);
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
-    const [goNextDisabled, setGoNextDisabled] = useState(true);
     const [recommendedSkills, setRecommendedSkills] = useState<Array<SkillRecommendation> | undefined>(undefined);
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -52,14 +50,6 @@ const AddSkillsScreen = () => {
     }, [currentSkateProfile])
 
 
-    // useEffect(() => {
-    //     if(recommendedSkills !== undefined)
-    //     {
-    //         setRecommendedSkills((prev) => removeAssignedSkillsFromRecommendations(prev))
-    //     }
-    // }, [currentSkateProfile])
-    
-
     const getRecommendedSkillsElements = () => {
         if(recommendedSkills !== undefined && recommendedSkills.length > 0)
         {
@@ -81,7 +71,7 @@ const AddSkillsScreen = () => {
     {
         if(currentSkateProfile !== undefined)
         {
-            // //add recommended skill to assigned skills in curent skate profile, mastering level should be begginer
+            //add recommended skill to assigned skills in curent skate profile, mastering level should be novice
             const newAssignedSkill: AssignedSkill = {
                 id: uuid.v4().toString(),
                 skillId: recommendedSkill.skill.id,

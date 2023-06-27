@@ -5,18 +5,17 @@ import uuid from 'react-native-uuid';
 import {Text, useTheme} from 'react-native-paper'
 import { scale, verticalScale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
+import { nothing } from "immer";
+
 import { RootState } from "../../redux/store";
 import { Fetch } from "../../services";
 import { SpacingStyles } from "../../styles";
 import { uiUtils, validation } from "../../utils";
-
 import QuestionModal from '../general/QuestionModal'
-import { AssignedSkill, MasteringLevel, RenderElement, SkateProfile, Skill, SkillRecommendation } from "../../types";
-import { PrimaryContainer, SelectionListModal, Tile, TileList } from "../general";
+import { AssignedSkill, MasteringLevel, SkillRecommendation } from "../../types";
+import { PrimaryContainer, SelectionListModal, Tile} from "../general";
 import AssignedSkillList from "./AssignedSkillList";
 import { addAssignedSkill, backupUser, revertChangesInUser } from "../../redux/appState";
-import { nothing } from "immer";
-import OutsidePressHandler from "react-native-outside-press";
 
 interface Input{
     skateProfileId: string
@@ -54,20 +53,6 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
             setRecommendedSkills(undefined)
         }
     }, [profileInfo, user])
-
-    // const getAssignedSkillsAsTextArray = () => 
-    // {
-    //     if(profileInfo !== null && profileInfo !== undefined && profileInfo.assignedSkills !== undefined && profileInfo.assignedSkills !== null)
-    //     {
-    //         return profileInfo.assignedSkills.map((assignedSkill) => {
-    //             if(assignedSkill !== undefined && assignedSkill.skill !== undefined)
-    //                 return(<Text>{assignedSkill.skill.name}</Text>)
-    //             else return null;
-    //         })
-    //     }
-    //     else return null;
-        
-    // }
 
     const removeAssignedSkillsFromRecommendations = (recomSkills: Array<SkillRecommendation> | undefined) => {
         //all recommended skills that are not already assigned to the skateprofile
@@ -191,10 +176,8 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
                             {
                                 recommendedSkills !== undefined && recommendedSkills.length > 0 ? 
                                 (
-                                    //<OutsidePressHandler disabled={false} onOutsidePress={() =>{ console.log("\n\n\nPRESSED OUTISDE\n\n\n"); setAddSkillModalVisible(false)}}>
-                                        <SelectionListModal visible={addSkillModalVisible}
-                                        list={getRecommendedSkillsElements()}></SelectionListModal>
-                                    //</OutsidePressHandler>
+                                    <SelectionListModal visible={addSkillModalVisible}
+                                    list={getRecommendedSkillsElements()}></SelectionListModal>
                                 ):
                                 (
                                     <QuestionModal question="No recommended event suggestions" button1Text="Ok" onButton1Press={() => setAddSkillModalVisible(false)} onDismiss={() => nothing}

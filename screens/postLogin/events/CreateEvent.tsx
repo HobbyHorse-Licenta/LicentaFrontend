@@ -1,5 +1,5 @@
 import React, {useRef, useState, useEffect} from 'react'
-import { View, StyleSheet, Platform, Pressable, ScrollView, Image, TouchableOpacity, Button as ReactNativeButton } from 'react-native';
+import { View, StyleSheet, Platform, Pressable, ScrollView } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -8,19 +8,17 @@ import MapView, {LatLng, PROVIDER_GOOGLE} from 'react-native-maps';
 import { Text, TextInput, useTheme } from 'react-native-paper';
 import Popover from 'react-native-popover-view/dist/Popover';
 import { Rect } from 'react-native-popover-view';
-import ViewShot, { captureRef } from 'react-native-view-shot';
+import { captureRef } from 'react-native-view-shot';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 import { Button, GeneralHeader, LoadingComponent, PrimaryContainer, RectangularPicture } from '../../../components/general';
 import { Layout2Piece } from '../../layouts';
-import { mapsUtils, uiUtils, validation } from '../../../utils';
-import { CheckPoint, Location, Day, Gender, Event, SkateExperience, SkatePracticeStyles, CustomTrail, AggresiveEvent, MarkerType } from '../../../types';
+import { mapsUtils, validation } from '../../../utils';
+import { CheckPoint, Location, Day, Gender, SkatePracticeStyles, CustomTrail, AggresiveEvent } from '../../../types';
 import { SpacingStyles } from '../../../styles';
 import { SelectAgeGap, SelectDays, SelectHourRange, SelectNumberOfPeople } from '../../../components/schedule';
 import SelectGender from '../../../components/createEvent/SelectGender';
-import { setMaxNumberOfPeople } from '../../../redux/createScheduleState';
-import { useDispatch, useSelector } from 'react-redux';
-import { addAggresiveEventToUser, setJWTTokenResult } from '../../../redux/appState';
 import { RootState } from '../../../redux/store';
 import { Fetch } from '../../../services';
 
@@ -120,7 +118,7 @@ const CreateEvent = () => {
                 gender: gender,
                 maximumAge: maximumAge,
                 minimumAge: minimumAge,
-                skateExperience: SkateExperience.Advanced, //TODO selected by user
+                skateExperience: currentSkateProfile.skateExperience,
                 outing: {
                     id: uuid.v4().toString(),
                     eventId: eventId,
@@ -289,13 +287,6 @@ const CreateEvent = () => {
                     setSelectedLocation(undefined);
                     clearTimeout(timoutId);
                 }} />
-                {/* <ReactNativeButton title='Add marker'
-                onPress={() => 
-                {
-                    addCheckPoint();
-                    setSelectedLocation(undefined);
-                    clearTimeout(timoutId);
-                }} /> */}
             </Popover>
         )
     }
@@ -479,9 +470,6 @@ const styles = StyleSheet.create({
         zIndex: 1,
         position: "absolute",
         top: scale(50)
-    },
-    eventImageText: {
-        marginTop: verticalScale(30)
     },
     descriptionInput: {
         width: scale(250),

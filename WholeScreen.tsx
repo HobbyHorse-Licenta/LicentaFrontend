@@ -8,26 +8,23 @@ import { useTheme } from 'react-native-paper';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
 import { initializeApp } from 'firebase/app';
 import { verticalScale } from 'react-native-size-matters';
-import * as Device from 'expo-device';
 import 'firebase/auth';
 import { nothing } from 'immer';
 import { getAuth, onAuthStateChanged, Auth } from "firebase/auth";
 import type { FirebaseApp } from 'firebase/app';
 import { getNetworkStateAsync } from 'expo-network';
-
-
+import { Subscription } from 'expo-modules-core';
 
 import { setWindowHeight } from './redux/ui';
 import MainStack from './stacks/MainStack';
 import { Fetch } from './services';
 import {authenticationUtils, uiUtils, validation} from './utils';
 import { firebaseConfig } from './firebaseConfig';
-import { resetAppState, setJWTTokenResult, setNeedsRecommendedEventsRefresh, setUser, setUserId } from './redux/appState';
+import { resetAppState, setJWTTokenResult, setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh, setNeedsSchedulesRefresh, setUser, setUserId } from './redux/appState';
 import { User } from './types';
 import LoadingScreen from './screens/preLogin/LoadingScreen';
 import { RootState } from './redux/store';
 import { CheckInternetScreen } from './screens/preLogin';
-import { Subscription } from 'expo-modules-core';
 import { useTourGuideController } from 'rn-tourguide';
 import { setCurrentSkateProfile } from './redux/globalState';
 
@@ -60,19 +57,13 @@ const WholeScreen = () => {
     const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
     const windowHeight = useMemo(() => getWindowHeight(), []);
     const [internetConnected, setInternetConnected] = useState<boolean | undefined>(undefined);
-    const [waitingToRecheckInternet, setWaitingToRecheckInternet] = useState(null);
     const {user}  = useSelector((state: RootState) => state.appState);
     const [loading, setLoading] = useState(true);
 
 
 
     ////EXPO PUSH////
-   // const [expoPushToken, setExpoPushToken] = useState('');
     const notificationListener = useRef<Subscription>();
-
-    // useEffect(() => {
-    //   postExpoPushToken();
-    // }, [expoPushToken, user])
 
     useEffect(() => {
     if(user !== null && user !== undefined)
@@ -89,11 +80,7 @@ const WholeScreen = () => {
     });
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      if(notification.request.content.title !== null && notification.request.content.title === "refresh")
-      {
-        //this triggers a useEffect in EventsBody component
-        dispatch(setNeedsRecommendedEventsRefresh(true));
-      }
+      triggerRefreshBasedOnNotification(notification);
     });
 
     return () => {
@@ -102,61 +89,9 @@ const WholeScreen = () => {
         Notifications.removeNotificationSubscription(notificationListener.current);
       }
     };
-  }, [user]);
+    }, [user]);
 
-  const postExpoPushToken = (expoPushToken: string, connectedUser: User) => {
-    if(expoPushToken !== undefined && expoPushToken !== null)
-    {
-      if(connectedUser !== undefined && connectedUser !== null && (connectedUser.pushNotificationToken === null || connectedUser.pushNotificationToken === undefined || connectedUser.pushNotificationToken.length === 0))
-      {
-        const updatedUser: User = {
-          ...connectedUser,
-          pushNotificationToken: expoPushToken
-        }
 
-        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-        {
-    console.log("\n\n\n\n\n\nNE pregatim sa postam: =>> >> >>" +  JSON.stringify(updatedUser) +  "\n\n\n\n\n")
-
-          Fetch.putUser(JWTTokenResult.token,
-            connectedUser.id, updatedUser, 
-            () => console.log("Posted user notificationToken succesfully"),
-            () => uiUtils.showPopUp("Error", "Couldn't post notification token to database"))
-        }
-        else {
-          //TODO refresh token
-          console.log("\n\n\nTHERE IS NO JWT TOKEN YET\n\n\n");
-        }
-        
-      }
-      else console.log("User undefined at this moment; can't post notification token");
-    }
-  }
-  async function registerForPushNotificationsAsync() {
-    let token;
-  
-    if (Platform.OS === 'android') {
-      await Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-
-      console.log("looking for permissions");
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        console.log("Permission was not granted, so it's asking for it")
-      }
-      try {
-        token = (await Notifications.getExpoPushTokenAsync()).data;
-      } catch (error) {
-        console.log("Coudn't get token")
-      }
-    return token;
-  }
     ////////////////
     
     useEffect(() => {
@@ -177,7 +112,6 @@ const WholeScreen = () => {
 
  ///////////SETTING THINGS UP AND VERIFYING LOGIN///////////
     useEffect(() => {
-     
       authenticationUtils.setDispatch(dispatch);
 
       onAuthStateChanged(firebaseAuth, (firebaseUser) => {
@@ -200,7 +134,6 @@ const WholeScreen = () => {
       const netInfo = await getNetworkStateAsync();
       return netInfo;
     }
-
     
     const checkInternet = () => {
       getNetInfo().then(info => {
@@ -210,8 +143,6 @@ const WholeScreen = () => {
         }, 2000);
       });
     }
-
-
 
     const checkUser = (user) => {
       if (user !== null && user !== undefined) 
@@ -225,6 +156,91 @@ const WholeScreen = () => {
       } 
     }
     ///////////////////////////////////////////
+
+    const triggerRefreshBasedOnNotification = (notification) => {
+      if(notification.request.content.title !== null)
+      {
+        switch (notification.request.content.title) {
+          case "New Event":
+            //also show notification
+            //this triggers a useEffect in EventsBody component
+            dispatch(setNeedsRecommendedEventsRefresh(true));
+            break;
+          case "Event changes":
+            //this triggers a useEffect in EventsBody and myEventsBody component
+            dispatch(setNeedsRecommendedEventsRefresh(true));
+            dispatch(setNeedsEventsRefresh(true));
+            break;
+          case "Event delete":
+            //this triggers a useEffect in EventsBody and myEventsBody component
+            dispatch(setNeedsRecommendedEventsRefresh(true));
+            dispatch(setNeedsEventsRefresh(true));
+            break;
+          case "Schedule delete":
+            //this triggers a useEffect in MySchedules
+            dispatch(setNeedsSchedulesRefresh(true));
+            break;
+            
+          default:
+            dispatch(setNeedsRecommendedEventsRefresh(true));
+            dispatch(setNeedsEventsRefresh(true));
+            dispatch(setNeedsSchedulesRefresh(true));
+            break;
+        }
+      }
+    }
+
+    const postExpoPushToken = (expoPushToken: string, connectedUser: User) => {
+      if(expoPushToken !== undefined && expoPushToken !== null)
+      {
+        if(connectedUser !== undefined && connectedUser !== null && (connectedUser.pushNotificationToken === null || connectedUser.pushNotificationToken === undefined || connectedUser.pushNotificationToken.length === 0))
+        {
+          const updatedUser: User = {
+            ...connectedUser,
+            pushNotificationToken: expoPushToken
+          }
+  
+          if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+          {
+            Fetch.putUser(JWTTokenResult.token,
+              connectedUser.id, updatedUser, 
+              () => console.log("Posted user notificationToken succesfully"),
+              () => uiUtils.showPopUp("Error", "Couldn't post notification token to database"))
+          }
+          else {
+            //TODO refresh token
+          }
+          
+        }
+        else console.log("User undefined at this moment; can't post notification token");
+      }
+    }
+
+    async function registerForPushNotificationsAsync() {
+      let token;
+    
+      if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+  
+        console.log("looking for permissions");
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+          console.log("Permission was not granted, so it's asking for it")
+        }
+        try {
+          token = (await Notifications.getExpoPushTokenAsync()).data;
+        } catch (error) {
+          console.log("Coudn't get token")
+        }
+      return token;
+    }
 
     const currentUserJWTTokenValid = (user) => {
       if (user) {

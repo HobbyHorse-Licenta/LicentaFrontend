@@ -236,6 +236,10 @@ const Fetch = {
     getUser: async function(jwtToken: string, userId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/user/get/" + userId, callBackFunction, errorCallBackFunction);
     },
+    getSchedulesForSkateProfile: async function(jwtToken: string, skateProfileId: string, callBackFunction: Function, errorCallBackFunction: Function){
+      this.get(jwtToken, apiUrl + "/schedule/get/scheduleForSkateProfile/" + skateProfileId, callBackFunction, errorCallBackFunction);
+    },
+    
 
     getUserBasicInfo: async function(jwtToken: string, userId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.get(jwtToken, apiUrl + "/user/getBasicInfo/" + userId, callBackFunction, errorCallBackFunction);

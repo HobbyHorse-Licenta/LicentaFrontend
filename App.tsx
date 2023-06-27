@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import {LogBox} from 'react-native'
+import React, { useEffect } from 'react'
 
-import { persistor} from './redux/store';
-import * as Notifications from 'expo-notifications';
-import { store } from './redux/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Provider as PaperProvider} from 'react-native-paper'
 import { EventProvider } from 'react-native-outside-press';
-import { CopilotProvider } from "react-native-copilot";
 import {
-  TourGuideProvider, // Main provider
-  TourGuideZone, // Main wrapper of highlight component
-  TourGuideZoneByPosition, // Component to use mask on overlay (ie, position absolute)
-  useTourGuideController, // hook to start, etc.
+  TourGuideProvider, 
 } from 'rn-tourguide'
 
+import { persistor} from './redux/store';
+import { store } from './redux/store';
 import WholeScreen from './WholeScreen';
 import { COLORS } from './assets/colors/colors';
-import useFonts from './hooks/useFonts';
-import { NetworkStateType } from 'expo-network/build/Network.types';
-import LoadingScreen from './screens/preLogin/LoadingScreen';
 
 
 const theme = {
@@ -85,12 +76,8 @@ const theme = {
 
 export default function App() {
 
-  const loadFonst = async() => {
-    await useFonts();
-  }
   useEffect(() => {
     EStyleSheet.build();
-    loadFonst();
   }, [])
 
 return (

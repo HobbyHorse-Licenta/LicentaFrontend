@@ -1,11 +1,10 @@
 import React, {useState} from "react";
-import {StyleSheet, Touchable, Pressable} from 'react-native'
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Pressable} from 'react-native'
+
 import { nothing } from "immer";
 import {Text, useTheme} from 'react-native-paper'
-import { scale, verticalScale } from "react-native-size-matters";
-import { SpacingStyles } from "../../styles";
 
+import { SpacingStyles } from "../../styles";
 import { SkateProfile } from "../../types";
 import { PrimaryContainer } from "../general";
 import { uiUtils } from "../../utils";
@@ -16,6 +15,7 @@ interface Input{
     onLongPress?: Function,
     onPress?: Function
 }
+
 const SkateProfileSummary = ({info, selected, onLongPress, onPress}: Input) => {
 
     const [heldDown, setHeldDown] = useState(false);
