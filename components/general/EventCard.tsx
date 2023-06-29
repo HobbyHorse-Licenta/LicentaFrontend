@@ -1,12 +1,21 @@
 import React, { useState, useEffect} from 'react'
-import { View, StyleSheet, Dimensions, Image} from 'react-native';
+import { View, StyleSheet, Dimensions, Image, Pressable} from 'react-native';
 
-import { verticalScale } from 'react-native-size-matters';
-import { useTheme, Text } from 'react-native-paper';
+import { scale, verticalScale } from 'react-native-size-matters';
+import { useTheme } from 'react-native-paper';
 
 import Button from './Button';
-import { EventDescription } from '../../types';
+import { Event, SkateProfile, User } from '../../types';
 import { SpacingStyles } from '../../styles';
+import EventInfoDisplay from '../events/EventInfoDisplay';
+import { blankProfilePictureUrl, defaultEventUrl } from '../../assets/imageUrls'
+import { filterUtils, resourceAccess, validation } from '../../utils';
+import { Fetch } from '../../services';
+import ProfilePicList from './ProfilePicList';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
+import { json } from 'node:stream/consumers';
+import { setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -20,20 +29,56 @@ const computeTextFontSize = (size: number) => {
     else return res;
 }
 
-const EventCard = () => {
+interface EventInput {
+    onPress?: Function,
+    event: Event,
+    joined: boolean
+}
+
+const EventCard = ({event, onPress, joined}: EventInput) => {
 
     const [dimensions, setDimensions] = useState({
         window: windowDimensions,
         screen: screenDimensions,
       });
 
-    const image = {uri: 'https://i.postimg.cc/tR26nKb9/basket.jpg'};
+    const dispatch =  useDispatch();
+    const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
+    const [recommendedUsersImagesUrl, setRecommendedUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
+    const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
+    const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
+    const [participatingSkateProfiles, setParticipatingSkateProfiles] = useState<Array<SkateProfile>>();
+    const [reversed, setReversed] = useState(false);
+    const { JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
+    //TODO REMOVE THIS
+    useEffect(() => {
+      if(event.imageUrl == undefined || event.imageUrl.length === 0)
+        setImageUrl(resourceAccess.getDefaultSkatingEventImage())
+      else setImageUrl(event.imageUrl);
+
+      if(currentSkateProfile !== undefined)
+      {
+        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+        {
+            Fetch.getSuggestedSkateProfilesForEvent(JWTTokenResult.token, event.id,
+                (skateProfiles) => setRecommendedSkateProfiles(filterUtils.excludeSkateProfile(skateProfiles, currentSkateProfile)),
+                () => console.log("Coudn't get suggested users"));
+        
+            //user can see himselft if hes participating
+            Fetch.getSkateProfilesForEvent(JWTTokenResult.token, event.id,
+                (skateProfiles) => setParticipatingSkateProfiles(skateProfiles),
+                () => console.log("Coudn't get participating users"));
+            }
+        }
+        else{
+            //TODO refresh token
+        }
+        
+      
+    }, []);
+
     const theme = useTheme();
-    const basketEventDescription: EventDescription = {
-        level: "Begginer",
-        location: "Gheorgheni nr. 2",
-        note: ""
-    };
 
     useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -45,43 +90,118 @@ const EventCard = () => {
     return () => subscription?.remove();
     });
 
-    const computeWidth = () => 80/100*dimensions.window.width;
-    const computeHeight = () => 25/100*dimensions.window.height;
+    useEffect(() => {
+        if(recommendedSkateProfiles !== undefined && recommendedSkateProfiles.length > 0)
+        {
+            setRecommendedUsersImagesUrl(getAllPicturesFromSkateProfiles(recommendedSkateProfiles));
+        }
+    }, [recommendedSkateProfiles])
 
-    function joinEvent(){
-        console.log("join event");
+    useEffect(() => {
+        if(participatingSkateProfiles !== undefined && participatingSkateProfiles.length > 0)
+        {
+            setParticipatingUsersImagesUrl(getAllPicturesFromSkateProfiles(participatingSkateProfiles));
+        }
+    }, [participatingSkateProfiles])
+    
+    
 
-        console.log(propertiesOf<EventDescription>(basketEventDescription))
+    const getAllPicturesFromSkateProfiles = (skateProfiles: Array<SkateProfile>): Array<string | undefined> =>
+    {
+        let userArray: Array<User> = [];
+        skateProfiles.forEach(skateProfile => skateProfile.user !== undefined && userArray.push(skateProfile.user));
+        if(userArray !== undefined)
+           return getAllPicturesFromUsers(userArray);
+        return [];   
     }
 
-    function propertiesOf<TObj>(_obj: (TObj | undefined) = undefined) {
-        return function result<T extends keyof TObj>(name: T) {
-            return name;
+    const getAllPicturesFromUsers = (users: Array<User>): Array<string | undefined> => {
+        return users.map((user) => {
+            if(user.profileImageUrl !== undefined && user.profileImageUrl !== null)
+                return user.profileImageUrl;
+            else return undefined;
+        });
+    }
+
+    function joinEvent(){
+        if(currentSkateProfile !== undefined)
+        {
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.joinSkateProfileToEvent(JWTTokenResult.token,
+                    currentSkateProfile.id, event.id,
+                    () => {console.log("\n\nEvent joined SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true));
+                            dispatch(setNeedsRecommendedEventsRefresh(true));},
+                    () => console.log("\n\nEvent join FAILED")
+                    );
+            }
+            else{
+                //TODO refresh token
+            }
+        }
+    }
+
+    function leaveEvent(){
+        if(currentSkateProfile !== undefined)
+        {
+            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
+            {
+                Fetch.leaveSkateProfileFromEvent(JWTTokenResult.token,
+                    currentSkateProfile.id, event.id,
+                () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));},
+                () => console.log("\n\nEvent left FAILED")
+                );
+            }
+            else{
+                //TODO refresh token
+            }
         }
     }
 
     return(
-        <View style={[styles.container, styles.roundness, {width: computeWidth(), height: computeHeight()}]}>
+        <Pressable onPress={() => (onPress != undefined) ? onPress() : console.log("[EventCard]: no action on press")}
+        style={[styles.container, {alignSelf: 'center'}, SpacingStyles.eventCard]}>
+            {
+                reversed === false ? 
+                (
+                    <View style={{width: "100%", height: "100%", flexDirection: "row"}}>
 
-           <View style={{width:'40%', height:'100%'}}>
-                <Image source={image} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
-           </View>
+                        <View style={{width:'40%', height:'100%'}}>
+                            <Image source={{uri: imageUrl}} style={[styles.leftRoundness, {width: '100%', height: '100%', resizeMode: 'cover'}]}></Image>
+                        </View>
 
-           <View style={[SpacingStyles.centeredContainer, styles.rightRoundness, {backgroundColor: theme.colors.primary}, {width:'60%', height:'100%', paddingRight: '3%', paddingTop:'3%', paddingBottom: '3%'}]}>
-                <View style={[{width:'80%', padding: '6%', flex: 6, flexWrap: 'wrap', backgroundColor: theme.colors.onSecondary}, styles.roundness, SpacingStyles.centeredContainer]}>
-                    {/* <Text style={styles.descriptiomText}>Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5
-                    Friendly basketball game in Gheorgheni Park. Level: Begginers, Address: Strada Gheorgheni nr. 5
-                    </Text> */}
-                     <Text style={styles.descriptiomText}> 
-                     Mole fuje, nime nu-l ajunje
-                    </Text>
-                </View>
-                <View style={{width:'80%', flex: 1, margin: '5%'}}>
-                    <Button text='Join' callBack={joinEvent}></Button>
-                </View>
-           </View>
+                        <View style={[SpacingStyles.centeredContainer, styles.rightSide, {backgroundColor: theme.colors.primary}]}>
+                            <EventInfoDisplay event={event}></EventInfoDisplay>
+                            {
+                                joined === false ? (
+                                    <View style={{width:'80%', margin: '5%'}}>
+                                        <Button style={{backgroundColor: theme.colors.secondary}} text='Join' onPress={joinEvent}></Button>
+                                    </View>
+                                )
+                                :(
+                                    <View style={{width:'80%', margin: '5%'}}>
+                                        <Button style={{backgroundColor: theme.colors.secondary}} text='Leave' onPress={leaveEvent}></Button>
+                                    </View>
+                                )
+                            }
+                    
+                            <View style={{width:'80%', margin: '5%', alignSelf: 'center'}}>
+                                <ProfilePicList imageUrlsArray={participatingUsersImagesUrl} grayedOutImageUrlsArray={recommendedUsersImagesUrl}></ProfilePicList>
+                            </View>  
+                        </View>
 
-        </View>
+                    </View>                   
+                ):
+                (
+                    <View style={{width:'80%', margin: '5%'}}>
+                        <Button style={{backgroundColor: theme.colors.secondary}} text='Delete' onPress={leaveEvent}></Button>
+                    </View>
+                )
+            }
+            
+                
+          
+        </Pressable>
     );
 };
 
@@ -91,26 +211,21 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         flexDirection: 'row',
-        
         margin: '2%',
         backgroundColor: 'white'
-       
-    },
-    roundness: {
-        borderBottomLeftRadius: 15,
-        borderBottomRightRadius: 15,
-        borderTopLeftRadius: 15,
-        borderTopRightRadius: 15
-    },
-    rightRoundness: {
-        borderTopRightRadius: 15,
-        borderBottomRightRadius: 15
+
     },
     leftRoundness: {
         borderBottomLeftRadius: 15,
         borderTopLeftRadius: 15,
     },
-    descriptiomText: {
-        fontSize: computeTextFontSize(12),
+    rightSide: {
+        borderTopRightRadius: 15,
+        borderBottomRightRadius: 15,
+        width:'60%',
+        height:'100%',
+        paddingRight: '3%',
+        paddingTop:'3%',
+        paddingBottom: '3%'
     }
 });

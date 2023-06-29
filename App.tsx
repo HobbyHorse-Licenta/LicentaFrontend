@@ -1,13 +1,18 @@
 import React, { useEffect } from 'react'
 
+import { PersistGate } from 'redux-persist/integration/react';
 import { Provider as ReduxProvider } from 'react-redux';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { Provider as PaperProvider} from 'react-native-paper'
+import { EventProvider } from 'react-native-outside-press';
+import {
+  TourGuideProvider, 
+} from 'rn-tourguide'
 
+import { persistor} from './redux/store';
+import { store } from './redux/store';
 import WholeScreen from './WholeScreen';
-import store from './redux/store'
 import { COLORS } from './assets/colors/colors';
-import useFonts from './hooks/useFonts';
 
 
 const theme = {
@@ -60,8 +65,9 @@ const theme = {
       "level4": "rgb(238, 232, 224)",
       "level5": "rgb(235, 229, 219)"
     },
-    "surfaceDisabled": "rgba(30, 27, 22, 0.12)",
-    "onSurfaceDisabled": "rgba(30, 27, 22, 0.38)",
+    "surfaceDisabled": COLORS.aDisabledContainer,
+    "onSurfaceDisabled": COLORS.aDisabledContainerText,
+    
     "backdrop": "rgba(53, 48, 36, 0.4)"
   }
   
@@ -70,21 +76,23 @@ const theme = {
 
 export default function App() {
 
-  const loadFonst = async() => {
-    await useFonts();
-  }
   useEffect(() => {
     EStyleSheet.build();
-    loadFonst();
   }, [])
-  
 
-  return (
-    <ReduxProvider store={store}>
-      <PaperProvider theme={theme}>
-          <WholeScreen></WholeScreen>
-      </PaperProvider>
-    </ReduxProvider>
+return (
+    <EventProvider style={{ flex: 1 }}>
+      <ReduxProvider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <PaperProvider theme={theme}>
+            <TourGuideProvider {...{ borderRadius: 16 }} androidStatusBarVisible={true}>
+              <WholeScreen></WholeScreen>
+            </TourGuideProvider >
+          </PaperProvider>
+        </PersistGate>
+      </ReduxProvider>
+    </EventProvider>
+    
   );
 }
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "642041826886",
+    "project_id": "hobbyhorse-16458",
+    "storage_bucket": "hobbyhorse-16458.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642041826886:android:ab17bce034e26e0014c447",
+        "android_client_info": {
+          "package_name": "com.alex99_pop.hobbyhorse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642041826886-sif09lo0bftj8b3f0r87sv4u72381a2j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhJZdxZts5Aw-PYmE1YV4drFMlg-bP78I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642041826886-sif09lo0bftj8b3f0r87sv4u72381a2j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

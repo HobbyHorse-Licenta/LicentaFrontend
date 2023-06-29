@@ -1,3 +1,5 @@
-import EventsHeader from "./EventsHeader";
 import EventsBody from './EventsBody'
-export {EventsHeader, EventsBody}
+import EventInfoDisplay from "./EventInfoDisplay";
+import AddAggresiveSkatingEvent from './AddAggresiveSkatingEvent';
+import AggresiveEventInfoDisplay from './AggresiveEventInfoDisplay';
+export {EventsBody, EventInfoDisplay, AddAggresiveSkatingEvent, AggresiveEventInfoDisplay}

@@ -1,69 +1,90 @@
-import React, { useState, useEffect} from 'react'
-import { View, StyleSheet, Image, Dimensions } from 'react-native';
+import React from 'react'
+import { View, StyleSheet, Image } from 'react-native';
 
 import { scale } from 'react-native-size-matters';
 import {Text} from 'react-native-paper'
 
 import { SpacingStyles } from '../../styles';
+import { blankProfilePictureUrl } from '../../assets/imageUrls';
 
 const imageSize = scale(30);
 
-const ProfilePicList = () => {
+interface ProfilePicListInput {
+    imageUrlsArray: Array<string | undefined> | undefined,
+    grayedOutImageUrlsArray: Array<string | undefined> | undefined,
+}
 
-    const [viewWidth, setViewWidth] = useState(0);
+/**
+ * Has a fixed size
+ */
+const ProfilePicList = ({imageUrlsArray, grayedOutImageUrlsArray} : ProfilePicListInput) => {
 
-    useEffect(() => {
-      setViewWidth(Dimensions.get('screen').width)
-      totalImageLength();
-    }, [])
     
-    const handleViewChange = (layout) => {
-        const {x, y, width, height} = layout
-        setViewWidth(width);
+    let picturesDisplayed = 0;
+    if(imageUrlsArray !== undefined)
+    {
+        if(imageUrlsArray.length < 6)
+            picturesDisplayed = imageUrlsArray.length;  
+        else picturesDisplayed = 6;
     }
+    else picturesDisplayed = 0;
 
-    const totalImageLength = () => {
-       return (imageSize/2) * (6 + 1);
-    }
+    const picListSize = ((picturesDisplayed + 1) * imageSize/2);
+    const marginOnASide = scale(30);
+    const componentWidth = picListSize + 2 * marginOnASide;
 
     const computeImageOffset = (index: number) => {
-        
-        const freeSpace = Dimensions.get('window').width - totalImageLength();
-        const offset = (freeSpace/4) + totalImageLength() - imageSize;
-        console.log("offset: " + offset)
-        const value = - (index * (imageSize * 1.5)) + offset;
-        console.log(value + " -> idx: " + index);
-        return value;
+        return (index) * imageSize/2 + marginOnASide;
     }
 
-    const [imageArray, setImageArray] = useState([
-        <Image source={require('../../assets/profilePics/1.jpg')} style={[{left: computeImageOffset(0)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/2.jpeg')} style={[{left: computeImageOffset(1)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/3.jpeg')} style={[{left: computeImageOffset(2)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/4.jpg')} style={[{left: computeImageOffset(3)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/5.jpg')} style={[{left: computeImageOffset(4)}, styles.profileImage]}/>,
-        <Image source={require('../../assets/profilePics/6.jpg')} style={[{left: computeImageOffset(5)}, styles.profileImage]}/>,
-    ]);
-    
+    const maxNormalPics = 5;
+    const maxGrayedOutPics = 3;
+
+    let secondaryStartingIndex = 0;
+    if(imageUrlsArray !== undefined)
+    {
+        if(imageUrlsArray.length > maxNormalPics)
+        {
+            secondaryStartingIndex = maxNormalPics;
+        }
+        else secondaryStartingIndex = imageUrlsArray.length;
+    }
+
+    let totalPicCount = 0;
+    if(grayedOutImageUrlsArray !== undefined)
+    {
+        if(grayedOutImageUrlsArray.length > maxGrayedOutPics)
+        {
+            totalPicCount = secondaryStartingIndex + maxGrayedOutPics;
+        }
+        else totalPicCount = secondaryStartingIndex + grayedOutImageUrlsArray.length;
+    }
+    else totalPicCount = secondaryStartingIndex;
+
     return(
-        <View style={[SpacingStyles.centeredContainer, {width: '100%', height: '100%', backgroundColor: 'purple'}]}>
-
-            <View style={[SpacingStyles.centeredContainer, {backgroundColor: 'red'}]}>
-                <View style={[{flexDirection: 'row'}, SpacingStyles.centeredContainer]} onLayout={(event) => handleViewChange(event.nativeEvent.layout)}>  
-                {imageArray.map((image) => {
-                        return(
-                            <View style={[styles.imageContainer, {width: imageSize, height: imageSize}]}>
-                                {image}
-                            </View>
-                        )
-                })}
-                
+            <View style={[SpacingStyles.centeredContainer, {alignSelf: 'center', width: componentWidth, height: imageSize * 2}]}>
+                <View style={[{flexDirection: 'row', width:'100%'}, SpacingStyles.centeredContainer]}>
+                {
+                    grayedOutImageUrlsArray !== undefined && grayedOutImageUrlsArray.map((imageUrl, index) => {
+                            if(index < maxNormalPics)
+                            return(
+                                <Image key={index} 
+                                source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}
+                                style={[{right: computeImageOffset(index), top: 0, width: imageSize, height: imageSize}, styles.profileImage]}/>             
+                            )
+                    })}  
+                    {imageUrlsArray !== undefined && imageUrlsArray.map((imageUrl, index) => {
+                            if(index < maxGrayedOutPics)
+                            return(
+                                <Image key={index} 
+                                source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}
+                                style={[{right: computeImageOffset(secondaryStartingIndex + index), top: 0, width: imageSize, height: imageSize}, styles.profileImage2]}/>            
+                            )
+                    })}
+                    
                 </View>
-                <Text>{imageArray.length} people</Text> 
+                <Text style={{marginTop: imageSize}}>{totalPicCount} people</Text> 
             </View>
-        </View>
-
-        
     );
 };
 
@@ -76,11 +97,15 @@ const styles = StyleSheet.create({
         alignItems: 'center' 
    },
    profileImage: {
-        width: '100%',
-        height: '100%',
         borderRadius: 100,
         position: 'absolute',
         borderWidth: 3/100*imageSize,
         borderColor: 'white'
-   }
+   },
+   profileImage2: {
+    borderRadius: 100,
+    position: 'absolute',
+    borderWidth: 3/100*imageSize + 1,
+    borderColor: 'red'
+    }
 });

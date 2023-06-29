@@ -1,18 +1,123 @@
-import React from 'react'
+import React, { useState } from 'react'
 
+import { SafeAreaView } from 'react-navigation';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useSelector } from 'react-redux';
+import { useTheme } from 'react-native-paper';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { AllEvents, Schedule } from '../screens/postLogin/events';
+import { AllEventsSvg, ProfileSvg, ScheduleSvg, MyEventsSvg, MapsSvg } from '../components/svg/general';
+import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack } from './mainPages';
+import { Intro, PersonalInfo, PreSelectStyleAndExperience, SelectSkates, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
+import { SvgView } from '../components/general';
+import { RootState } from '../redux/store';
+
 
 const AfterLogin = () => {
 
+  const {windowHeight} = useSelector((state: any) => state.ui);
+  const {user, addingSkateProfile} = useSelector((state: RootState) => state.appState);
+
+  const [tabBarVisible, setTabBarVisible] = useState(true);
+  const Tab = createBottomTabNavigator();
+  const theme = useTheme();
+
   const Stack = createNativeStackNavigator();
-  
+
   return ( 
-    <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Schedule'>
-        <Stack.Screen name="AllEvents" component={AllEvents} />
-        <Stack.Screen name="Schedule" component={Schedule} />
-    </Stack.Navigator>
+    <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
+    { 
+      (user === undefined || addingSkateProfile === true) ?
+      (
+        <Stack.Navigator screenOptions={{headerShown: false}} initialRouteName='Intro'>
+          {addingSkateProfile !== true &&  <Stack.Screen name="Intro" component={Intro} />}    
+          <Stack.Screen name="SelectSkates" component={SelectSkates} />
+          <Stack.Screen name="PreSelectStyleAndExperience" component={PreSelectStyleAndExperience} />
+          <Stack.Screen name="SelectStyleAndExperience" component={SelectStyleAndExperience} />
+          <Stack.Screen name="PersonalInfo" component={PersonalInfo} />
+        </Stack.Navigator>
+      ):
+      (
+      <Tab.Navigator
+        initialRouteName="EventsStack"
+        screenOptions={{
+          tabBarActiveTintColor: theme.colors.tertiary,
+          headerShown: false,
+          tabBarStyle: tabBarVisible ? {display: 'flex'} : {display: "flex", position: 'absolute', bottom: -200},
+        }}
+      >
+
+        <Tab.Screen
+          name="MySchedulesStack"
+          component={MySchedulesStack}
+          options={{
+          tabBarLabel: 'Schedules',
+          tabBarIcon: () => (
+            <SvgView size='medium'>
+              <ScheduleSvg></ScheduleSvg>
+            </SvgView>
+          ),
+          }}
+        />
+
+        <Tab.Screen
+          name="MyEventsStack"
+          component={MyEventsStack}
+          options={{
+            tabBarLabel: 'My events',
+            tabBarIcon: () => (
+              <SvgView size='medium'>
+                <MyEventsSvg></MyEventsSvg>
+              </SvgView>
+            ),
+          }}
+        />
+
+        <Tab.Screen
+          name="EventsStack"
+          component={EventsStack}
+          options={{
+            tabBarLabel: 'Events',
+            tabBarIcon: () => (
+              <SvgView size='medium'>
+               <AllEventsSvg></AllEventsSvg>
+              </SvgView>
+            ),
+            //tabBarBadge: 3,
+          }}
+        />
+
+        <Tab.Screen
+          name="MapsStack"
+          component={MapsStack}
+          options={{
+          tabBarLabel: 'Maps',
+          tabBarIcon: () => (
+            <SvgView size='medium'>
+              <MapsSvg></MapsSvg>
+            </SvgView>
+          ),
+          }}
+        />
+
+        <Tab.Screen
+          name="MyProfileStack"
+          component={MyProfileStack}
+          options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: () => (
+            <SvgView size='medium'>
+              <ProfileSvg></ProfileSvg>
+            </SvgView>
+          ),
+          }}
+        />
+
+      </Tab.Navigator>
+      )
+    }
+    </SafeAreaView>
+   
   );
 }
 

@@ -1,70 +1,34 @@
 import React, { useState } from "react";
-import { Pressable, View, StyleSheet} from "react-native";
+import { View} from "react-native";
 
-import {useTheme, Text} from 'react-native-paper'
-import { scale } from "react-native-size-matters";
-import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import RNDateTimePicker, { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 
-import { SpacingStyles } from '../../styles'
+import { SelectTime } from "../general";
 
 interface timePickerInput {
-  textAbovePicker: string
+  textAbovePicker: string,
+  time: Date
+  setTime: Function
 }
 
-const SelectTimeAndroid = ({textAbovePicker} : timePickerInput) => {
+const SelectTimeAndroid = ({textAbovePicker, time, setTime} : timePickerInput) => {
 
-  //const [isDatePickerVisible, setIsDatePickerVisible] = useState(false);
-  const [time, setTime] = useState<Date>(new Date())
- 
-  const theme = useTheme();
-
-  const onChangeDate = (event, selectedTime: Date | undefined) => {
-    if (selectedTime) {
-      setTime(selectedTime);
-     // setIsDatePickerVisible(false);
-    }
-  };
-
-  const handleChangeTime = () => {
-    DateTimePickerAndroid.open({
-      display: "clock",
-      value: time,
-      onChange: (event, selectedTime) => onChangeDate(event, selectedTime),
-      mode: "time",
-      is24Hour: true,
-    });
-  };
-
-   // const hideDatePicker = () => {
-  //   setIsDatePickerVisible(false);
-  // };
+  const [dataPickerVisible, setDatePickerVisible] = useState(false);
 
   return (
-      <View style={[SpacingStyles.selectTimeContainer,{backgroundColor: theme.colors.onSecondaryContainer, flexWrap: 'nowrap'}]}>
-          
-          <Text variant='bodyMedium'>
-            {textAbovePicker}
-          </Text>
-
-         <Pressable onPress={handleChangeTime} style={[styles.picker]}>
-            <Text>
-              {time.getHours()} : {time.getMinutes()}
-            </Text>
-         </Pressable>
-
-      </View>
+    <View>
+      <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={() => setDatePickerVisible(true)}/>
+      {dataPickerVisible === true && 
+      <RNDateTimePicker onChange={(time) => {
+        if(time.nativeEvent.timestamp !== undefined)
+        {
+          setTime(new Date(time.nativeEvent.timestamp));
+        }
+        setDatePickerVisible(false);
+      }} mode='time'  value={time} minimumDate={new Date(1950, 0, 1)} maximumDate={new Date(2023,0,1)} />
+      }
+    </View>
   );
 };
 
 export default SelectTimeAndroid;
-
-const styles = StyleSheet.create({
-    picker: {
-      margin: scale(10),
-      borderRadius: 10,
-      shadowOffset: {width: -2, height: 4},  
-      shadowColor: '#DADADA',  
-      shadowOpacity: 0.2,  
-      shadowRadius: 3,  
-    }
-});

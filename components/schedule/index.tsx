@@ -1,8 +1,11 @@
-import ScheduleHeader from "./ScheduleHeader"
 import SelectDays from "./SelectDays"
-import SelectTime from "./SelectTime"
-import AddSports from "./AddSports"
-import SelectLocation from "./SelectLocation"
+import SelectLocationAggresive from "./SelectLocationAggresive"
+import SelectLocationCasualAndSpeed from "./SelectLocationCasualAndSpeed"
 import SelectTimeAndroid from "./SelectTimeAndroid"
 import SelectHourRange from "./SelectHourRange"
-export {SelectDays, SelectTime, ScheduleHeader, AddSports, SelectLocation, SelectTimeAndroid, SelectHourRange}
+import SelectTimeIos from "./SelectTimeIos"
+import SelectAgeGap from "./SelectAgeGap"
+import SelectCompanion from "./SelectCompanion"
+import SelectNumberOfPeople from "./SelectNumberOfPeople"
+export {SelectDays, SelectLocationAggresive, SelectLocationCasualAndSpeed, SelectTimeAndroid, 
+    SelectHourRange, SelectTimeIos, SelectAgeGap, SelectCompanion, SelectNumberOfPeople}
