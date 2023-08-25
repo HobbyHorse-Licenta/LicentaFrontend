@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, StyleSheet, Pressable} from 'react-native';
 
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -30,6 +30,12 @@ const SelectCompanion = ({selectedGender, setSelectedGender, numberOfPartners, s
     const theme = useTheme();
     const dispatch = useDispatch();
 
+    const [numberOfPeopleSelectorOnTop, setNumberOfPeopleSelectorOnTop] = useState(true);
+
+    useEffect(() => {
+      console.log("selector on top: " + numberOfPeopleSelectorOnTop);
+    }, [numberOfPeopleSelectorOnTop])
+    
     useEffect(() => {
       dispatch(setGender(selectedGender))
     }, [selectedGender])
@@ -101,10 +107,12 @@ const SelectCompanion = ({selectedGender, setSelectedGender, numberOfPartners, s
 
     return(
         <PrimaryContainer styleInput={{padding: scale(10)}}>
-            <View style={{marginBottom: scale(25)}}>
+            <View style={{marginBottom: scale(25), zIndex: numberOfPeopleSelectorOnTop === true ? 3 : 0}}>
                 <Text variant="titleMedium" style={{padding: scale(5)}}>You would go out with maximum:</Text>
                 <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
-                    <SelectNumberOfPeople inputValue={numberOfPartners !== undefined ? numberOfPartners : null}  onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
+                    <SelectNumberOfPeople inputValue={numberOfPartners !== undefined ? numberOfPartners : null}
+                        onOpenOrClose={() => setNumberOfPeopleSelectorOnTop((value) => !value)}
+                      onChange={nr => setNumberOfPartners(nr)}></SelectNumberOfPeople>
                     <Text style={{marginLeft: scale(10)}}>skaters</Text>
                 </View>
             </View>

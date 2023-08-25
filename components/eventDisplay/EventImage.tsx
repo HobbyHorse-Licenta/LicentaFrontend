@@ -16,7 +16,7 @@ interface Input {
     event: Event
 }
 const EventImage = ({event}: Input) => {
-    console.log("event to display: " + JSON.stringify(event));
+    
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     let parkTrail: ParkTrail | undefined = undefined;
     if(currentSkateProfile?.skatePracticeStyle === SkatePracticeStyles.CasualSkating || currentSkateProfile?.skatePracticeStyle === SkatePracticeStyles.SpeedSkating )

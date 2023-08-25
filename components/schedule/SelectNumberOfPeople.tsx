@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useEffect, useState} from 'react';
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { scale } from 'react-native-size-matters';
@@ -8,14 +8,19 @@ import {useTheme} from 'react-native-paper'
 interface Input {
     inputValue: number | null
     onChange: React.Dispatch<React.SetStateAction<number | undefined>>
+    onOpenOrClose?:  Function
 }
 
-const SelectNumberOfPeople = ({onChange, inputValue} : Input) => {
+const SelectNumberOfPeople = ({onChange, inputValue, onOpenOrClose} : Input) => {
 
     const [open, setOpen] = useState(false);
     const [items, setItems] = useState(Array.from({length: 5}, (_, i) => { return {label: (i + 1).toString(), value: (i + 1)}}));
 
- 
+    useEffect(() => {
+      if(onOpenOrClose !== undefined)
+        onOpenOrClose();
+    }, [open])
+    
     const theme = useTheme();
 
     return(
@@ -39,7 +44,7 @@ const SelectNumberOfPeople = ({onChange, inputValue} : Input) => {
             setOpen={setOpen}
             setValue={onChange}
             setItems={setItems}
-            zIndex={5}
+            zIndex={10}
             autoScroll={true}
             />
     );

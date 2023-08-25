@@ -81,7 +81,7 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
         <PrimaryContainer styleInput={{...getStyle(), overflow:"hidden"}}>
         <Text variant='headlineSmall'>Skate Profiles</Text>
          {   holdFeatureEnabled === true &&
-            <HorizontalTextScroll text={"Add training skills by holding a skating profile"} />
+            <HorizontalTextScroll duration={10} text={"Add training skills by holding a skating profile"} />
         }
             {
                 profiles != undefined &&

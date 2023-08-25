@@ -1,3 +1,4 @@
 
 import MapsBody from "./MapsBody";
-export {MapsBody}
+import EventMarkerCallout from "./EventMarkerCallout";
+export {MapsBody, EventMarkerCallout}

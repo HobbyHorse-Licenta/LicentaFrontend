@@ -131,6 +131,7 @@ const AggresiveEventDisplay = ({route, navigation}) => {
     return(
       <ScrollView>
         {getMap()}
+        {getMap()}
         {skatersInfo()}
       </ScrollView>
     );

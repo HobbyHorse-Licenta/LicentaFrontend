@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {StyleSheet, View} from 'react-native'
+import {Dimensions, ScrollView, StyleSheet, useWindowDimensions, View, ViewStyle} from 'react-native'
 
 import uuid from 'react-native-uuid';
 import {Text, useTheme} from 'react-native-paper'
@@ -20,7 +20,7 @@ import { addAssignedSkill, backupUser, revertChangesInUser } from "../../redux/a
 interface Input{
     skateProfileId: string
 }
-
+const windowWidth = Dimensions.get('window').width;
 
 const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
     
@@ -148,26 +148,30 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
     }
 
     const getStyle = () => {
-       return {...{backgroundColor: theme.colors.background, borderColor: theme.colors.tertiary}}
+        const style : ViewStyle = {backgroundColor: 'yellow', borderColor: theme.colors.tertiary, width: "100%", height: "100%"}
+       return style
     }
     const theme = useTheme();
     return(
-        <PrimaryContainer
-        styleInput={getStyle()}>
+        // <PrimaryContainer
+        // styleInput={getStyle()}>
+        <View>
             {
                 profileInfo !== undefined &&
                 <View style={SpacingStyles.centeredContainer}>
-                    <View style={{justifyContent: 'center', alignItems: "center", paddingVertical: scale(10), paddingHorizontal: scale(30), backgroundColor: "white", borderRadius: 22}}>
+                    <View style={[SpacingStyles.centeredContainer, {paddingVertical: scale(10), backgroundColor: theme.colors.background, borderRadius: 22}]}>
 
                         <Text variant='headlineSmall'>Current profile</Text>
                         <Text variant="bodyLarge">{profileInfo.skateType}</Text>
                         <Text variant='bodyLarge'>{profileInfo.skatePracticeStyle}</Text>
                         <Text variant='bodyLarge'>{profileInfo.skateExperience}</Text>
                         <View style={styles.skillsContainer}>
-                            <AssignedSkillList skateProfileId={profileInfo.id} onPressAddSkill={() => addNewSkillToProfile()}></AssignedSkillList>
+                            <ScrollView horizontal={true} contentContainerStyle={{justifyContent: "center", alignItems: "center"}}>
+                                <AssignedSkillList skateProfileId={profileInfo.id} onPressAddSkill={() => addNewSkillToProfile()}></AssignedSkillList>
+                            </ScrollView>
                         </View>
                     </View>
-                    <View style={styles.skillsContainer}>
+                    <View style={styles.systemGuideContainer}>
                         {getSystemGuide()}
                     </View>
                     {
@@ -188,14 +192,21 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
                     }
                 </View>
             }
-        </PrimaryContainer>
+        </View>
+        
     );
 }
-
+//{/* </PrimaryContainer> */}
 export default SkateProfileSummaryWithSkills;
 
 const styles = StyleSheet.create({
     skillsContainer: {
-        margin: scale(10)
+        margin: scale(10),
+        height: scale(100),
+        width: scale(200)
+    },
+    systemGuideContainer: {
+        height: scale(180),
+        width: scale(200),
     }
 })

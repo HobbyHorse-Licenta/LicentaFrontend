@@ -44,6 +44,7 @@ const Schedule = ({route, navigation}) => {
   const [startTime, setStarTTime] = useState<Date>(scheduleConfig.startTime !== undefined ? new Date(scheduleConfig.startTime) : new Date())
   const [endTime, setEnDTime] = useState<Date>(scheduleConfig.endTime !== undefined ? new Date(scheduleConfig.endTime) : new Date())
 
+  const [zone, setZone] = useState<Zone | undefined>(scheduleConfig.zone);
   const [selectedGender, setSelectedGender] = useState<Gender | undefined>(scheduleConfig.gender);
   const [numberOfPartners, setNumberOfPartners] = useState<number | undefined>(scheduleConfig.maxNumberOfPeople);
   const [minimumAge, setMinimumAgee] = useState<number | undefined>(scheduleConfig.minimumAge);
@@ -260,7 +261,7 @@ const Schedule = ({route, navigation}) => {
         {
           currentSkateProfile?.skatePracticeStyle === SkatePracticeStyles.AggresiveSkating &&
           <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
-            <SelectLocationAggresive onTouchInside={() => {setScrollEnable(false)}} onTouchOutside={() => {setScrollEnable(true);}}></SelectLocationAggresive>
+            <SelectLocationAggresive onTouchInside={() => {setScrollEnable(false)}} zone={zone} onTouchOutside={() => {setScrollEnable(true);}}></SelectLocationAggresive>
           </View>
         }
         {
@@ -269,6 +270,7 @@ const Schedule = ({route, navigation}) => {
           <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
             <SelectLocationCasualAndSpeed 
             parkSelected={parkSelected}
+            zone={zone}
             setParkSelected={setParkSelected}
             onTouchInside={() => {setScrollEnable(false)}} 
             onTouchOutside={() => {setScrollEnable(true);}}></SelectLocationCasualAndSpeed>

@@ -19,6 +19,7 @@ const MainStack = () => {
 
   const [routeName, setRouteName] = useState<string>();
   const { JWTTokenResult } = useSelector((state: RootState) => state.appState)
+  const {currentRoute} = useSelector((state: RootState) => state.globalState)
   const [initialState, setInitialState] = React.useState();
   const Stack = createNativeStackNavigator();
   const navigationRef = createNavigationContainerRef();
@@ -47,9 +48,9 @@ const MainStack = () => {
   //     restoreState();
   // }, []);
 
-  useEffect(() => {
-    resetNavigationState();
-  }, [])
+  // useEffect(() => {
+  //   resetNavigationState();
+  // }, [])
   
 
   const resetAction = CommonActions.reset({
@@ -66,13 +67,14 @@ const MainStack = () => {
 
   };
 
-
+ 
   return ( 
     <View style={[SpacingStyles.fullSizeContainer, {backgroundColor: 'orange'}]}> 
       <NavigationContainer ref={navigationRef}
       onReady={() => setRouteName(navigationRef.getCurrentRoute()?.name)}
       initialState={initialState}
       onStateChange={async (state) => {
+       
         const currentRouteName = navigationRef.getCurrentRoute()?.name;
         if(currentRouteName != undefined)
         {

@@ -30,16 +30,17 @@ interface Input {
     onTouchInside?: Function,
     onTouchOutside?: Function
     parkSelected: boolean,
-    setParkSelected: Function
+    setParkSelected: Function,
+    zone: Zone
 }
 
-const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelected, setParkSelected} : Input) => {
+const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelected, setParkSelected, zone} : Input) => {
 
     const {allParkTrails} = useSelector((state: RootState) => state.appState)
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
-    const [localZone, setLocalZone] = useState<Zone>();
+    const [localZone, setLocalZone] = useState<Zone | undefined>(zone !== undefined ? zone : undefined);
     const [parkTrailsInRange, setParkTrailsInRange] = useState<Array<ParkTrail>>([]);
-    const [range, setRange] = useState<number>(1);
+    const [range, setRange] = useState<number>(zone !== undefined ? zone.range : 1);
     const [dropdownPickerOpen, setDropDownPickerOpen] = useState(false);
     //const [parkSelected, setParkSelected] = useState(false);
     const [selectedLocation, setSelectedLocation] = useState<Location | undefined>({
@@ -90,20 +91,23 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
     
           let location = await ExpoLocation.getCurrentPositionAsync({});
 
-          if(mapRef.current != null)
-            mapRef.current.animateToRegion({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: 0.00001,
-                longitudeDelta: mapsUtils.kMToLongitudes(range, location.coords.latitude)
-              }, 1000)
+          if(zone === undefined)
+          {
 
-          setSelectedLocation({id: uuid.v4().toString(), 
-                        name: 'Your Location',
-                        lat: location.coords.latitude,
-                        long: location.coords.longitude,
-            });
+            if(mapRef.current != null)
+                mapRef.current.animateToRegion({
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                    latitudeDelta: 0.00001,
+                    longitudeDelta: mapsUtils.kMToLongitudes(range, location.coords.latitude)
+                }, 1000)
 
+            setSelectedLocation({id: uuid.v4().toString(), 
+                            name: 'Your Location',
+                            lat: location.coords.latitude,
+                            long: location.coords.longitude,
+                });
+          }
         })();
     }, []);
 

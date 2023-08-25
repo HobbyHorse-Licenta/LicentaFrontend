@@ -18,7 +18,7 @@ import { Subscription } from 'expo-modules-core';
 import { setWindowHeight } from './redux/ui';
 import MainStack from './stacks/MainStack';
 import { Fetch } from './services';
-import {authenticationUtils, uiUtils, validation} from './utils';
+import {authenticationUtils, mapsUtils, uiUtils, validation} from './utils';
 import { firebaseConfig } from './firebaseConfig';
 import { resetAppState, setJWTTokenResult, setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh, setNeedsSchedulesRefresh, setUser, setUserId } from './redux/appState';
 import { User } from './types';
@@ -27,6 +27,7 @@ import { RootState } from './redux/store';
 import { CheckInternetScreen } from './screens/preLogin';
 import { useTourGuideController } from 'rn-tourguide';
 import { setCurrentSkateProfile } from './redux/globalState';
+import { Route, useNavigation } from '@react-navigation/native';
 
 const windowH = Dimensions.get("window").height;
 
@@ -55,6 +56,7 @@ const WholeScreen = () => {
     const theme = useTheme();
     const popUp = useRef<NotificationPopup | null>(null);
     const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
+    const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     const windowHeight = useMemo(() => getWindowHeight(), []);
     const [internetConnected, setInternetConnected] = useState<boolean | undefined>(undefined);
     const {user}  = useSelector((state: RootState) => state.appState);
@@ -68,7 +70,8 @@ const WholeScreen = () => {
     useEffect(() => {
     if(user !== null && user !== undefined)
     {
-      registerForPushNotificationsAsync().then(token => postExpoPushToken(token, user));
+      if(user.pushNotificationToken === undefined || user.pushNotificationToken === null)
+        registerForPushNotificationsAsync().then(token => postExpoPushToken(token, user));
     }
 
     Notifications.setNotificationHandler({
@@ -103,7 +106,10 @@ const WholeScreen = () => {
       {
         if(user.skateProfiles !== undefined && user.skateProfiles !== null && user.skateProfiles.length !== 0)
         {
-          dispatch(setCurrentSkateProfile(user.skateProfiles[0]));
+          if(currentSkateProfile === undefined)
+          {
+            dispatch(setCurrentSkateProfile(user.skateProfiles[0]));
+          }
         }
       }
     }, [user])
@@ -158,6 +164,8 @@ const WholeScreen = () => {
     ///////////////////////////////////////////
 
     const triggerRefreshBasedOnNotification = (notification) => {
+      console.log("Ajung aici pentru ca am primit notificare");
+
       if(notification.request.content.title !== null)
       {
         switch (notification.request.content.title) {
@@ -182,9 +190,7 @@ const WholeScreen = () => {
             break;
             
           default:
-            dispatch(setNeedsRecommendedEventsRefresh(true));
-            dispatch(setNeedsEventsRefresh(true));
-            dispatch(setNeedsSchedulesRefresh(true));
+            console.log("Unknown notification; do nothing")
             break;
         }
       }

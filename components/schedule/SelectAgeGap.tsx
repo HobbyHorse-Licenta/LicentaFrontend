@@ -48,12 +48,12 @@ const SelectAgeGap = ({onMinimumAgeChange, onMaximumAgeChange, minimumAge, maxim
                 if(val1 !== null && maximumAge !== null && maximumAge < val1)
                 onMaximumAgeChange(val1);
             }}
-            zIndex={3}
+            zIndex={2}
             autoScroll={true}
             />
             <Text style={{marginHorizontal: scale(10)}}>to</Text>
             <DropDownPicker
-            zIndex={3}
+            zIndex={2}
             listMode='SCROLLVIEW'
             placeholder='Max age'
                 containerStyle={{width: scale(100)}}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { SafeAreaView } from 'react-navigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,6 +11,8 @@ import { EventsStack, MyProfileStack, MySchedulesStack, MyEventsStack, MapsStack
 import { Intro, PersonalInfo, PreSelectStyleAndExperience, SelectSkates, SelectStyleAndExperience } from '../screens/postLogin/profileConfig';
 import { SvgView } from '../components/general';
 import { RootState } from '../redux/store';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { mapsUtils, navigationUtils } from '../utils';
 
 
 const AfterLogin = () => {
@@ -18,11 +20,21 @@ const AfterLogin = () => {
   const {windowHeight} = useSelector((state: any) => state.ui);
   const {user, addingSkateProfile} = useSelector((state: RootState) => state.appState);
 
-  const [tabBarVisible, setTabBarVisible] = useState(true);
+  // const [tabBarVisible, setTabBarVisible] = useState(true);
   const Tab = createBottomTabNavigator();
   const theme = useTheme();
 
+  const navigation = useNavigation();
+
   const Stack = createNativeStackNavigator();
+  const {currentRoute} = useSelector((state: any) => state.globalState);
+  const tabBarVisible = navigationUtils.ShouldHaveTabBar(currentRoute);
+
+  useEffect(() => {
+    mapsUtils.setNavigator(navigation)
+  }, [])
+  
+  const initialStackName = currentRoute !== undefined ? currentRoute + "Stack" : "EventsStack";
 
   return ( 
     <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
@@ -39,11 +51,11 @@ const AfterLogin = () => {
       ):
       (
       <Tab.Navigator
-        initialRouteName="EventsStack"
+        initialRouteName={initialStackName}
         screenOptions={{
           tabBarActiveTintColor: theme.colors.tertiary,
           headerShown: false,
-          tabBarStyle: tabBarVisible ? {display: 'flex'} : {display: "flex", position: 'absolute', bottom: -200},
+          tabBarStyle: tabBarVisible ? {display: 'flex'} : {display: 'none', position: 'absolute', bottom: -200},
         }}
       >
 

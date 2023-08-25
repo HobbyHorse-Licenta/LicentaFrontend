@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
 import { RootState } from '../../redux/store';
 import { mapsUtils, uiUtils, validation } from '../../utils';
-import { Event } from '../../types';
+import { CustomTrail, Event } from '../../types';
 import { Fetch } from '../../services';
 import { Button } from '../general';
 import { scale, verticalScale } from 'react-native-size-matters';
@@ -19,17 +19,35 @@ let mapsElementCount = 0;
 const MapsBody = () => {
 
     const theme = useTheme();
-    const [events, setEvents] = useState<Array<Event>>([]);
+
+    const [trailIsRendered, setTrailIsRendered] = useState(false);
+    const [trail, setTrail] = useState<CustomTrail | undefined>(undefined);
+
+
+    const [recommendedEvents, setRecommendedEvents] = useState<Array<Event>>([]);
+    const [attendingEvents, setAttendingEvents] = useState<Array<Event>>([]);
     const [parkTrailsVisible, setParkTrailsVisible] = useState(false);
     const {needsEventsRefresh, allParkTrails, JWTTokenResult} = useSelector((state: RootState) => state.appState);
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
 
+    console.log("Attending events: " +  attendingEvents.length);
+    console.log("Recommended events: " +  recommendedEvents.length);
     
     const [initialRegion, setInitialRegion] = useState({
         latitude:  46.771069, 
         longitude: 23.596883,
     });
     const [myLocation, setMyLocation] = useState<Location.LocationObject>();
+
+    useEffect(() => {
+        if(trailIsRendered)
+        {
+            setTimeout(() => {
+                setTrail(undefined);
+                setTrailIsRendered(false);
+            }, 5000);
+        }
+    }, [trailIsRendered])
 
     useEffect(() => {
         getAndSetMyEvents();
@@ -63,14 +81,20 @@ const MapsBody = () => {
     }, [myLocation])
 
     const getAndSetMyEvents = () => {
+        console.log("Luam events sa aratam pe harta")
         if(currentSkateProfile !== undefined)
         {
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
             {
+                Fetch.getRecommendedEventsForSkateProfile(JWTTokenResult.token,
+                    currentSkateProfile.id,
+                    (myEvents) => {setRecommendedEvents(myEvents);},
+                    () => { setRecommendedEvents([]); uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load recommended events");});
+                
                 Fetch.getEventsForSkateProfile(JWTTokenResult.token,
                     currentSkateProfile.id,
-                    (myEvents) => {setEvents(myEvents);},
-                    () => { setEvents([]); uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load recommended events");});
+                    (myEvents) => {setAttendingEvents(myEvents);},
+                    () => { setAttendingEvents([]); uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load attending events");});
             }
             else{
                 //TODO refresh token
@@ -96,6 +120,25 @@ const MapsBody = () => {
             </View>
         )
     }
+
+    const renderTrail = (trailId: string) => {
+        setTrailIsRendered(true);
+
+        const allEvents = [...recommendedEvents, ...attendingEvents];
+
+        const foundEvent = allEvents.find(event => event.id === trailId);
+
+        
+        if (foundEvent !== undefined && foundEvent.outing !== undefined && foundEvent.outing.trail !== undefined){
+            const customTrail : CustomTrail = foundEvent.outing.trail as CustomTrail;
+            if(customTrail.checkPoints !== undefined) 
+                setTrail(customTrail);
+            else setTrail(undefined);
+        }
+        else setTrail(undefined)
+
+    }
+
     return(
         <View>
             <MapView style={{width: '100%', height: '100%'}}
@@ -112,12 +155,18 @@ const MapsBody = () => {
                 getAllParkTrailMarkers()
             } 
             {
-                mapsUtils.getAttendingEvents(events, mapsElementCount + 1)
+                mapsUtils.getAttendingEvents(attendingEvents, mapsElementCount + 1, (id) => renderTrail(id))
+            }
+            {
+                mapsUtils.getRecommendedEvents(recommendedEvents, mapsElementCount + 1, (id) => renderTrail(id))
+            }
+            {
+                trailIsRendered === true && trail !== undefined &&  mapsUtils.drawRoute(trail.checkPoints, 300)
             }
             {
                 myLocation !== undefined &&
                 mapsUtils.getMarker({id: 'smth', lat: myLocation.coords.latitude,
-                 long: myLocation.coords.longitude},'Your location', mapsElementCount + events.length + 1)
+                 long: myLocation.coords.longitude},'Your location', mapsElementCount + recommendedEvents.length +  + 1)
             }
             </MapView>
             {

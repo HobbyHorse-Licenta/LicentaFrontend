@@ -1,7 +1,7 @@
 import React from 'react'
 import {RefObject} from 'react'
 import {Platform, View, Button, TouchableOpacity, Text as ReactNativeText, ImageBackground, StyleSheet} from 'react-native'
-import { CheckPoint, Event, Location, MarkerType, ParkTrail, Zone } from '../types';
+import { CheckPoint, CustomTrail, Event, Location, MarkerType, ParkTrail, Zone } from '../types';
 import MapView, { Callout, Circle, LatLng, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 import { Text, useTheme } from 'react-native-paper';
@@ -16,12 +16,19 @@ import { RootState } from '../redux/store';
 import uuid from 'react-native-uuid'
 import { Image } from 'react-native';
 import { scale, verticalScale } from 'react-native-size-matters';
-import { SvgView } from '../components/general';
+import { EventCard, SvgView } from '../components/general';
 import { BigLocationSvg } from '../components/svg/general';
+import { EventInfoDisplay } from '../components/events';
+import { EventMarkerCallout } from '../components/maps';
 
 
 class Maps {
-    
+    navigation;
+
+    setNavigator(navigation: any) {
+        this.navigation = navigation;
+    }
+
     radiansToDegrees(angle): number {
     return angle * (180 / Math.PI);
     }
@@ -195,20 +202,92 @@ class Maps {
         )
     }
 
-    getAttendingEvents(events: Array<Event>, startingValueForKeys: number)
+    getAttendingEvents(events: Array<Event>, startingValueForKeys: number, onMarkerPress: Function)
     {
         const startingIndex = startingValueForKeys !== undefined ? startingValueForKeys : 0;
         return events.map((evnt, index) => {
-            return this.getEventMarker(evnt, startingIndex + index);
+            return this.getAttendingEventMarker(evnt, onMarkerPress,  startingIndex + index,);
         })
     }
 
-    getEventMarker(eventData: Event, key?: number)
+    getAttendingEventMarker(eventData: Event, onMarkerPress: Function, key?: number)
     {
         if(eventData !== undefined && eventData.outing !== undefined && eventData.outing.trail !== undefined)
         {
             const trail: ParkTrail = eventData.outing.trail as ParkTrail;
-            if(trail.location !== undefined)
+            const customTrail: CustomTrail = eventData.outing.trail as CustomTrail;
+            if(trail !== undefined && trail.location !== undefined)
+            {
+                if(trail.location !== undefined)
+                {
+                    return(
+                        <Marker
+                            //key={key !== undefined ? key : 20}
+                            key={uuid.v4().toString()}
+                            coordinate={{
+                                latitude: trail.location.lat,
+                                longitude: trail.location.long
+                            }}
+                            title={eventData.name}
+                            image={{uri: "https://i.postimg.cc/hv9HKpJn/attended-Event.png"}}
+                            style={{width: 1, height: 1}}
+                            pinColor={'wheat'}
+                        >
+                            <Callout tooltip>
+                                    <EventMarkerCallout event={eventData} isRecommendedEvent={false}></EventMarkerCallout>
+                            </Callout>
+                        </Marker>
+                    )
+                }
+            }
+            else if(customTrail !== undefined && customTrail.checkPoints !== undefined)
+            {
+                if(customTrail.checkPoints !== undefined)
+                {
+                    return(
+                        <View>
+                            <Marker
+                            key={key !== undefined ? key : 20}
+                            coordinate={{
+                                latitude: customTrail.checkPoints[0].location.lat,
+                                longitude: customTrail.checkPoints[0].location.long
+                            }}
+                            title={eventData.name}
+                            image={{uri: "https://i.postimg.cc/rpH2KLGL/attended-Street-Event.png"}}
+                            style={{width: 1, height: 1}}
+                            pinColor={'wheat'}
+                            onPress={() => onMarkerPress(eventData.id)}
+                        >
+                            <Callout tooltip>
+                                    <EventMarkerCallout event={eventData} isRecommendedEvent={false}></EventMarkerCallout>
+                            </Callout>
+                        </Marker>
+                        </View>
+                        
+                    )
+                }
+            }
+            else return null;
+        }
+        else return null;
+        
+    }
+
+    getRecommendedEvents(events: Array<Event>, startingValueForKeys: number, onMarkerPress: Function,)
+    {
+        const startingIndex = startingValueForKeys !== undefined ? startingValueForKeys : 0;
+        return events.map((evnt, index) => {
+            return this.getRecommendedEventMarker(evnt, onMarkerPress, startingIndex + index);
+        })
+    }
+
+    getRecommendedEventMarker(eventData: Event, onMarkerPress: Function, key?: number)
+    {
+        if(eventData !== undefined && eventData.outing !== undefined && eventData.outing.trail !== undefined)
+        {
+            const trail: ParkTrail = eventData.outing.trail as ParkTrail;
+            const customTrail: CustomTrail = eventData.outing.trail as CustomTrail;
+            if(trail !== undefined && trail.location !== undefined)
             {
                 return(
                     <Marker
@@ -218,9 +297,10 @@ class Maps {
                             longitude: trail.location.long
                         }}
                         title={eventData.name}
-                        image={{uri: "https://i.postimg.cc/hv9HKpJn/attended-Event.png"}}
+                        image={{uri: "https://i.postimg.cc/rpsX51HG/recommended-Event.png"}}
                         style={{width: 1, height: 1}}
                         pinColor={'wheat'}
+                        onPress={() => this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: false} as never)}
                     >
                         <Callout tooltip>
                             {/* <ImageBackground 
@@ -228,7 +308,7 @@ class Maps {
                             source={{uri: (eventData.imageUrl !== undefined && eventData.imageUrl.length > 0) ? eventData.imageUrl : defaultEventUrl}}
                             >
                             </ImageBackground> */}
-                                <View style={{backgroundColor: "white", borderRadius: 20, height: 200, width: 220, padding: 20, justifyContent: "space-evenly", alignItems: "center"}}>
+                                {/* <View style={{backgroundColor: "white", borderRadius: 20, height: 200, width: 220, padding: 20, justifyContent: "space-evenly", alignItems: "center"}}>
                                 
                                     <Text variant="headlineSmall">{eventData.name}</Text>
                                     <TouchableOpacity style={{backgroundColor:COLORS.aBackground, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 10}}
@@ -246,13 +326,39 @@ class Maps {
                                         <Text>Join</Text>
                                     </TouchableOpacity>
                                     
-                                </View>
-                           
+                                </View> */}
+                           <EventMarkerCallout event={eventData} isRecommendedEvent={true}></EventMarkerCallout>
+                           {/* <EventCard key={eventData.id} event={eventData} joined={false}
+                                    onPress={() => this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: false} as never)}></EventCard> */}
                            
                             
                         </Callout>
                     </Marker>
                 )
+            }
+            else if(customTrail !== undefined && customTrail.checkPoints !== undefined)
+            {
+                if(customTrail.checkPoints !== undefined)
+                {
+                    return(
+                        <Marker
+                            key={key !== undefined ? key : 20}
+                            coordinate={{
+                                latitude: customTrail.checkPoints[0].location.lat,
+                                longitude: customTrail.checkPoints[0].location.long
+                            }}
+                            title={eventData.name}
+                            image={{uri: "https://i.postimg.cc/j5kQ6Xxp/recommended-Street-Event.png"}}
+                            style={{width: 1, height: 1}}
+                            pinColor={'wheat'}
+                            onPress={() => onMarkerPress(eventData.id)}
+                        >
+                            <Callout tooltip>
+                                    <EventMarkerCallout event={eventData} isRecommendedEvent={false}></EventMarkerCallout>
+                            </Callout>
+                        </Marker>
+                    )
+                }
             }
             else return null;
         }

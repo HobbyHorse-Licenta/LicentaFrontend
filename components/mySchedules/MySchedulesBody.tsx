@@ -22,7 +22,7 @@ const MySchedulesBody = () => {
 
     const {user, JWTTokenResult, needsSchedulesRefresh} = useSelector((state: RootState) => state.appState)
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
-    
+    const [schedulesToDisplay, setSchedulesToDisplay] = useState<Array<ScheduleType> | undefined>(undefined);
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const theme = useTheme();
@@ -30,6 +30,17 @@ const MySchedulesBody = () => {
     useEffect(() => {
         getAndSetSchedules();
     }, [])
+
+    useEffect(() => {
+        if(user !== undefined && user.skateProfiles !== undefined)
+        {
+            const updatedSkateProfile = user.skateProfiles.find(skateProfile => skateProfile.id === currentSkateProfile?.id)
+            if(updatedSkateProfile && updatedSkateProfile.schedules !== undefined)
+            {
+                setSchedulesToDisplay(updatedSkateProfile.schedules)
+            }
+        }
+    }, [user, currentSkateProfile])
     
     useEffect(() => {
         if(needsSchedulesRefresh === true)
@@ -58,10 +69,10 @@ const MySchedulesBody = () => {
     }
 
     const deleteASchedule = (scheduleIndex: number) => {
-        if(currentSkateProfile !== undefined && currentSkateProfile.schedules !== undefined && currentSkateProfile.schedules !== null)
+        if(schedulesToDisplay !== undefined && schedulesToDisplay !== null)
         {
             dispatch(backupUser());
-            const scheduleId = currentSkateProfile.schedules[scheduleIndex].id;
+            const scheduleId = schedulesToDisplay[scheduleIndex].id;
             dispatch(deleteSchedule(scheduleId));
 
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
@@ -81,9 +92,9 @@ const MySchedulesBody = () => {
 
     } 
     const updateASchedule = (scheduleIndex: number) => {
-        if(currentSkateProfile !== undefined && currentSkateProfile.schedules !== undefined)
+        if(schedulesToDisplay !== undefined)
         {
-            const scheduleToUpdate: ScheduleType = currentSkateProfile.schedules[scheduleIndex];
+            const scheduleToUpdate: ScheduleType = schedulesToDisplay[scheduleIndex];
             dispatch(setExistingScheduleState(scheduleToUpdate));
             navigation.navigate('Schedule' as never, {updateMode: true, scheduleToUpdate: scheduleToUpdate} as never);
         } 
@@ -100,9 +111,9 @@ const MySchedulesBody = () => {
             }
             <AddScheduleElement onPress={() => navigation.navigate('Schedule' as never)}/>
             {
-                (currentSkateProfile !== undefined && currentSkateProfile.schedules !== undefined && currentSkateProfile.schedules !== null && currentSkateProfile.schedules.length > 0) ? (
+                (schedulesToDisplay !== undefined && schedulesToDisplay.length > 0) ? (
                     <ScrollView>
-                        {currentSkateProfile.schedules.map((sch, index) => {
+                        {schedulesToDisplay.map((sch, index) => {
                             return(
                                 <ScheduleElement index={index} key={sch.id} schedule={sch}
                                 onDelete={(scheduleIndex) => deleteASchedule(scheduleIndex)}

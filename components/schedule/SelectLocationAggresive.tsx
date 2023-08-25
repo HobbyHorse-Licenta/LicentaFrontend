@@ -27,19 +27,20 @@ interface Distance {
 
 interface Input {
     onTouchInside?: Function,
-    onTouchOutside?: Function
+    onTouchOutside?: Function,
+    zone: Zone
 }
 
-const SelectLocationAggresive = ({onTouchInside, onTouchOutside} : Input) => {
+const SelectLocationAggresive = ({onTouchInside, onTouchOutside, zone} : Input) => {
 
     const {allParkTrails} = useSelector((state: RootState) => state.appState)
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
-    const [range, setRange] = useState<number>(1);
+    const [range, setRange] = useState<number>(zone !== undefined ? zone.range : 1);
     const [selectedLocation, setSelectedLocation] = useState<Location | undefined>({
         id: uuid.v4().toString(),
-        name: 'Cluj-Napoca',
-        lat: 46.770960,
-        long:  23.596937
+        name: zone !== undefined ? zone.location.name : 'Cluj-Napoca',
+        lat: zone !== undefined ? zone.location.lat : 46.770960,
+        long:  zone !== undefined ? zone.location.long : 23.596937
     });
     const dispatch = useDispatch();
     const theme = useTheme()
@@ -90,20 +91,22 @@ const SelectLocationAggresive = ({onTouchInside, onTouchOutside} : Input) => {
 
           console.log("GOT YOUR LOCATION");
 
-          if(mapRef.current != null)
+          if(zone === undefined)
+          {
+            if(mapRef.current != null)
             mapRef.current.animateToRegion({
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
                 latitudeDelta: 0.00001,
                 longitudeDelta: mapsUtils.kMToLongitudes(range, location.coords.latitude)
-              }, 1000)
+            }, 1000)
 
-          setSelectedLocation({id: uuid.v4().toString(), 
+            setSelectedLocation({id: uuid.v4().toString(), 
                         name: 'Your Location',
                         lat: location.coords.latitude,
                         long: location.coords.longitude,
             });
-
+          }
         })();
     }, []);
 

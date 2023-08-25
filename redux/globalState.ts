@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+
 import { SkateProfile } from '../types'
 
 export interface GlobalState {
@@ -16,6 +17,7 @@ const initialState: GlobalState = {
 const loadState = async () =>{
     try{
         const serializedState = await AsyncStorage.getItem("global");
+
         if(serializedState === null)
             return undefined;
         return JSON.parse(serializedState);
@@ -33,6 +35,7 @@ async() => {
 
 export const saveGlobalStateAsync = async(state) => {
     try{
+        console.log("current route from global is saved in asyncstorage: " + JSON.stringify(state.currentRoute));
         await AsyncStorage.setItem("global", JSON.stringify(state))
     }
     catch(error)
@@ -57,7 +60,7 @@ export const globalStateSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(loadGlobalStateAsync.fulfilled, (state, action) => {
-          return action.payload;
+         return action.payload;
         });
       },
 });

@@ -11,6 +11,7 @@ import SvgView from "./SvgView";
 import { ChatSvg } from "../svg/general";
 import Button from "./Button";
 import PopupMenu, { MenuItems } from "./PopupMenu";
+import HorizontalTextScroll from "./HorizontalTextScroll";
 
 interface HeaderInput {
     onBack?: Function,
@@ -47,11 +48,19 @@ const GeneralHeader = ({onBack, title, onChat, rightButtonText, onRightButtonPre
             )
         }
     }
+
+    const bothButtons = getRightItem() !== null && onBack !== undefined;
+    
     return(
         <View style={{position: 'relative', backgroundColor: 'green'}}>
         <AppHeader>
             {onBack !== undefined && <Appbar.BackAction onPress={() => onBack()} style={SpacingStyles.goBackPosition} />}
-            {title !== undefined && <Text variant='headlineMedium' style={{position: 'absolute', alignSelf: 'center', color: theme.colors.primary}}>{title}</Text>}
+            {title !== undefined && bothButtons && 
+            <View style={{position: 'relative', alignSelf: 'center', overflow:"hidden", width: scale(100)}}>
+                <HorizontalTextScroll text={title} textTravel={170} duration={10} color="white" fontSize={26}/>
+            </View>
+            }
+            {title !== undefined && !bothButtons && <Text variant='headlineMedium' style={[{position: 'absolute', alignSelf: 'center', color: theme.colors.primary}]}>{title}</Text>}
             {getRightItem()}
         </AppHeader>
         </View>
