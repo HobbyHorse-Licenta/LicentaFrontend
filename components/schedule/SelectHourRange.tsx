@@ -2,6 +2,7 @@ import React from "react";
 import { Platform, View } from "react-native";
 
 import { scale } from "react-native-size-matters";
+import { start } from "repl";
 import { useTourGuideController } from "rn-tourguide";
 
 import { SpacingStyles } from "../../styles";
@@ -33,6 +34,8 @@ const SelectHourRange = ({startTime, endTime, onStartTimeChange, onEndTimeChange
         onEndTimeChange(selectedStartTime);
     }
 
+    console.log("start time: " + startTime);
+    console.log("end time: " + endTime);
     return(
       <TourGuideZone
       zone={1}
@@ -40,7 +43,7 @@ const SelectHourRange = ({startTime, endTime, onStartTimeChange, onEndTimeChange
       borderRadius={16}
       >
       <PrimaryContainer styleInput={{marginVertical: scale(10)}}>
-        {   
+        {/* {   
         Platform.OS === "android" ?
         ( 
           <View style={[SpacingStyles.centeredContainer, {flexDirection: 'row'}]}>
@@ -54,7 +57,7 @@ const SelectHourRange = ({startTime, endTime, onStartTimeChange, onEndTimeChange
             <SelectTimeIos time={endTime} setTime={setEndTimeSchedule} textAbovePicker="End time"></SelectTimeIos>
           </View>
         )
-        }
+        } */}
       </PrimaryContainer>
       </TourGuideZone>
     );

@@ -78,9 +78,9 @@ const EventDisplay = ({route, navigation}) => {
   
   return (
     <Layout2Piece
-      header={<GeneralHeader onBack={() => {navigation.goBack(); console.log(navigation.dangerouslyGetState())}} title={event.name}
+      header={<GeneralHeader onBack={() => {navigation.navigate(route.params.previousScreen); }} title={event.name}
       rightButtonEnable={true}
-      onRightButtonPress={() => joined === true ? console.log("ceva"): console.log("altceva")}
+      onRightButtonPress={() => joined === true ? console.log("LEAVE EVENT (NOT WORKING)"): console.log("JOIN EVENT (NOT WORKING)")}
       rightButtonText={joined === true ? "Leave" : "Join"}
       ></GeneralHeader>}
       body={getBody()}

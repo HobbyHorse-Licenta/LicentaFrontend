@@ -31,10 +31,6 @@ const SelectCompanion = ({selectedGender, setSelectedGender, numberOfPartners, s
     const dispatch = useDispatch();
 
     const [numberOfPeopleSelectorOnTop, setNumberOfPeopleSelectorOnTop] = useState(true);
-
-    useEffect(() => {
-      console.log("selector on top: " + numberOfPeopleSelectorOnTop);
-    }, [numberOfPeopleSelectorOnTop])
     
     useEffect(() => {
       dispatch(setGender(selectedGender))

@@ -61,7 +61,6 @@ const CreateEvent = () => {
         long:  23.596937
     });
 
-    
     useEffect(() => {
       if(fullScreenMap === false && mapRef.current !== null)
       {

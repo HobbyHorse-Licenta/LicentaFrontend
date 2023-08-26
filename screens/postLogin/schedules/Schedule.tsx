@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { SpacingStyles } from '../../../styles';
 import { SelectDays, SelectLocationAggresive, SelectLocationCasualAndSpeed, SelectHourRange, SelectCompanion} from '../../../components/schedule';
 import { Layout2Piece } from '../../layouts';
-import { Gender, Schedule as ScheduleType, SkatePracticeStyles } from "../../../types";
+import { Gender, Schedule as ScheduleType, SkatePracticeStyles, Zone } from "../../../types";
 import { GeneralHeader } from "../../../components/general";
 import { RootState } from "../../../redux/store";
 import { uiUtils, validation } from "../../../utils";
@@ -44,7 +44,9 @@ const Schedule = ({route, navigation}) => {
   const [startTime, setStarTTime] = useState<Date>(scheduleConfig.startTime !== undefined ? new Date(scheduleConfig.startTime) : new Date())
   const [endTime, setEnDTime] = useState<Date>(scheduleConfig.endTime !== undefined ? new Date(scheduleConfig.endTime) : new Date())
 
-  const [zone, setZone] = useState<Zone | undefined>(scheduleConfig.zone);
+  const zone : Zone | undefined = scheduleConfig.zone;
+
+
   const [selectedGender, setSelectedGender] = useState<Gender | undefined>(scheduleConfig.gender);
   const [numberOfPartners, setNumberOfPartners] = useState<number | undefined>(scheduleConfig.maxNumberOfPeople);
   const [minimumAge, setMinimumAgee] = useState<number | undefined>(scheduleConfig.minimumAge);
@@ -58,6 +60,7 @@ const Schedule = ({route, navigation}) => {
     TourGuideZone
   } = useTourGuideController('schedule')
   
+  console.log("RANDAM SCHEDULE");
 
   useEffect(() => {
       if (canStart && schedule === true) {
@@ -130,9 +133,6 @@ const Schedule = ({route, navigation}) => {
     dispatch(setEndTime(endTime.getTime()));
   }, [startTime, endTime])
 
-  const updateSelectedDays = (selectedDays: Array<Day>) =>{
-    setSelectedDays(selectedDays);
-  }
  
   const createNewSchedule = () => {
 
@@ -248,7 +248,7 @@ const Schedule = ({route, navigation}) => {
       return(
         <ScrollView scrollEnabled={scrollEnable} contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}}>
         <View style={[SpacingStyles.centeredContainer, {flex: 0.8}]}>
-          <SelectDays selectedDays={selectedDays} onSelectedDaysChange={updateSelectedDays}></SelectDays>
+          <SelectDays selectedDays={selectedDays} onSelectedDaysChange={setSelectedDays}></SelectDays>
         </View>
         <View style={[SpacingStyles.centeredContainer, {flex: 0.9}]}>
           <SelectHourRange 

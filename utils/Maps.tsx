@@ -233,7 +233,7 @@ class Maps {
                             style={{width: 1, height: 1}}
                             pinColor={'wheat'}
                         >
-                            <Callout tooltip>
+                            <Callout tooltip onPress={() => this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: true, previousScreen: "Maps"} as never)}>   
                                     <EventMarkerCallout event={eventData} isRecommendedEvent={false}></EventMarkerCallout>
                             </Callout>
                         </Marker>
@@ -258,7 +258,7 @@ class Maps {
                             pinColor={'wheat'}
                             onPress={() => onMarkerPress(eventData.id)}
                         >
-                            <Callout tooltip>
+                            <Callout tooltip onPress={() => {console.log("VREAU SA MERGEM"); this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: true, previousScreen: "Maps"} as never)}}>
                                     <EventMarkerCallout event={eventData} isRecommendedEvent={false}></EventMarkerCallout>
                             </Callout>
                         </Marker>
@@ -300,38 +300,9 @@ class Maps {
                         image={{uri: "https://i.postimg.cc/rpsX51HG/recommended-Event.png"}}
                         style={{width: 1, height: 1}}
                         pinColor={'wheat'}
-                        onPress={() => this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: false} as never)}
                     >
-                        <Callout tooltip>
-                            {/* <ImageBackground 
-                            resizeMode="cover" style={{width: 200, height: 200}}
-                            source={{uri: (eventData.imageUrl !== undefined && eventData.imageUrl.length > 0) ? eventData.imageUrl : defaultEventUrl}}
-                            >
-                            </ImageBackground> */}
-                                {/* <View style={{backgroundColor: "white", borderRadius: 20, height: 200, width: 220, padding: 20, justifyContent: "space-evenly", alignItems: "center"}}>
-                                
-                                    <Text variant="headlineSmall">{eventData.name}</Text>
-                                    <TouchableOpacity style={{backgroundColor:COLORS.aBackground, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 10}}
-                                    onPress={() => console.log('Button pressed')}>
-
-                                        <View style={[styles.rowContainer, {backgroundColor: COLORS.aBackground}]}>
-                                            <SvgView size='tiny'>
-                                                <BigLocationSvg color={COLORS.aPrimaryColorOverall}></BigLocationSvg>
-                                            </SvgView>
-                                            <Text style={[styles.descriptionText, {color: COLORS.aPrimaryColorOverall}]}>{eventData.outing.trail.name}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{backgroundColor:COLORS.aBackground, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 10}}
-                                    onPress={() => console.log('Button pressed')}>
-                                        <Text>Join</Text>
-                                    </TouchableOpacity>
-                                    
-                                </View> */}
+                        <Callout tooltip onPress={() => this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: false, previousScreen: "Maps"} as never)}>   
                            <EventMarkerCallout event={eventData} isRecommendedEvent={true}></EventMarkerCallout>
-                           {/* <EventCard key={eventData.id} event={eventData} joined={false}
-                                    onPress={() => this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: false} as never)}></EventCard> */}
-                           
-                            
                         </Callout>
                     </Marker>
                 )
@@ -353,7 +324,7 @@ class Maps {
                             pinColor={'wheat'}
                             onPress={() => onMarkerPress(eventData.id)}
                         >
-                            <Callout tooltip>
+                            <Callout tooltip onPress={() => this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: false, previousScreen: "Maps"} as never)}>   
                                     <EventMarkerCallout event={eventData} isRecommendedEvent={false}></EventMarkerCallout>
                             </Callout>
                         </Marker>

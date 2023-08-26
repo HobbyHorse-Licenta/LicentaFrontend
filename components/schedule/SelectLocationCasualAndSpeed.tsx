@@ -31,7 +31,7 @@ interface Input {
     onTouchOutside?: Function
     parkSelected: boolean,
     setParkSelected: Function,
-    zone: Zone
+    zone: Zone | undefined
 }
 
 const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelected, setParkSelected, zone} : Input) => {

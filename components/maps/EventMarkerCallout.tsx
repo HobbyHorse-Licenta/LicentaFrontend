@@ -81,12 +81,12 @@ const EventMarkerCallout = ({event, isRecommendedEvent} : Input) => {
                         <Text style={[styles.descriptionText, {color: theme.colors.tertiary}]}>{parkTrail.name}</Text>
                     </View>
                 }
-                { isRecommendedEvent === true &&
+                {/* { isRecommendedEvent === true &&
                     <TouchableOpacity style={{backgroundColor:COLORS.aBackground, paddingHorizontal: 15, paddingVertical: 5, borderRadius: 10}}
                     onPress={() => console.log('Join Event')}>
                         <Text>Join</Text>
                     </TouchableOpacity>
-                }
+                } */}
             </View>
     )
 }

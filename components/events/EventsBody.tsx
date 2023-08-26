@@ -190,7 +190,7 @@ const EventsBody = () => {
                                 }
                                 else return(
                                     <EventCard key={uuid.v4().toString()} event={evnt} joined={false}
-                                    onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: false} as never)}></EventCard>
+                                    onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: false, previousScreen: "Events"} as never)}></EventCard>
                                 );
                             })
                             }

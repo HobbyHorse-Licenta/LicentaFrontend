@@ -25,6 +25,15 @@ const MainStack = () => {
   const navigationRef = createNavigationContainerRef();
 
   const dispatch = useDispatch();
+  useEffect(() => {
+    if(navigationRef !== undefined && navigationRef.getCurrentRoute()?.name !== currentRoute)
+    {
+      //this is in case the currentRoute is saved for a page that has no tabBar but then the app resumes to the main
+      //screen of that stack and so the current route should be updated
+      dispatch(setCurrentRoute(navigationRef.getCurrentRoute()?.name))
+    }
+  }, [navigationRef])
+ 
   // React.useEffect(() => {
   //   const restoreState = async () => {
   //     try {
@@ -67,14 +76,14 @@ const MainStack = () => {
 
   };
 
- 
+
+
   return ( 
     <View style={[SpacingStyles.fullSizeContainer, {backgroundColor: 'orange'}]}> 
       <NavigationContainer ref={navigationRef}
       onReady={() => setRouteName(navigationRef.getCurrentRoute()?.name)}
       initialState={initialState}
       onStateChange={async (state) => {
-       
         const currentRouteName = navigationRef.getCurrentRoute()?.name;
         if(currentRouteName != undefined)
         {

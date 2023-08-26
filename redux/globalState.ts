@@ -11,7 +11,7 @@ export interface GlobalState {
 
 const initialState: GlobalState = {
     currentRoute: undefined,
-    currentSkateProfile: undefined,
+    currentSkateProfile: undefined
 }
 
 const loadState = async () =>{

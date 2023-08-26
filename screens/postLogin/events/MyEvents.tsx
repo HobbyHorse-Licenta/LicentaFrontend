@@ -95,7 +95,7 @@ const MyEvents = () => {
                     {
                       return(
                           <EventCard key={uuid.v4().toString()} event={evnt} joined={true}
-                          onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: true} as never)}></EventCard>
+                          onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: true, previousScreen: "MyEvents"} as never)}></EventCard>
                       );
                     } 
                   })
