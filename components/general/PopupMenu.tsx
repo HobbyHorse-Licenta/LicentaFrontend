@@ -2,7 +2,7 @@ import React, {useRef} from 'react'
 import {View} from 'react-native'
 
 import {Appbar, Divider, Menu } from 'react-native-paper'
-
+import uuid from 'react-native-uuid'
 import {scale} from 'react-native-size-matters'
 
 export type MenuItems = {
@@ -48,7 +48,7 @@ const PopupMenu = ({items, buttonStyle} : PopupMenuInput) => {
         {
             items.map((item, index) => {
                 return(
-                    <View key={index}>
+                    <View key={uuid.v4().toString()}>
                         {index !== 0 &&  <Divider />}
                         <Menu.Item onPress={() => {item.function(); setVisibility(false);}} title={item.text} />
                     </View>

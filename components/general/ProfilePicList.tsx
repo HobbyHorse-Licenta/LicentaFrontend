@@ -3,6 +3,7 @@ import { View, StyleSheet, Image } from 'react-native';
 
 import { scale } from 'react-native-size-matters';
 import {Text} from 'react-native-paper'
+import uuid from 'react-native-uuid'
 
 import { SpacingStyles } from '../../styles';
 import { blankProfilePictureUrl } from '../../assets/imageUrls';
@@ -68,7 +69,7 @@ const ProfilePicList = ({imageUrlsArray, grayedOutImageUrlsArray} : ProfilePicLi
                     grayedOutImageUrlsArray !== undefined && grayedOutImageUrlsArray.map((imageUrl, index) => {
                             if(index < maxNormalPics)
                             return(
-                                <Image key={index} 
+                                <Image key={uuid.v4().toString()} 
                                 source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}
                                 style={[{right: computeImageOffset(index), top: 0, width: imageSize, height: imageSize}, styles.profileImage]}/>             
                             )
@@ -76,7 +77,7 @@ const ProfilePicList = ({imageUrlsArray, grayedOutImageUrlsArray} : ProfilePicLi
                     {imageUrlsArray !== undefined && imageUrlsArray.map((imageUrl, index) => {
                             if(index < maxGrayedOutPics)
                             return(
-                                <Image key={index} 
+                                <Image key={uuid.v4().toString()} 
                                 source={{uri: imageUrl !== undefined ? imageUrl : blankProfilePictureUrl}}
                                 style={[{right: computeImageOffset(secondaryStartingIndex + index), top: 0, width: imageSize, height: imageSize}, styles.profileImage2]}/>            
                             )

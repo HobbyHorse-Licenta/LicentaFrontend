@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { View} from 'react-native';
+import uuid from 'react-native-uuid'
+
 import { useTheme, Text } from 'react-native-paper';
 import { AssignedSkill, MasteringLevel } from '../../types';
 import { PlusSvg } from '../svg/general';
@@ -109,7 +111,7 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
             {skateProfile !== undefined && skateProfile.assignedSkills !== undefined && skateProfile.assignedSkills !== null &&
             skateProfile.assignedSkills.map((assignedSkill, index) => {
                 return(
-                    <Tile key={index} 
+                    <Tile key={uuid.v4().toString()} 
                     color={uiUtils.getColorBasedOnSkillLevel(assignedSkill.masteringLevel)}
                     withBorder={true}
                     deleteEnabled={index === selectedIndex} 

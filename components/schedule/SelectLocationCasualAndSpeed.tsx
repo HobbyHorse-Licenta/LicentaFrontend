@@ -193,7 +193,7 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
                                 parkOptionStyle = {...parkOptionStyle, backgroundColor: theme.colors.tertiary}
                             }
                             return(
-                                <PrimaryContainer onPress={() => increaseRangeSoThatParkTrailIsInRange(parkTrail)} styleInput={{...parkOptionStyle, margin: scale(3)}}  key={index}>
+                                <PrimaryContainer key={uuid.v4().toString()} onPress={() => increaseRangeSoThatParkTrailIsInRange(parkTrail)} styleInput={{...parkOptionStyle, margin: scale(3)}}>
                                     <Text>{parkTrail.name}</Text>
                                 </PrimaryContainer>
                             )

@@ -66,9 +66,9 @@ const AggresiveEventInfoDisplay = ({event}: EventInput) => {
                                 event.outing.days.map((dayObject, index) => {
                                     
                                     return(
-                                        <View style={{flexDirection: 'row'}}>
-                                            { index !== 0 && <Text key={index} style={[styles.descriptionText]}>, </Text>}
-                                            <Text key={index} style={[styles.descriptionText]}>{dayObject.dayOfMonth}</Text>
+                                        <View key={uuid.v4().toString()} style={{flexDirection: 'row'}}>
+                                            { index !== 0 && <Text key={uuid.v4().toString()} style={[styles.descriptionText]}>, </Text>}
+                                            <Text key={uuid.v4().toString()} style={[styles.descriptionText]}>{dayObject.dayOfMonth}</Text>
                                         </View>
                                     )
                                 })

@@ -3,6 +3,7 @@ import { View, ViewStyle, StyleSheet} from "react-native";
 
 import { Text } from "react-native-paper";
 import { scale } from 'react-native-size-matters';
+import uuid from 'react-native-uuid'
 
 import { SpacingStyles } from "../../styles";
 import { SkateProfile, User } from "../../types";
@@ -47,7 +48,7 @@ const SkateProfilePresenceCard = ({skateProfile, inactive, allUsers, cardOpacity
             }
         });
     }
-    const assignedSkillsElements = skateProfile.assignedSkills?.map(assignedSkill => <AssignedSkillElement assignedSkill={assignedSkill}></AssignedSkillElement>)  
+    const assignedSkillsElements = skateProfile.assignedSkills?.map(assignedSkill => <AssignedSkillElement key={uuid.v4().toString()} assignedSkill={assignedSkill}></AssignedSkillElement>)  
 
     return(
         <PrimaryContainer styleInput={{...SpacingStyles.centeredContainer, height: 150, marginHorizontal: 5, opacity: cardOpacity !== undefined ? cardOpacity : 1}}>

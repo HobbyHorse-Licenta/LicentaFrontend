@@ -3,6 +3,7 @@ import {View, StyleSheet} from 'react-native'
 
 import { Divider } from 'react-native-paper';
 import { useSelector } from 'react-redux';
+import uuid from 'react-native-uuid'
 
 import { UserSummary } from '../../../components/general';
 import { RootState } from '../../../redux/store';
@@ -36,7 +37,7 @@ const AllUsersScreen = () => {
                 allUsers !== undefined &&
                 allUsers.map((user, index) => {
                     return(
-                        <View key={index}>
+                        <View key={uuid.v4().toString()}>
                             {index !== 0 && <Divider/>}
                             <UserSummary user={user}></UserSummary>
                         </View>

@@ -3,6 +3,7 @@ import { ScrollView, View } from 'react-native'
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import uuid from 'react-native-uuid'
 
 import { AggresiveEventCard, EventCard, GeneralHeader, InformationalSvgComponent, LoadingComponent, PrimaryContainer } from "../../../components/general";
 import { SkateProfiles } from "../../../components/profile";
@@ -85,7 +86,7 @@ const MyEvents = () => {
                       && currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.AggresiveSkating)
                     {
                         return(
-                            <AggresiveEventCard key={index} event={evnt} joined={true}
+                            <AggresiveEventCard key={uuid.v4().toString()} event={evnt} joined={true}
                             onPress={() => navigation.navigate('AggresiveEventDisplay' as never, {event: evnt, joined: true} as never)}></AggresiveEventCard>
                           
                         )
@@ -93,7 +94,7 @@ const MyEvents = () => {
                     else
                     {
                       return(
-                          <EventCard key={index} event={evnt} joined={true}
+                          <EventCard key={uuid.v4().toString()} event={evnt} joined={true}
                           onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: true} as never)}></EventCard>
                       );
                     } 

@@ -4,6 +4,7 @@ import { View, ScrollView, StyleSheet, Pressable} from 'react-native';
 import { Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useTourGuideController } from 'rn-tourguide';
+import uuid from 'react-native-uuid'
 
 import { SpacingStyles } from '../../styles';
 import { AggresiveEventCard, EventCard, InformationalSvgComponent, LoadingComponent, PrimaryContainer, SvgView } from '../general';
@@ -183,12 +184,12 @@ const EventsBody = () => {
                                 if(currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.AggresiveSkating)
                                 {
                                     return(
-                                        <AggresiveEventCard key={evnt.id} event={evnt} joined={false}
+                                        <AggresiveEventCard key={uuid.v4().toString()} event={evnt} joined={false}
                                         onPress={() => navigation.navigate('AggresiveEventDisplay' as never, {event: evnt, joined: false} as never)}></AggresiveEventCard>
                                     )
                                 }
                                 else return(
-                                    <EventCard key={evnt.id} event={evnt} joined={false}
+                                    <EventCard key={uuid.v4().toString()} event={evnt} joined={false}
                                     onPress={() => navigation.navigate('EventDisplay' as never, {event: evnt, joined: false} as never)}></EventCard>
                                 );
                             })

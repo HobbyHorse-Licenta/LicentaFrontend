@@ -104,7 +104,7 @@ class Maps {
         return parkTrails.map((parkTrail, index) => {
             return(
                 <Marker
-                key={startingValueForKeys + index}
+                key={uuid.v4().toString()}
                 coordinate={{
                     latitude: parkTrail.location.lat,
                     longitude: parkTrail.location.long
@@ -124,7 +124,7 @@ class Maps {
     getCircle (location: Location, rangeInKm: number, key: number) {
         return(
             <Circle 
-            key={key}
+            key={uuid.v4().toString()}
             strokeWidth={2}
             strokeColor={COLORS.aPrimaryColorOverall}
             fillColor={'rgba(248,95,96,0.2)'}
@@ -139,7 +139,7 @@ class Maps {
     getMarker (location: Location, markerTitle: string | undefined, key?: number, changedCoordinates?: Function) {
         return(
             <Marker
-                key={key !== undefined ? key : 2}
+                key={uuid.v4().toString()}
                 coordinate={{
                     latitude: location.lat,
                     longitude: location.long
@@ -187,7 +187,7 @@ class Maps {
         }
         return(
             <Marker
-                key={key !== undefined ? key : 10}
+                key={uuid.v4().toString()}
                 coordinate={{
                     latitude: location.lat,
                     longitude: location.long
@@ -247,7 +247,7 @@ class Maps {
                     return(
                         <View>
                             <Marker
-                            key={key !== undefined ? key : 20}
+                            key={uuid.v4().toString()}
                             coordinate={{
                                 latitude: customTrail.checkPoints[0].location.lat,
                                 longitude: customTrail.checkPoints[0].location.long
@@ -291,7 +291,7 @@ class Maps {
             {
                 return(
                     <Marker
-                        key={key !== undefined ? key : 20}
+                        key={uuid.v4().toString()}
                         coordinate={{
                             latitude: trail.location.lat,
                             longitude: trail.location.long
@@ -342,7 +342,7 @@ class Maps {
                 {
                     return(
                         <Marker
-                            key={key !== undefined ? key : 20}
+                            key={uuid.v4().toString()}
                             coordinate={{
                                 latitude: customTrail.checkPoints[0].location.lat,
                                 longitude: customTrail.checkPoints[0].location.long
@@ -373,7 +373,7 @@ class Maps {
         return(
             <MapViewDirections
             mode="WALKING"
-            key={key !== undefined ? key : 30}
+            key={uuid.v4().toString()}
             origin={{latitude: startLocation.lat, longitude: startLocation.long}}
             destination={{latitude: endLocation.lat, longitude: endLocation.long}}
             apikey={googleApiKey}

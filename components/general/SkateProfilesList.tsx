@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 
 import { useSelector } from "react-redux";
+import uuid from 'react-native-uuid'
 
 import { RootState } from "../../redux/store";
 import { Fetch } from "../../services";
@@ -38,14 +39,14 @@ const SkateProfilesList = ({suggestedSkateProfiles, attendingSkateProfiles} : In
             { attendingSkateProfiles !== undefined && attendingSkateProfiles !== null && attendingSkateProfiles.length !== 0 &&
                 attendingSkateProfiles.map((skateProfile, index) => {
                     return(
-                        <SkateProfilePresenceCard key={index} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
+                        <SkateProfilePresenceCard key={uuid.v4().toString()} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
                     )
                 })
             }
             { suggestedSkateProfiles !== undefined && suggestedSkateProfiles !== null && suggestedSkateProfiles.length !== 0 &&
                 suggestedSkateProfiles.map((skateProfile, index) => {
                     return(
-                        <SkateProfilePresenceCard key={index} cardOpacity={0.4} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
+                        <SkateProfilePresenceCard key={uuid.v4().toString()} cardOpacity={0.4} allUsers={allUsers} skateProfile={skateProfile}></SkateProfilePresenceCard>
                     )
                 })
             }

@@ -4,6 +4,7 @@ import { View, StyleSheet, Image } from "react-native";
 import { Text } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 import { useDispatch, useSelector } from "react-redux";
+import uuid from 'react-native-uuid'
 
 import { SelectionCard } from "../../../components/general";
 import { Layout2Piece } from "../../layouts";
@@ -66,7 +67,7 @@ const SelectSkates = () => {
             
             keys.map((skateType, index) => {
                 return(
-                    <SelectionCard key={index}
+                    <SelectionCard key={uuid.v4().toString()}
                                    text={skateType}
                                    selectState={selectedSkateType === skateType}
                                    flipSelectState={() => flipSelectedSkateType(skateType)}

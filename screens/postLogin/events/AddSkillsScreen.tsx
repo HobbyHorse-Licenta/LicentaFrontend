@@ -56,7 +56,7 @@ const AddSkillsScreen = () => {
             return recommendedSkills.map((recommendedSkill, index) => {
                 return {
                     id: index,
-                    element: <Tile color="white" key={index} onPress={() => addSkill(recommendedSkill)}>
+                    element: <Tile color="white" key={uuid.v4().toString()} onPress={() => addSkill(recommendedSkill)}>
                                 <Text style={{flexWrap: 'nowrap'}}>
                                 {recommendedSkill.skill.name}
                                 </Text>

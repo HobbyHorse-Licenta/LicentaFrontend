@@ -50,7 +50,7 @@ const SelectDays = ({selectedDays, onSelectedDaysChange}: Input) => {
         <View style={[SpacingStyles.daysContainer, {backgroundColor: theme.colors.primary}]}>
             {dayScheduleUtils.getWeekDates().map((day, index) => {
               return (
-                <Pressable key={index} onPress={() => selectDay(day)}>
+                <Pressable key={uuid.v4().toString()} onPress={() => selectDay(day)}>
                   <View
                     style={[
                       SpacingStyles.day, SpacingStyles.daySelected, {borderColor: theme.colors.onPrimaryContainer},

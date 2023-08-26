@@ -2,6 +2,8 @@ import React, {useState} from 'react'
 import { View } from 'react-native';
 
 import { useTheme } from 'react-native-paper';
+import uuid from 'react-native-uuid'
+
 
 import { RenderElement } from '../../types';
 import { PlusSvg } from '../svg/general';
@@ -29,7 +31,7 @@ const TileList = ({objectsArray, onPressAdd, tileColor, tileWithBorder, onTilePr
             </Tile>
             {objectsArray !== null && objectsArray.map((object, index) => {
                 return(
-                    <Tile key={index} 
+                    <Tile key={uuid.v4().toString()} 
                     color={tileColor}
                     withBorder={tileWithBorder}
                     deleteEnabled={index === selectedIndex} 

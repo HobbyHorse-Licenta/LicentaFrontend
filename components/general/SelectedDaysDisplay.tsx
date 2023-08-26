@@ -3,6 +3,7 @@ import {View} from "react-native";
 
 import { useTheme, Text } from "react-native-paper";
 import EStyleSheet from 'react-native-extended-stylesheet';
+import uuid from 'react-native-uuid'
 
 import { SpacingStyles } from '../../styles'
 import {Day} from '../../types';
@@ -34,7 +35,7 @@ const SelectedDaysDisplay = ({selectedDays} : Input) => {
     <PrimaryContainer styleInput={{...styles.daysContainer/*, backgroundColor: theme.colors.primary*/}}>
         {mapScheduleUtils.getWeekDates().map((day, index) => {
             return (
-                <View key={index}
+                <View key={uuid.v4().toString()}
                 style={[
                     SpacingStyles.day, SpacingStyles.daySelected, {borderColor: theme.colors.onPrimaryContainer},
                     isActiveDay(day, selectedDays) && [{backgroundColor: theme.colors.surface}],

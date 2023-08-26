@@ -4,6 +4,7 @@ import {View, StyleSheet, Pressable, TextStyle} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { scale, verticalScale } from 'react-native-size-matters';
 import {Text, useTheme} from 'react-native-paper'
+import uuid from 'react-native-uuid'
 
 import { PrimaryContainer, SvgView } from '../../../components/general';
 import { SkateExperience, SkatePracticeStyles, SkatesType } from '../../../types';
@@ -80,7 +81,7 @@ const SelectStyleAndExperience = () => {
                         stylesArray.map((style, index) => {
                             const enumStyle = stringToEnum(style);
                             return(
-                                <View key={index}>
+                                <View key={uuid.v4().toString()}>
                                     {(index != 0) && <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>}
                                     <Pressable  onPress={() => setSelectedSkateStyle(enumStyle)} style={{...styles.skateStylesPressable, width: scale(180)}}>
                                         <Text style={getSkatePracticeTextStyle(enumStyle)}>{enumStyle}</Text>
@@ -132,7 +133,7 @@ const SelectStyleAndExperience = () => {
                 {
                     experienceValues.map((experienceLevel, index) => {
                         return(
-                            <View key={index} style={[{width: '100%', flex: 1}, SpacingStyles.centeredContainer]}>
+                            <View key={uuid.v4().toString()} style={[{width: '100%', flex: 1}, SpacingStyles.centeredContainer]}>
                                 {(index != 0) && <View style={{backgroundColor: 'lightgrey', width: '100%', height: 1}}></View>}
                                 <Pressable  onPress={() => setSelectedExperience(experienceLevel)} style={styles.experinceTextView}>
                                     <Text style={getExperinceTextStyle(experienceLevel)}>{experienceLevel}</Text>

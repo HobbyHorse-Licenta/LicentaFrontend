@@ -5,6 +5,8 @@ import { useTheme } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { nothing } from 'immer';
+import uuid from 'react-native-uuid'
+
 
 import { SpacingStyles } from '../../styles';
 import ScheduleElement from './ScheduleElement';
@@ -115,7 +117,7 @@ const MySchedulesBody = () => {
                     <ScrollView>
                         {schedulesToDisplay.map((sch, index) => {
                             return(
-                                <ScheduleElement index={index} key={sch.id} schedule={sch}
+                                <ScheduleElement index={index} key={uuid.v4().toString()} schedule={sch}
                                 onDelete={(scheduleIndex) => deleteASchedule(scheduleIndex)}
                                 onUpdate={(scheduleIndex) => updateASchedule(scheduleIndex)}/>
                             );

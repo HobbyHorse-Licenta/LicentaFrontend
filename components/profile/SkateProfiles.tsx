@@ -5,6 +5,8 @@ import {Text, useTheme } from 'react-native-paper'
 import { scale, verticalScale } from 'react-native-size-matters';
 import { useDispatch } from 'react-redux';
 import { useTourGuideController } from 'rn-tourguide';
+import uuid from 'react-native-uuid'
+
 
 import { setAddingSkateProfile } from '../../redux/appState';
 import { resetConfigProfileState } from '../../redux/configProfileState';
@@ -103,7 +105,7 @@ const SkateProfiles = ({profiles, value, onValueChange, addEnabled, holdFeatureE
                         {profiles.map((skateProfile, index) => {
                             return(
                                     <SkateProfileSummary
-                                    key={index} 
+                                    key={uuid.v4().toString()} 
                                     onLongPress={() => {if(holdFeatureEnabled === true){setHeldProfile(skateProfile)}}}
                                     onPress={() => onValueChange(skateProfile)}
                                     selected={checkIfSelected(value, skateProfile)} 

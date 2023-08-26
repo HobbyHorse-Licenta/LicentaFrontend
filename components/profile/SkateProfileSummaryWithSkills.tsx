@@ -81,9 +81,9 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
                     {
                         masteringLevelValues.map((value, index) => {
                             return(
-                                <View style={{flexDirection: 'row', alignItems: "center"}}>
+                                <View key={uuid.v4().toString()} style={{flexDirection: 'row', alignItems: "center"}}>
                                     <View style={{marginRight: scale(5), width: 10, height: 10, borderRadius: 50, backgroundColor: uiUtils.getColorBasedOnSkillLevel(value)}}></View>
-                                    <Text key={index}>{value}</Text>
+                                    <Text key={uuid.v4().toString()}>{value}</Text>
                                 </View>
                             )
                         })
@@ -137,7 +137,7 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
             return recommendedSkills.map((recommendedSkill, index) => {
                 return {
                     id: index,
-                    element: <Tile key={index} onPress={() => addSkill(recommendedSkill)}>
+                    element: <Tile key={uuid.v4().toString()} onPress={() => addSkill(recommendedSkill)}>
                                 <Text>
                                 {recommendedSkill.skill.name}
                                 </Text>
