@@ -7,10 +7,6 @@ import { useTheme } from "react-native-paper";
 import { SpacingStyles } from "../../styles";
 
 
-// type CustomStyle = ViewStyle & {
-//     : string;
-//   };
-
 interface SvgViewInput {
     onPress?:  Function,
     children: ReactNode,

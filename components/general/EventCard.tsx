@@ -52,7 +52,8 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
     const [reversed, setReversed] = useState(false);
     const { JWTTokenResult} = useSelector((state: RootState) => state.appState)
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
-    //TODO REMOVE THIS
+    
+    
     useEffect(() => {
       if(event.imageUrl == undefined || event.imageUrl.length === 0)
         setImageUrl(resourceAccess.getDefaultSkatingEventImage())

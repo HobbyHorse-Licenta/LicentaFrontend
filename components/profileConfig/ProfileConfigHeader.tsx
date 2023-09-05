@@ -82,7 +82,6 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
             }
         }
         else {
-            //TODO maybe remove also the created account in firebase
             authenticationUtils.logOut();
         }
     }

@@ -121,7 +121,6 @@ const EventsBody = () => {
         if(user !== undefined && user.skateProfiles !== undefined && currentSkateProfile !== undefined)
         {
             const currentIndex = user.skateProfiles.findIndex(skateprofile => skateprofile.id === currentSkateProfile.id);
-            //const currentIndex = user.skateProfiles.indexOf(currentSkateProfile);
             dispatch(setCurrentSkateProfile(user.skateProfiles[(currentIndex + 1) % user.skateProfiles.length]))
         }
     }
@@ -131,7 +130,6 @@ const EventsBody = () => {
         if(user !== undefined && user.skateProfiles !== undefined && currentSkateProfile !== undefined)
         {
             const currentIndex = user.skateProfiles.findIndex(skateprofile => skateprofile.id === currentSkateProfile.id);
-            //const currentIndex = user.skateProfiles.indexOf(currentSkateProfile);
             if(currentIndex == 0)
                 dispatch(setCurrentSkateProfile(user.skateProfiles[user.skateProfiles.length - 1]))
             else dispatch(setCurrentSkateProfile(user.skateProfiles[(currentIndex - 1) % user.skateProfiles.length]))

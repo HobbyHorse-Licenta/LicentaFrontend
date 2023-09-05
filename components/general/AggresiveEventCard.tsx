@@ -49,7 +49,6 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
 
     const dispatch = useDispatch();
     
-    const [imageUrl, setImageUrl] = useState<string>(defaultEventUrl);
     const [recommendedUsersImagesUrl, setRecommendedUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
     const [recommendedSkateProfiles, setRecommendedSkateProfiles] = useState<Array<SkateProfile>>();
     const [participatingUsersImagesUrl, setParticipatingUsersImagesUrl] = useState<Array<string | undefined> | undefined>();
@@ -57,11 +56,7 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
     const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
     
-    //TODO REMOVE THIS
     useEffect(() => {
-      if(event.imageUrl == undefined || event.imageUrl.length === 0)
-        setImageUrl(resourceAccess.getDefaultSkatingEventImage())
-      else setImageUrl(event.imageUrl);
 
       if(currentSkateProfile !== undefined)
       {

@@ -153,8 +153,6 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
     }
     const theme = useTheme();
     return(
-        // <PrimaryContainer
-        // styleInput={getStyle()}>
         <View>
             {
                 profileInfo !== undefined &&
@@ -196,7 +194,6 @@ const SkateProfileSummaryWithSkills = ({skateProfileId}: Input) => {
         
     );
 }
-//{/* </PrimaryContainer> */}
 export default SkateProfileSummaryWithSkills;
 
 const styles = StyleSheet.create({

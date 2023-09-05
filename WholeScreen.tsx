@@ -116,7 +116,6 @@ const WholeScreen = () => {
       }
     }, [user])
 
-//TODO on ios the tabbar si covering the screen SHOULD BE SOLVED
 
  ///////////SETTING THINGS UP AND VERIFYING LOGIN///////////
     useEffect(() => {

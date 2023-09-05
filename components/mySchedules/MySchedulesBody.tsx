@@ -39,7 +39,6 @@ const MySchedulesBody = () => {
             const updatedSkateProfile = user.skateProfiles.find(skateProfile => skateProfile.id === currentSkateProfile?.id)
             if(updatedSkateProfile && updatedSkateProfile.schedules !== undefined)
             {
-                console.log("Update schedules because there was user change");
                 updatedSkateProfile.schedules.forEach(schedule => console.log("id: " + schedule.id + "   zoneId: "+ schedule.zones[0].id +"\n"))
                 setSchedulesToDisplay(updatedSkateProfile.schedules)
             }

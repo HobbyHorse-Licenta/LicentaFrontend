@@ -8,28 +8,7 @@ export type RenderElement = {
   element: JSX.Element
 }
 
-/////////////////////////////////////////////////
 
-// export type DayConstant = {
-//   minimumForm: string;
-//   shortForm: string;
-//   longForm: string;
-//   index: number;
-// };
-
-// const weekDays: DayConstant[] = 
-// [
-//   {minimumForm: 'M', shortForm: 'Mon', longForm: 'Monday', index: 1},
-//   {minimumForm: 'T', shortForm: 'Tue', longForm: 'Tuesday', index: 2},
-//   {minimumForm: 'W', shortForm: 'Wed', longForm: 'Wednesday', index: 3},
-//   {minimumForm: 'T', shortForm: 'Thu', longForm: 'Thursday', index: 4},
-//   {minimumForm: 'F', shortForm: 'Fri', longForm: 'Friday', index: 5},
-//   {minimumForm: 'S', shortForm: 'Sat', longForm: 'Saturday', index: 6},
-//   {minimumForm: 'S', shortForm: 'Sun', longForm: 'Sunday', index: 7}
-// ]
-// const currentDay = new Date().getDay();
-// export const WeekDays = weekDays.slice(currentDay - 1).concat(weekDays.slice(0, currentDay - 1));
-/////////////////////////////////////////////////
 export enum MarkerType {
   Start,
   Finish,
@@ -124,8 +103,6 @@ export type User = {
   gender: Gender,
   shortDescription: string,
   profileImageUrl?: string,
-  //followers?: Array<User>
- // following?: Array<User>
   
 }
 
