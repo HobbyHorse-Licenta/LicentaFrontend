@@ -6,6 +6,7 @@ import Color from 'color';
 import { MasteringLevel } from '../types';
 import { QuestionModal } from '../components/general';
 import { nothing } from 'immer';
+import { start } from 'repl';
 
 
 class UI {
@@ -76,7 +77,7 @@ class UI {
     }
 
     getTimeRange (startTime: number, endtime: number) {
-        return `${new Date(startTime).getHours()}:${new Date(startTime).getMinutes()} - ${new Date(endtime).getHours()}:${new Date(endtime).getMinutes()}`
+        return `${new Date(startTime).getHours()}:${new Date(startTime).getMinutes().toString().padStart(2, '0')} - ${new Date(endtime).getHours()}:${new Date(endtime).getMinutes().toString().padStart(2, '0')}`
     }
 }
 const uiUtils = new UI();

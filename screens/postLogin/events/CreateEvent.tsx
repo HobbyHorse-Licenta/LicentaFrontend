@@ -21,6 +21,7 @@ import { SelectAgeGap, SelectDays, SelectHourRange, SelectNumberOfPeople } from 
 import SelectGender from '../../../components/createEvent/SelectGender';
 import { RootState } from '../../../redux/store';
 import { Fetch } from '../../../services';
+import { addAggresiveEventToUser } from '../../../redux/appState';
 
 const containersWidth = scale(290);
 
@@ -64,18 +65,14 @@ const CreateEvent = () => {
     useEffect(() => {
       if(fullScreenMap === false && mapRef.current !== null)
       {
-        console.log("Minimizing map")
         const coordinates = checkPointsArray.map((checkPoint) => {
             return {latitude: checkPoint.location.lat, longitude: checkPoint.location.long}
         })
 
-        console.log("Fitting all markers in the view");
         mapRef.current.fitToCoordinates(coordinates, {
             edgePadding: { top: 50, right: 50, bottom: 50, left: 50 },
             animated: true,
         })
-
-        console.log("Capturing map snapshot now");
         captureMap();
       }
     }, [fullScreenMap])
@@ -95,7 +92,6 @@ const CreateEvent = () => {
             && gender !== undefined && currentSkateProfile !== undefined &&
             maximumAge !== undefined && minimumAge !== undefined)
         {
-            console.log("creating event");
             const eventId = uuid.v4().toString();
 
             const customTrail: CustomTrail = {
@@ -103,8 +99,6 @@ const CreateEvent = () => {
                 name: "RANDOM NAME",
                 checkPoints: checkPointsArray
             }
-
-            console.log("\n\nSchedules for the skateprofile the event is created for:\n\n" + JSON.stringify(currentSkateProfile.schedules));
 
             const newAggresiveSkatingEvent: AggresiveEvent = {
                 id: eventId,
@@ -143,13 +137,12 @@ const CreateEvent = () => {
                     }
                 ]
             }
-            console.log("Adding event:\n" + JSON.stringify(newAggresiveSkatingEvent));
-            //dispatch(addAggresiveEventToUser(newAggresiveSkatingEvent));
+            
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
             {
                 Fetch.postAggresiveSkatingEvent(JWTTokenResult.token,
                     newAggresiveSkatingEvent,
-                () => console.log("POSTED NEW AGGRESIVE EVEVNT SUCCESSFULLY"), 
+                () => {console.log("POSTED NEW AGGRESIVE EVEVNT SUCCESSFULLY"); /*dispatch(addAggresiveEventToUser(newAggresiveSkatingEvent));*/}, 
                 () => console.log("POSTED NEW AGGRESIVE EVEVNT UNSUCCESSFULLY"))
             }
             else{

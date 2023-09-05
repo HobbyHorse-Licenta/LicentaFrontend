@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { json } from 'node:stream/consumers';
 import { setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
+import eventUtils from '../../utils/EventUtil';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -124,38 +125,16 @@ const EventCard = ({event, onPress, joined}: EventInput) => {
     }
 
     function joinEvent(){
-        if(currentSkateProfile !== undefined)
-        {
-            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-            {
-                Fetch.joinSkateProfileToEvent(JWTTokenResult.token,
-                    currentSkateProfile.id, event.id,
-                    () => {console.log("\n\nEvent joined SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true));
+        eventUtils.joinEvent(currentSkateProfile, JWTTokenResult, event.id,
+            () => {console.log("\n\nEvent joined SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true));
                             dispatch(setNeedsRecommendedEventsRefresh(true));},
-                    () => console.log("\n\nEvent join FAILED")
-                    );
-            }
-            else{
-                //TODO refresh token
-            }
-        }
+            () => console.log("\n\nEvent join FAILED"));
     }
 
     function leaveEvent(){
-        if(currentSkateProfile !== undefined)
-        {
-            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-            {
-                Fetch.leaveSkateProfileFromEvent(JWTTokenResult.token,
-                    currentSkateProfile.id, event.id,
-                () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));},
-                () => console.log("\n\nEvent left FAILED")
-                );
-            }
-            else{
-                //TODO refresh token
-            }
-        }
+        eventUtils.leaveEvent(currentSkateProfile, JWTTokenResult, event.id,
+            () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true))},
+            () => console.log("\n\nEvent left FAILED"))
     }
 
     return(

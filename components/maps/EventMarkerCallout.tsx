@@ -33,7 +33,6 @@ const EventMarkerCallout = ({event, isRecommendedEvent} : Input) => {
         }
     }, [])
     
-    console.log("IS PARK TRAIL: " + parkTrail !== undefined);
     const theme = useTheme();
     return(
         <View style={[ styles.descriptionView, SpacingStyles.centeredContainer]}>

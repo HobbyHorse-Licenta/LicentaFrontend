@@ -27,7 +27,6 @@ const EventsBody = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    const [refreshing, setRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
     const {walkthroughState} = useSelector((state: RootState) => state)
     const { user, JWTTokenResult, needsRecommendedEventsRefresh} = useSelector((state: RootState) => state.appState)
@@ -96,14 +95,7 @@ const EventsBody = () => {
       }, [])
 
 
-    const onRefresh = () => {
-    setRefreshing(true);
-    console.log("REFRESHING");
-    // Perform your data fetching or refreshing logic here
-    
-    // Once the data fetching is complete, set the refreshing state back to false
-    setRefreshing(false);
-    };
+   
 
     const getAndSetRecommendedEvents = () => {
         if(currentSkateProfile !== undefined)
@@ -113,7 +105,7 @@ const EventsBody = () => {
             {
                 Fetch.getRecommendedEventsForSkateProfile( JWTTokenResult.token,
                     currentSkateProfile.id,
-                    (recommendedEvents) => {/*console.log("GET; DATA RETURNED RECOMMENDED EVENTS\n " + JSON.stringify(recommendedEvents));*/ setEvents(recommendedEvents); setLoading(false); /*console.log("\n\n\nRecommended events I just got: " + JSON.stringify(recommendedEvents) + "\n\n\n")*/},
+                    (recommendedEvents) => {/*console.log("GET; DATA RETURNED RECOMMENDED EVENTS\n " + JSON.stringify(recommendedEvents));*/ setEvents(recommendedEvents); setLoading(false); },
                     () => { setEvents([]); setLoading(false); uiUtils.showPopUp("Error", "Database is not working\nWe couldn't load recommended events");});
             }
             else{
@@ -123,14 +115,13 @@ const EventsBody = () => {
         else setLoading(false);   
     }
         
-    
-
 
     const GoNextProfile = () => {
         setLoading(true);
         if(user !== undefined && user.skateProfiles !== undefined && currentSkateProfile !== undefined)
         {
-            const currentIndex = user.skateProfiles.indexOf(currentSkateProfile);
+            const currentIndex = user.skateProfiles.findIndex(skateprofile => skateprofile.id === currentSkateProfile.id);
+            //const currentIndex = user.skateProfiles.indexOf(currentSkateProfile);
             dispatch(setCurrentSkateProfile(user.skateProfiles[(currentIndex + 1) % user.skateProfiles.length]))
         }
     }
@@ -139,7 +130,8 @@ const EventsBody = () => {
         setLoading(true);
         if(user !== undefined && user.skateProfiles !== undefined && currentSkateProfile !== undefined)
         {
-            const currentIndex = user.skateProfiles.indexOf(currentSkateProfile);
+            const currentIndex = user.skateProfiles.findIndex(skateprofile => skateprofile.id === currentSkateProfile.id);
+            //const currentIndex = user.skateProfiles.indexOf(currentSkateProfile);
             if(currentIndex == 0)
                 dispatch(setCurrentSkateProfile(user.skateProfiles[user.skateProfiles.length - 1]))
             else dispatch(setCurrentSkateProfile(user.skateProfiles[(currentIndex - 1) % user.skateProfiles.length]))
@@ -201,7 +193,6 @@ const EventsBody = () => {
                             body="No skaters you'd like so far anyway"
                             svgElement={<SearchingSvg></SearchingSvg>}
                             />
-                            // <RefreshControl refreshing={refreshing} onRefresh={onRefresh} ></RefreshControl>
                     
                         
                     )

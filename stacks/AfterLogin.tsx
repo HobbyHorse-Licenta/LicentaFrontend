@@ -36,6 +36,9 @@ const AfterLogin = () => {
   
   const initialStackName = currentRoute !== undefined ? currentRoute + "Stack" : "EventsStack";
 
+  const {firstProfileConfig} = useSelector((state: RootState) => state.appState)
+
+
   return ( 
     <SafeAreaView style={[{width: '100%', height: windowHeight}]}>
     { 
@@ -51,7 +54,7 @@ const AfterLogin = () => {
       ):
       (
       <Tab.Navigator
-        initialRouteName={initialStackName}
+        initialRouteName={firstProfileConfig === true ? "EventsStack" : initialStackName}
         screenOptions={{
           tabBarActiveTintColor: theme.colors.tertiary,
           headerShown: false,

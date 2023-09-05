@@ -68,30 +68,32 @@ const WholeScreen = () => {
     const notificationListener = useRef<Subscription>();
 
     useEffect(() => {
-    if(user !== null && user !== undefined)
-    {
-      if(user.pushNotificationToken === undefined || user.pushNotificationToken === null)
-        registerForPushNotificationsAsync().then(token => postExpoPushToken(token, user));
-    }
-
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: false,
-        shouldSetBadge: false,
-      }),
-    });
-
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      triggerRefreshBasedOnNotification(notification);
-    });
-
-    return () => {
-      if(notificationListener.current !== undefined)
+      if(user !== null && user !== undefined)
       {
-        Notifications.removeNotificationSubscription(notificationListener.current);
+        if(user.pushNotificationToken === undefined  || user.pushNotificationToken === null || user.pushNotificationToken === "")
+        {
+          registerForPushNotificationsAsync().then(token => postExpoPushToken(token, user));
+        }
       }
-    };
+
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: false,
+          shouldSetBadge: false,
+        }),
+      });
+
+      notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+        triggerRefreshBasedOnNotification(notification);
+      });
+
+      return () => {
+        if(notificationListener.current !== undefined)
+        {
+          Notifications.removeNotificationSubscription(notificationListener.current);
+        }
+      };
     }, [user]);
 
 
@@ -164,16 +166,21 @@ const WholeScreen = () => {
     ///////////////////////////////////////////
 
     const triggerRefreshBasedOnNotification = (notification) => {
-      console.log("Ajung aici pentru ca am primit notificare");
+      console.log("Received notification");
 
       if(notification.request.content.title !== null)
       {
         switch (notification.request.content.title) {
           case "New Event":
-            //also show notification
+            uiUtils.showPopUp(notification.request.content.title, notification.request.content.body);
             //this triggers a useEffect in EventsBody component
             dispatch(setNeedsRecommendedEventsRefresh(true));
             break;
+          case "Event set up":
+              uiUtils.showPopUp(notification.request.content.title, notification.request.content.body);
+              //this triggers a useEffect in myEventsBody component
+              dispatch(setNeedsEventsRefresh(true));
+              break;
           case "Event changes":
             //this triggers a useEffect in EventsBody and myEventsBody component
             dispatch(setNeedsRecommendedEventsRefresh(true));
@@ -185,6 +192,7 @@ const WholeScreen = () => {
             dispatch(setNeedsEventsRefresh(true));
             break;
           case "Schedule delete":
+            uiUtils.showPopUp(notification.request.content.title, notification.request.content.body)
             //this triggers a useEffect in MySchedules
             dispatch(setNeedsSchedulesRefresh(true));
             break;
@@ -262,7 +270,7 @@ const WholeScreen = () => {
             console.log('Token is valid');
             if(user.uid !== undefined)
             {
-              console.log("urmeaza sa incerc databaseul pentru userul cu id => " + user.uid);
+              console.log("Get from database user with id => " + user.uid);
               dispatch(setUserId(user.uid));
               dispatch(setJWTTokenResult(idTokenResult));
               if(idTokenResult !== undefined && !validation.isJWTTokenExpired(idTokenResult))

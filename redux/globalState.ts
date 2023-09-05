@@ -35,7 +35,6 @@ async() => {
 
 export const saveGlobalStateAsync = async(state) => {
     try{
-        console.log("current route from global is saved in asyncstorage: " + JSON.stringify(state.currentRoute));
         await AsyncStorage.setItem("global", JSON.stringify(state))
     }
     catch(error)
@@ -54,7 +53,7 @@ export const globalStateSlice = createSlice({
         setCurrentSkateProfile: (state, action: PayloadAction<SkateProfile>) => {
             state.currentSkateProfile = action.payload;
         },
-        resetWalkthroughState: state => initialState
+        resetGlobalState: state => initialState
 
       
     },
@@ -65,6 +64,6 @@ export const globalStateSlice = createSlice({
       },
 });
 
-export const {setCurrentRoute, setCurrentSkateProfile, resetWalkthroughState} = globalStateSlice.actions
+export const {setCurrentRoute, setCurrentSkateProfile, resetGlobalState} = globalStateSlice.actions
 
 export default globalStateSlice.reducer;

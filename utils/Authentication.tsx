@@ -30,7 +30,6 @@ class Authentication {
                 this.dispatch(setJWTTokenResult(jwtTokenResult));
 
                 try {
-                    console.log("set is loading to true");
                     if(jwtTokenResult !== undefined && !validation.isJWTTokenExpired(jwtTokenResult))
                     {
                         Fetch.getUser(jwtTokenResult.token,

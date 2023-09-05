@@ -39,6 +39,8 @@ const MySchedulesBody = () => {
             const updatedSkateProfile = user.skateProfiles.find(skateProfile => skateProfile.id === currentSkateProfile?.id)
             if(updatedSkateProfile && updatedSkateProfile.schedules !== undefined)
             {
+                console.log("Update schedules because there was user change");
+                updatedSkateProfile.schedules.forEach(schedule => console.log("id: " + schedule.id + "   zoneId: "+ schedule.zones[0].id +"\n"))
                 setSchedulesToDisplay(updatedSkateProfile.schedules)
             }
         }
@@ -47,7 +49,6 @@ const MySchedulesBody = () => {
     useEffect(() => {
         if(needsSchedulesRefresh === true)
         {
-            console.log("AM INTRAT AICI SA DAM REFRESH LA SCHEDULES");
             getAndSetSchedules();
             dispatch(setNeedsSchedulesRefresh(false));
         }
@@ -97,6 +98,7 @@ const MySchedulesBody = () => {
         if(schedulesToDisplay !== undefined)
         {
             const scheduleToUpdate: ScheduleType = schedulesToDisplay[scheduleIndex];
+
             dispatch(setExistingScheduleState(scheduleToUpdate));
             navigation.navigate('Schedule' as never, {updateMode: true, scheduleToUpdate: scheduleToUpdate} as never);
         } 

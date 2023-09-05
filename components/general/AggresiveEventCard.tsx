@@ -17,6 +17,7 @@ import { RootState } from '../../redux/store';
 import { uiSlice } from '../../redux/ui';
 import { AggresiveEventInfoDisplay } from '../events';
 import { setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh } from '../../redux/appState';
+import eventUtils from '../../utils/EventUtil';
 
 const windowDimensions = Dimensions.get('window');
 const screenDimensions = Dimensions.get('screen');
@@ -106,6 +107,7 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
         }
     }, [participatingSkateProfiles])
     
+    const eventOwner = eventUtils.isOwnerOfEvent(event, currentSkateProfile);
 
     const getAllPicturesFromSkateProfiles = (skateProfiles: Array<SkateProfile>): Array<string | undefined> =>
     {
@@ -125,38 +127,22 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
     }
 
     function joinEvent(){
-        if(currentSkateProfile !== undefined)
-        {
-            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-            {
-                Fetch.joinSkateProfileToEvent(JWTTokenResult.token,
-                    currentSkateProfile.id, event.id,
-                    () => {console.log("\n\nEvent joined SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true));
+        eventUtils.joinEvent(currentSkateProfile, JWTTokenResult, event.id,
+            () => {console.log("\n\nEvent joined SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true));
                             dispatch(setNeedsRecommendedEventsRefresh(true));},
-                    () => console.log("\n\nEvent join FAILED")
-                    );
-            }
-            else{
-                //TODO refresh token
-            }
-        }
+            () => console.log("\n\nEvent join FAILED"));
     }
 
     function leaveEvent(){
-        if(currentSkateProfile !== undefined)
-        {
-            if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-            {
-                Fetch.leaveSkateProfileFromEvent(JWTTokenResult.token,
-                    currentSkateProfile.id, event.id,
-                () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));},
-                () => console.log("\n\nEvent left FAILED")
-                );
-            }
-            else{
-                //TODO refresh token
-            }
-        }
+        eventUtils.leaveEvent(currentSkateProfile, JWTTokenResult, event.id,
+            () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true))},
+            () => console.log("\n\nEvent left FAILED"))
+    }
+
+    function deleteEvent(){
+        eventUtils.deleteEvent(JWTTokenResult, event.id,
+            () => {console.log("\n\nEvent deleted SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));},
+            () => console.log("\n\nEvent delete FAILED"))
     }
 
     return(
@@ -171,9 +157,19 @@ const AggresiveEventCard = ({event, onPress, joined}: EventInput) => {
                         </View> 
                     ):
                     (
-                        <View style={{width:'80%', margin: '1%'}}>
-                            <Button style={{backgroundColor: theme.colors.secondary}} text='Leave' onPress={leaveEvent}></Button>
-                        </View> 
+                        <View>
+                            {eventOwner === true &&
+                            <View style={{width:'80%', margin: '1%'}}>
+                                <Button style={{backgroundColor: theme.colors.secondary}} text='Delete' onPress={deleteEvent}></Button>
+                            </View>
+                            }
+                            {eventOwner === false &&
+                            <View style={{width:'80%', margin: '1%'}}>
+                                <Button style={{backgroundColor: theme.colors.secondary}} text='Leave' onPress={leaveEvent}></Button>
+                            </View>
+                            }
+                        </View>
+                         
                     )
                 }
                 

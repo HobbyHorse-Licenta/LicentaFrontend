@@ -212,7 +212,7 @@ export const appStateSlice = createSlice({
     addAssignedSkill: (state, action: PayloadAction<AssignedSkill>) => {
       //payload == assignedSkill to add
       const skillToAdd: AssignedSkill = action.payload;
-      if (state.user !== undefined && state.user !== null) {
+      if (state.user !== undefined && state.user !== null && state.user.skateProfiles !== undefined && state.user.skateProfiles.length > 0) {
         state.user = {
           ...state.user,
           skateProfiles: state.user.skateProfiles.map((skateProfile) => {

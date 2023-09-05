@@ -46,9 +46,10 @@ const SelectLocationCasualAndSpeed = ({onTouchInside, onTouchOutside, parkSelect
     const [selectedLocation, setSelectedLocation] = useState<Location | undefined>({
         id: uuid.v4().toString(),
         name: 'Cluj-Napoca',
-        lat: 46.770960,
-        long:  23.596937
+        lat: zone !== undefined ? zone.location.lat : 46.770960,
+        long: zone !== undefined ? zone.location.long : 23.596937
     });
+    
     const dispatch = useDispatch();
     const theme = useTheme()
     //const wheelPickerRef = useRef<WheelPickerExpo | null>(null);

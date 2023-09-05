@@ -33,13 +33,7 @@ const AggresiveEventInfoDisplay = ({event}: EventInput) => {
         long:  23.596937
     });
 
-    const getMapContainer = () =>{
-        return(
-            <PrimaryContainer styleInput={styles.mapContainer}>
-                
-            </PrimaryContainer>
-        )
-    }
+
 
     return(
             <View style={[ styles.descriptionView, SpacingStyles.centeredContainer]}>

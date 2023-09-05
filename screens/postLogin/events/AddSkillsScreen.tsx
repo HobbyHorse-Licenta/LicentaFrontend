@@ -24,6 +24,7 @@ const AddSkillsScreen = () => {
     const {user, JWTTokenResult} = useSelector((state: RootState) => state.appState);
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
     const [recommendedSkills, setRecommendedSkills] = useState<Array<SkillRecommendation> | undefined>(undefined);
+    const [assignedSkills, setAssignedSkills] = useState<Array<AssignedSkill> | undefined>(undefined);
     const dispatch = useDispatch();
     const theme = useTheme();
 
@@ -48,6 +49,30 @@ const AddSkillsScreen = () => {
             setRecommendedSkills(undefined)
         }
     }, [currentSkateProfile])
+
+    useEffect(() => {
+        if(currentSkateProfile !== undefined && user !== undefined)
+        {
+            const updatedCurrentSkateProfile = user.skateProfiles.find(sk => sk.id === currentSkateProfile.id);
+            if(updatedCurrentSkateProfile !== undefined)
+            {
+                setAssignedSkills(updatedCurrentSkateProfile.assignedSkills);
+            }
+        }
+    }, [user])
+
+    useEffect(() => {
+       setRecommendedSkills(removeAssignedSkillsFromRecommendations(recommendedSkills));
+
+       if(currentSkateProfile !== undefined && JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult)) //trying to actually bring the initial recommended list
+       {
+            Fetch.getSkillRecommendations(JWTTokenResult.token,
+                currentSkateProfile.skatePracticeStyle, currentSkateProfile.skateExperience,
+                (skills) => setRecommendedSkills(removeAssignedSkillsFromRecommendations(skills)),
+                () => console.log("Coudn't get recommended skills for the shown profile"));
+       }
+
+    }, [assignedSkills])
 
 
     const getRecommendedSkillsElements = () => {
@@ -108,9 +133,9 @@ const AddSkillsScreen = () => {
         //all recommended skills that are not already assigned to the skateprofile
         return recomSkills?.filter((recommendedSkill) => 
         {
-            if(currentSkateProfile !== undefined && currentSkateProfile.assignedSkills !== undefined && currentSkateProfile.assignedSkills !== null)
+            if(currentSkateProfile !== undefined && assignedSkills !== undefined && assignedSkills !== null)
             {
-                if( currentSkateProfile.assignedSkills.find(assignedSkill => assignedSkill.skill !== undefined && assignedSkill.skill.id === recommendedSkill.skill.id) !== undefined)
+                if( assignedSkills.find(assignedSkill => assignedSkill.skill !== undefined && assignedSkill.skill.id === recommendedSkill.skill.id) !== undefined)
                 return false;
                 else return true;
             }
@@ -143,7 +168,9 @@ const AddSkillsScreen = () => {
             <View style={styles.skillContainerSize}>
                 <Text variant="bodyMedium" style={{textAlign: "center"}}>Current Skills</Text>
                 <View style={{margin: scale(10)}}>
-                    <AssignedSkillList skateProfileId={currentSkateProfile.id}></AssignedSkillList>
+                    <ScrollView horizontal={true} contentContainerStyle={{justifyContent: "center", alignItems: "center"}}>
+                        <AssignedSkillList skateProfileId={currentSkateProfile.id}></AssignedSkillList>
+                    </ScrollView>
                 </View>
             </View>
         )

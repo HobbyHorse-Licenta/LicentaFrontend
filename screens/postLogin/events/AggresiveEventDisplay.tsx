@@ -4,13 +4,13 @@ import { View, ScrollView, StyleSheet, Platform } from 'react-native'
 import { Text, useTheme } from "react-native-paper";
 import { scale, verticalScale } from "react-native-size-matters";
 import MapView, {LatLng, PROVIDER_GOOGLE} from 'react-native-maps';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { nothing } from "immer";
 import uuid from 'react-native-uuid'
 
 
 import {EventImage, GenderDisplay } from "../../../components/eventDisplay";
-import { GeneralHeader, SvgView } from "../../../components/general";
+import { GeneralHeader, LoadingComponent, SvgView } from "../../../components/general";
 import SkateProfilesList from "../../../components/general/SkateProfilesList";
 import { LevelSvg } from "../../../components/svg/general";
 import { RootState } from "../../../redux/store";
@@ -19,6 +19,9 @@ import { SpacingStyles } from "../../../styles";
 import { CustomTrail, Event, SkateProfile } from "../../../types";
 import { filterUtils, mapsUtils, uiUtils, validation } from "../../../utils";
 import { Layout2Piece } from "../../layouts";
+import eventUtils from "../../../utils/EventUtil";
+import { setNeedsEventsRefresh, setNeedsRecommendedEventsRefresh } from "../../../redux/appState";
+import { LoadingScreen } from "../../preLogin";
 
 
 const AggresiveEventDisplay = ({route, navigation}) => {
@@ -28,9 +31,10 @@ const AggresiveEventDisplay = ({route, navigation}) => {
 
   const customTrail: CustomTrail = event.outing.trail as CustomTrail;
 
-
+  const dispatch = useDispatch();
   const mapRef = useRef<MapView | null>(null);
   const theme = useTheme();
+  const [loading, setLoading] = useState(false);
   const {JWTTokenResult} = useSelector((state: RootState) => state.appState)
   const {currentSkateProfile} = useSelector((state: RootState) => state.globalState)
   const [suggestedSkateProfiles, setSuggestedSkateProfiles] = useState<Array<SkateProfile> | undefined>(undefined);
@@ -61,7 +65,7 @@ const AggresiveEventDisplay = ({route, navigation}) => {
 
   const getMap = () => {
     return(
-        <MapView ref={mapRef} style={{height: '100%', width: '100%', zIndex: 0}}
+        <MapView ref={mapRef} style={{height: verticalScale(250), width: '100%', zIndex: 0}}
         initialRegion={{
             latitude: customTrail.checkPoints[0].location.lat,
             longitude: customTrail.checkPoints[0].location.long,
@@ -76,20 +80,11 @@ const AggresiveEventDisplay = ({route, navigation}) => {
     );
   }
 
-  const skatersInfo = () => {
+
+  const getEventOrganisationalData = () => {
     return(
-      <View style={SpacingStyles.centeredContainer}>
-          <View style={{margin: 10, justifyContent: 'center', alignItems: 'center'}}>
-            <Text variant="headlineSmall" style={{marginBottom: scale(2)}}>Event's skaters</Text>
-            <GenderDisplay gender={event.gender}></GenderDisplay>
-            <Text variant="labelMedium">Skaters with opacity are just suggested</Text>
-            <Text variant="labelMedium">Skater who are opaque are participating</Text>
-          </View>
-          {
-            suggestedSkateProfiles !== undefined &&  suggestedSkateProfiles !== null &&
-            attendingSkateProfiles !== undefined &&  attendingSkateProfiles !== null &&
-             <SkateProfilesList suggestedSkateProfiles={suggestedSkateProfiles} attendingSkateProfiles={attendingSkateProfiles}></SkateProfilesList>
-          }
+      <View style={{borderRadius: 20, borderWidth: 3, borderColor: "white", width: "80%", paddingVertical: scale(10), marginVertical: scale(20), justifyContent: 'center', alignItems: "center"}}>
+          <Text style={{marginBottom: scale(2), fontWeight: 'bold', fontSize: 17, color: theme.colors.tertiary}}>Event info: </Text>
 
             <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                 <SvgView size='small'>
@@ -125,6 +120,39 @@ const AggresiveEventDisplay = ({route, navigation}) => {
             <View style={[styles.rowContainer, {backgroundColor: theme.colors.background}]}>
                 <Text style={[styles.descriptionText]}>Gender: {event.gender}</Text>
             </View>
+          </View>
+    )
+  }
+
+  const skatersInfo = () => {
+    return(
+      <View style={SpacingStyles.centeredContainer}>
+          
+          <View style={{margin: 10, justifyContent: 'center', alignItems: 'center'}}>
+          {
+            suggestedSkateProfiles?.length === 0 && attendingSkateProfiles?.length === 0 ? (
+              <Text variant="headlineSmall" style={{marginBottom: scale(2), textAlign: 'center'}}>No skaters suggested or participating</Text>
+
+            ):(
+              <View style={{justifyContent: 'center', alignItems: "center"}}>
+                <Text variant="headlineSmall" style={{marginBottom: scale(2)}}>Event's skaters</Text>
+                <GenderDisplay gender={event.gender}></GenderDisplay>
+                <Text variant="labelMedium">Skaters with opacity are just suggested</Text>
+                <Text variant="labelMedium">Skater who are opaque are participating</Text>
+              </View>
+            )
+          }
+            
+          </View>
+          {
+            suggestedSkateProfiles !== undefined &&  suggestedSkateProfiles !== null &&
+            attendingSkateProfiles !== undefined &&  attendingSkateProfiles !== null &&
+            
+             <SkateProfilesList suggestedSkateProfiles={suggestedSkateProfiles} attendingSkateProfiles={attendingSkateProfiles}></SkateProfilesList>
+          }
+          
+          {getEventOrganisationalData()}
+          
       </View>
     )
   }
@@ -132,19 +160,76 @@ const AggresiveEventDisplay = ({route, navigation}) => {
   const getBody = () => {
     return(
       <ScrollView>
-        {getMap()}
-        {getMap()}
-        {skatersInfo()}
+        {
+          loading === false ? (
+            <View>
+              {getMap()}
+              {skatersInfo()}
+            </View>
+          ):
+          (
+            <LoadingScreen></LoadingScreen>
+          )
+        }
+        
       </ScrollView>
     );
   };
-  
+
+  function joinEvent(){
+    eventUtils.joinEvent(currentSkateProfile, JWTTokenResult, event.id,
+        () => {console.log("\n\nEvent joined SUCCESSFULLY"); (setNeedsEventsRefresh(true));
+    dispatch(setNeedsRecommendedEventsRefresh(true));  setLoading(false); navigation.goBack();},
+        () => console.log("\n\nEvent join FAILED"));
+}
+
+function leaveEvent(){
+    eventUtils.leaveEvent(currentSkateProfile, JWTTokenResult, event.id,
+        () => {console.log("\n\nEvent left SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));
+    setLoading(false); navigation.goBack();},
+        () => console.log("\n\nEvent left FAILED"))
+}
+
+function deleteEvent(){
+    eventUtils.deleteEvent(JWTTokenResult, event.id,
+        () => {console.log("\n\nEvent deleted SUCCESSFULLY"); dispatch(setNeedsEventsRefresh(true)); dispatch(setNeedsRecommendedEventsRefresh(true));
+    setLoading(false); navigation.goBack();},
+        () => console.log("\n\nEvent delete FAILED"))
+}
+
+  const eventOwner = eventUtils.isOwnerOfEvent(event, currentSkateProfile);
+
+  const rightButtonFunction = () => {
+    setLoading(true);
+    if(joined === false)
+    {
+      return joinEvent();
+    }
+    else{
+      if(eventOwner === true)
+      {
+        return deleteEvent();
+      }
+      else return leaveEvent();
+    }
+  }
+
+  const getRightButtonText = () => {
+    if(joined === false)
+      return "Join";
+    else{
+      if(eventOwner === true)
+        return "Delete";
+      else return "Leave";
+    }
+  }
+
   return (
     <Layout2Piece
       header={<GeneralHeader onBack={() => navigation.goBack()} title={event.name}
       rightButtonEnable={true}
-      onRightButtonPress={() => joined === true ? console.log("ceva"): console.log("altceva")}
-      rightButtonText={joined === true ? "Leave" : "Join"}
+      onRightButtonPress={() => rightButtonFunction()}
+      rightButtonText={getRightButtonText()}
       ></GeneralHeader>}
       body={getBody()}
     ></Layout2Piece>

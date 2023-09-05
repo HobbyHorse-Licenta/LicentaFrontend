@@ -35,7 +35,6 @@ const SignUpScreen = () => {
             {
                 if(password === confirmationPassword)
                 {
-                    console.log("CREATING ACCOUNT");
                     createUserWithEmailAndPassword(firebaseAuth, email, password)
                     .then((userCredential) => {
                     // Signed in 

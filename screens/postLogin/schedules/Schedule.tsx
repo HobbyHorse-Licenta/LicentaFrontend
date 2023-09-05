@@ -30,6 +30,7 @@ const Schedule = ({route, navigation}) => {
   }
 
   const scheduleConfig = useSelector((state: RootState) => state.createScheduleState);
+  
   const {JWTTokenResult} = useSelector((state: RootState) => state.appState);
   const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
   const {schedule} = useSelector((state: RootState) => state.walkthroughState);
@@ -60,7 +61,6 @@ const Schedule = ({route, navigation}) => {
     TourGuideZone
   } = useTourGuideController('schedule')
   
-  console.log("RANDAM SCHEDULE");
 
   useEffect(() => {
       if (canStart && schedule === true) {
@@ -83,32 +83,32 @@ const Schedule = ({route, navigation}) => {
   //(also sets if the button is disabled or not)
   useEffect(() => {
     
-    if(!validation.isDefined(scheduleConfig.selectedDays))
+    if(!validation.isDefined(selectedDays))
     {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.startTime) || !validation.isDefined(scheduleConfig.endTime))
+    if(!validation.isDefined(startTime) || !validation.isDefined(endTime))
     {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.zone) || !validation.isDefined(scheduleConfig.zone?.location))
+    if(!validation.isDefined(zone) || !validation.isDefined(zone?.location))
     {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.minimumAge)|| !validation.isDefined(scheduleConfig.maximumAge))
+    if(!validation.isDefined(minimumAge)|| !validation.isDefined(maximumAge))
     {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.gender))
+    if(!validation.isDefined(selectedGender))
     {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.maxNumberOfPeople))
+    if(!validation.isDefined(numberOfPartners))
     {
       setCanCreateSchedule(false);
       return;
@@ -122,42 +122,41 @@ const Schedule = ({route, navigation}) => {
       }
     }
     setCanCreateSchedule(true);
-  }, [scheduleConfig, parkSelected])
+  }, [selectedDays, startTime, endTime, zone, minimumAge, maximumAge, selectedGender, numberOfPartners, parkSelected])
   
-  useEffect(() => {
-    dispatch(setSelectedDaysState(selectedDays));
-  }, [selectedDays])
+  // useEffect(() => {
+  //   dispatch(setSelectedDaysState(selectedDays));
+  // }, [selectedDays])
   
-  useEffect(() => {
-    dispatch(setStartTime(startTime.getTime()));
-    dispatch(setEndTime(endTime.getTime()));
-  }, [startTime, endTime])
+  // useEffect(() => {
+  //   dispatch(setStartTime(startTime.getTime()));
+  //   dispatch(setEndTime(endTime.getTime()));
+  // }, [startTime, endTime])
 
  
   const createNewSchedule = () => {
 
     if(currentSkateProfile !== undefined && currentSkateProfile !== null)
     {
-      if(scheduleConfig.endTime !== undefined && scheduleConfig.startTime !== undefined
-        && scheduleConfig.zone !== undefined && scheduleConfig.minimumAge !== undefined
-        && scheduleConfig.maximumAge !== undefined && scheduleConfig.gender !== undefined &&
-        scheduleConfig.maxNumberOfPeople !== undefined && scheduleConfig.selectedDays !== undefined)
+      if(endTime !== undefined && startTime !== undefined
+        && zone !== undefined && minimumAge !== undefined
+        && maximumAge !== undefined && selectedGender !== undefined &&
+        numberOfPartners !== undefined && selectedDays !== undefined)
       {
         
         const newSchedule: ScheduleType = {
           id: uuid.v4().toString(),
           skateProfileId: currentSkateProfile.id,
-          days: scheduleConfig.selectedDays,
-          startTime: scheduleConfig.startTime,
-          endTime: scheduleConfig.endTime,
-          zones: [scheduleConfig.zone],
-          minimumAge: scheduleConfig.minimumAge,
-          maximumAge: scheduleConfig.maximumAge,
-          gender: scheduleConfig.gender,
-          maxNumberOfPeople: scheduleConfig.maxNumberOfPeople
+          days: selectedDays,
+          startTime: startTime.getTime(),
+          endTime: endTime.getTime(),
+          zones: [zone],
+          minimumAge: minimumAge,
+          maximumAge: maximumAge,
+          gender: selectedGender,
+          maxNumberOfPeople: numberOfPartners
         }
 
-        console.log("\n\n\nNEW CREATED SCHEDULE :  " + JSON.stringify(newSchedule));
         dispatch(backupUser());
         
         //optimistic update
@@ -193,22 +192,22 @@ const Schedule = ({route, navigation}) => {
     if(currentSkateProfile !== undefined && currentSkateProfile !== null)
     {
       if(scheduleToUpdate !== undefined &&
-        scheduleConfig.endTime !== undefined && scheduleConfig.startTime !== undefined
-        && scheduleConfig.zone !== undefined && scheduleConfig.minimumAge !== undefined
-        && scheduleConfig.maximumAge !== undefined && scheduleConfig.gender !== undefined &&
-        scheduleConfig.maxNumberOfPeople !== undefined && scheduleConfig.selectedDays !== undefined)
+        endTime !== undefined && startTime !== undefined
+        && zone !== undefined && minimumAge !== undefined
+        && maximumAge !== undefined && selectedGender !== undefined &&
+        numberOfPartners !== undefined && selectedDays !== undefined)
       {
         
         const newSchedule: ScheduleType = {
           ...scheduleToUpdate,
-          days: scheduleConfig.selectedDays,
-          startTime: scheduleConfig.startTime,
-          endTime: scheduleConfig.endTime,
-          zones: [scheduleConfig.zone],
-          minimumAge: scheduleConfig.minimumAge,
-          maximumAge: scheduleConfig.maximumAge,
-          gender: scheduleConfig.gender,
-          maxNumberOfPeople: scheduleConfig.maxNumberOfPeople
+          days: selectedDays,
+          startTime: startTime.getTime(),
+          endTime: endTime.getTime(),
+          zones: [zone],
+          minimumAge: minimumAge,
+          maximumAge: maximumAge,
+          gender: selectedGender,
+          maxNumberOfPeople: numberOfPartners
         }
         dispatch(backupUser());
         
@@ -225,7 +224,6 @@ const Schedule = ({route, navigation}) => {
           Fetch.putSchedule(JWTTokenResult.token, scheduleToUpdate.id, newSchedule, 
           (dbSchedule) => {
             console.log("Schedule put success");
-            console.log("\n\nUPDATED SCHEDULE IN DB:\n" + JSON.stringify(dbSchedule));
           dispatch(updateSchedule(dbSchedule));
 
           },

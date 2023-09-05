@@ -18,15 +18,16 @@ const SelectTimeAndroid = ({textAbovePicker, time, setTime} : timePickerInput) =
   return (
     <View>
       <SelectTime textAbovePicker={textAbovePicker} time={time} onPress={() => setDatePickerVisible(true)}/>
-      {/* {dataPickerVisible === true && 
+      {dataPickerVisible === true && 
       <RNDateTimePicker onChange={(time) => {
+        setDatePickerVisible(false);
         if(time.nativeEvent.timestamp !== undefined)
         {
           setTime(new Date(time.nativeEvent.timestamp));
         }
-        setDatePickerVisible(false);
+        
       }} mode='time'  value={time} minimumDate={new Date(1950, 0, 1)} maximumDate={new Date(2023,0,1)} />
-      } */}
+      }
     </View>
   );
 };

@@ -67,7 +67,6 @@ const AssignedSkillList = ({skateProfileId, onPressAddSkill} : Input) => {
     }
 
     const advanceSkillLevel = (skill: AssignedSkill) => {
-        console.log("\n\n\nAAHFDJS\n\n\n");
         const nextSkillLevel = getNextValue(skill.masteringLevel);
         let newMasteringLevel;
         if(nextSkillLevel === undefined)

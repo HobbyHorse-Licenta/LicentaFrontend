@@ -51,6 +51,10 @@ const Fetch = {
       this.delete(jwtToken, `${apiUrl}/schedule/delete/schedule/${scheduleId}`, callBackFunction, errorCallBackFunction);
     },
 
+    deleteEvent: async function(jwtToken: string, eventId: string, callBackFunction: Function, errorCallBackFunction: Function){
+      this.delete(jwtToken, `${apiUrl}/event/delete/${eventId}`, callBackFunction, errorCallBackFunction);
+    },
+
     deleteAssignedSkill: async function(jwtToken: string, assignedSkillId: string, skateProfileId: string, callBackFunction: Function, errorCallBackFunction: Function){
       this.delete(jwtToken, `${apiUrl}/skill/delete/assignedSkill/${assignedSkillId}/fromSkateProfile/${skateProfileId}`, callBackFunction, errorCallBackFunction);
     },

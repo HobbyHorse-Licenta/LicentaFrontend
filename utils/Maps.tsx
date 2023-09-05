@@ -242,23 +242,28 @@ class Maps {
             }
             else if(customTrail !== undefined && customTrail.checkPoints !== undefined)
             {
+                
+                
                 if(customTrail.checkPoints !== undefined)
                 {
+                    let startingCheckpoint = customTrail.checkPoints.find(checkpoint => checkpoint.order === 0)
+                    if(startingCheckpoint === undefined)
+                        startingCheckpoint = customTrail.checkPoints[0];
                     return(
                         <View>
                             <Marker
                             key={uuid.v4().toString()}
                             coordinate={{
-                                latitude: customTrail.checkPoints[0].location.lat,
-                                longitude: customTrail.checkPoints[0].location.long
+                                latitude: startingCheckpoint.location.lat,
+                                longitude: startingCheckpoint.location.long
                             }}
                             title={eventData.name}
                             image={{uri: "https://i.postimg.cc/rpH2KLGL/attended-Street-Event.png"}}
                             style={{width: 1, height: 1}}
                             pinColor={'wheat'}
                             onPress={() => onMarkerPress(eventData.id)}
-                        >
-                            <Callout tooltip onPress={() => {console.log("VREAU SA MERGEM"); this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: true, previousScreen: "Maps"} as never)}}>
+                            >
+                            <Callout tooltip onPress={() => {this.navigation.navigate('EventDisplay' as never, {event: eventData, joined: true, previousScreen: "Maps"} as never)}}>
                                     <EventMarkerCallout event={eventData} isRecommendedEvent={false}></EventMarkerCallout>
                             </Callout>
                         </Marker>
@@ -311,12 +316,15 @@ class Maps {
             {
                 if(customTrail.checkPoints !== undefined)
                 {
+                    let startingCheckpoint = customTrail.checkPoints.find(checkpoint => checkpoint.order === 0)
+                    if(startingCheckpoint === undefined)
+                        startingCheckpoint = customTrail.checkPoints[0];
                     return(
                         <Marker
                             key={uuid.v4().toString()}
                             coordinate={{
-                                latitude: customTrail.checkPoints[0].location.lat,
-                                longitude: customTrail.checkPoints[0].location.long
+                                latitude: startingCheckpoint.location.lat,
+                                longitude: startingCheckpoint.location.long
                             }}
                             title={eventData.name}
                             image={{uri: "https://i.postimg.cc/j5kQ6Xxp/recommended-Street-Event.png"}}

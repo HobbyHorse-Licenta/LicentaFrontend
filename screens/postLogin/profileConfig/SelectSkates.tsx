@@ -14,6 +14,8 @@ import { aggresiveSkatesUrl, casualSkatesUrl, speedSkatesUrl } from "../../../as
 import { setSkateType } from "../../../redux/configProfileState";
 import { ProfileConfigHeader } from "../../../components/profileConfig";
 import { RootState } from "../../../redux/store";
+import { resetAppState } from "../../../redux/appState";
+import { resetGlobalState } from "../../../redux/globalState";
 
 const SelectSkates = () => {
 
@@ -25,6 +27,7 @@ const SelectSkates = () => {
     const [goNextDisabled, setGoNextDisabled] = useState(true);
 
     const dispatch = useDispatch();
+    
 
     useEffect(() => {
         //new skate type selected, update in configState

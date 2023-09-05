@@ -28,6 +28,8 @@ const SelectStyleAndExperience = () => {
     const dispatch = useDispatch();
     const theme = useTheme();
 
+
+    
     useEffect(() => {
       dispatch(setSkatePracticeStyle(selectedSkateStyle));
 

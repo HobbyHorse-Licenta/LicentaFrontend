@@ -29,7 +29,7 @@ const MyEvents = () => {
 
   useEffect(() => {
     getAndSetMyEvents();
-  }, [currentSkateProfile])  
+  }, [currentSkateProfile, user])  
 
   useEffect(() => {
     if(needsEventsRefresh === true)
@@ -45,7 +45,6 @@ const MyEvents = () => {
 
     if(currentSkateProfile !== undefined)
       {
-        console.log("Refreshing MY EVENTS");
         if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
         {
           Fetch.getEventsForSkateProfile(JWTTokenResult.token, currentSkateProfile.id,

@@ -16,6 +16,7 @@ import { Fetch } from "../../services";
 import { authenticationUtils, validation } from "../../utils";
 import { RootState } from "../../redux/store";
 import { resetConfigProfileState } from "../../redux/configProfileState";
+import { setCurrentSkateProfile } from "../../redux/globalState";
 
 interface ConfigHeaderInput {
     backButton?: boolean,
@@ -70,11 +71,11 @@ const ProfileConfigHeader = ({backButton, nextScreen, disabled, doneConfig} : Co
         const user: User | null = createUserWithSkateProfile();
         if(user !== null) //user created succesfully
         {
-            console.log("///////////////////////\nPOSTING USER:\n" + JSON.stringify(user) + "\n/////////////////////////");
+            console.log("Posting user");
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
             {
                 Fetch.postUser(JWTTokenResult.token,
-                    user, (postedUser: User) => setPostedUser(postedUser), () => console.log("Coudn't post user at profile creation"));
+                    user, (postedUser: User) => {setPostedUser(postedUser); dispatch(setCurrentSkateProfile(postedUser?.skateProfiles[0])); }, () => console.log("Coudn't post user at profile creation"));
             }
             else{
                 //TODO refresh token

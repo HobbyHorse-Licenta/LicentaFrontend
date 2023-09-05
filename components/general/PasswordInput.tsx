@@ -35,6 +35,7 @@ const PasswordInput = ({ style, label, selectionColor, value, onChangeText} : In
             label={label !== undefined ? label : "No label provided"}
             selectionColor={selectionColor !== undefined ? selectionColor : theme.colors.tertiary}
             value={value}
+            autoCapitalize={"none"}
             secureTextEntry={!passVisible}
             onChangeText={(text: string) => onChangeText(text)}
             />

@@ -25,7 +25,6 @@ const SelectTimeIos = ({textAbovePicker, time, setTime} : timePickerInput) => {
   };
 
   const handleChangeTime = () => {
-    console.log("HAA");
     setIsDatePickerVisible(true);
   };
 

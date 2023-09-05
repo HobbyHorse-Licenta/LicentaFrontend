@@ -32,9 +32,6 @@ const EditProfile = () => {
     else setEditedName(previousText => previousText);
   }
 
-  useEffect(() => {
-    console.log("Selected iamge in edit " + editedImage);
-  }, [editedImage])
   
   const finishedProfileEdit = () => {
     if(user !== undefined && editedName !== undefined && editedName !== null && editedAge !== undefined && editedAge !== null)
@@ -42,8 +39,7 @@ const EditProfile = () => {
       const editedUser: User = {
         ...user, name: editedName, age: editedAge, profileImageUrl: editedImage
       }
-      console.log("ID: " + user.id);
-      console.log("Edited user: " + JSON.stringify(editedUser))
+      
       if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
       {
         Fetch.putUser(JWTTokenResult.token, user.id, editedUser, 

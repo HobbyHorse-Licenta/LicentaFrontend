@@ -5,6 +5,7 @@ import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import { useTheme } from 'react-native-paper';
 import * as Location from 'expo-location';
 import { useSelector } from 'react-redux';
+import uuid from 'react-native-uuid'
 
 import { RootState } from '../../redux/store';
 import { mapsUtils, uiUtils, validation } from '../../utils';
@@ -29,9 +30,6 @@ const MapsBody = () => {
     const [parkTrailsVisible, setParkTrailsVisible] = useState(false);
     const {needsEventsRefresh, allParkTrails, JWTTokenResult} = useSelector((state: RootState) => state.appState);
     const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
-
-    console.log("Attending events: " +  attendingEvents.length);
-    console.log("Recommended events: " +  recommendedEvents.length);
     
     const [initialRegion, setInitialRegion] = useState({
         latitude:  46.771069, 
@@ -75,13 +73,11 @@ const MapsBody = () => {
         })();
     }, []);
     
-    useEffect(() => {
-        if(myLocation != undefined)
-            console.log("LOCATION lat: " + myLocation.coords.latitude + "; long: " + myLocation.coords.longitude );
-    }, [myLocation])
+   
+
+    
 
     const getAndSetMyEvents = () => {
-        console.log("Luam events sa aratam pe harta")
         if(currentSkateProfile !== undefined)
         {
             if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
@@ -165,8 +161,8 @@ const MapsBody = () => {
             }
             {
                 myLocation !== undefined &&
-                mapsUtils.getMarker({id: 'smth', lat: myLocation.coords.latitude,
-                 long: myLocation.coords.longitude},'Your location', mapsElementCount + recommendedEvents.length +  + 1)
+                mapsUtils.getMarker({id: uuid.v4().toString(), lat: myLocation.coords.latitude,
+                 long: myLocation.coords.longitude},'Your location', mapsElementCount + recommendedEvents.length  + 1)
             }
             </MapView>
             {

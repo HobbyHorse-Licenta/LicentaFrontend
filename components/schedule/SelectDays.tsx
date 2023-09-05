@@ -39,7 +39,7 @@ const SelectDays = ({selectedDays, onSelectedDaysChange}: Input) => {
       }
       onSelectedDaysChange([...selectedDays, newDay]);
     }
-    //Object.keys(WeekDays).forEach(e => console.log(`key=${e}  value=${WeekDays[e]}`));
+    
   };
 
   return (

@@ -28,7 +28,7 @@ interface Distance {
 interface Input {
     onTouchInside?: Function,
     onTouchOutside?: Function,
-    zone: Zone
+    zone: Zone | undefined
 }
 
 const SelectLocationAggresive = ({onTouchInside, onTouchOutside, zone} : Input) => {
@@ -88,8 +88,6 @@ const SelectLocationAggresive = ({onTouchInside, onTouchOutside, zone} : Input) 
           }
     
           let location = await ExpoLocation.getCurrentPositionAsync({});
-
-          console.log("GOT YOUR LOCATION");
 
           if(zone === undefined)
           {
@@ -155,7 +153,7 @@ const SelectLocationAggresive = ({onTouchInside, onTouchOutside, zone} : Input) 
                         width={scale(40)}
                         initialSelectedIndex={0}
                         items={rangeArray.map(range => ({ label: range.label, value: range.value}))}
-                        onChange={( range ) => { onTouchOutside && onTouchOutside(); console.log("Setting range: " + range.item.value); setRange(range.item.value); }}
+                        onChange={( range ) => { onTouchOutside && onTouchOutside();  setRange(range.item.value); }}
                         selectedStyle={{borderColor: theme.colors.tertiary, borderWidth: 1}}
                         renderItem={(itemToRender) => renderWheelPickerItem(itemToRender)}
                         haptics={false}
