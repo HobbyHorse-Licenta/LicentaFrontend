@@ -8,76 +8,101 @@ import { Layout2Piece } from "../../layouts";
 import { ProfileConfigHeader } from "../../../components/profileConfig";
 
 const PreSelectStyleAndExperience = () => {
+  const getBody = () => {
+    return (
+      <View
+        style={[
+          StyleSheet.absoluteFill,
+          { justifyContent: "space-evenly", alignItems: "center" },
+        ]}
+      >
+        <ImageBackground
+          source={{ uri: "https://i.postimg.cc/W3xYNPfv/casual-Skating.jpg" }}
+          resizeMode="cover"
+          imageStyle={styles.backgroundImageStyle}
+          style={styles.imageContainer}
+        >
+          <View style={styles.descriptionView}>
+            <Text variant="headlineMedium" style={styles.defaultTextStyle}>
+              Casual skating
+            </Text>
+            <Text variant="bodyLarge" style={styles.defaultTextStyle}>
+              Enjoy a relaxed and leisurely skating experience, gliding in park
+              trails and enjoying the freedom of movement.
+            </Text>
+          </View>
+        </ImageBackground>
 
-    const getBody = () => 
-    {
-        return(
-            <View style={[StyleSheet.absoluteFill, {justifyContent: "space-evenly", alignItems: "center"}]}>
-                
-                
-            <ImageBackground source={{uri: "https://i.postimg.cc/W3xYNPfv/casual-Skating.jpg"}} resizeMode="cover" imageStyle={styles.backgroundImageStyle} style={styles.imageContainer}>   
-               <View style={styles.descriptionView}>
-                   <Text variant="headlineMedium" style={styles.defaultTextStyle}>Casual skating</Text>
-                   <Text variant='bodyLarge' style={styles.defaultTextStyle}>
-                   Enjoy a relaxed and leisurely skating experience, gliding in park trails and enjoying the freedom of movement.
-                   </Text>
-               </View>
-           </ImageBackground>
+        <ImageBackground
+          source={{ uri: "https://i.postimg.cc/DyJfpynv/street-Skating.jpg" }}
+          resizeMode="cover"
+          imageStyle={styles.backgroundImageStyle}
+          style={styles.imageContainer}
+        >
+          <View style={styles.descriptionView}>
+            <Text variant="headlineMedium" style={styles.defaultTextStyle}>
+              Aggresive / Street skating
+            </Text>
+            <Text variant="bodyLarge" style={styles.defaultTextStyle}>
+              Explore the urban landscape on your skates, mastering tricks,
+              jumps, and slides on the city streets.
+            </Text>
+          </View>
+        </ImageBackground>
 
-            <ImageBackground source={{uri: "https://i.postimg.cc/DyJfpynv/street-Skating.jpg"}} resizeMode="cover" imageStyle={styles.backgroundImageStyle} style={styles.imageContainer}>   
-               <View style={styles.descriptionView}>
-                   <Text variant="headlineMedium" style={styles.defaultTextStyle}>Aggresive / Street skating</Text>
-                   <Text variant='bodyLarge' style={styles.defaultTextStyle}>
-                    Explore the urban landscape on your skates, mastering tricks, jumps, and slides on the city streets.
-                   </Text>
-               </View>
-            </ImageBackground>
-
-           <ImageBackground source={{uri: "https://i.postimg.cc/BZHyNXVc/speed-Skating2.jpg"}} resizeMode="cover" imageStyle={styles.backgroundImageStyle} style={styles.imageContainer}>   
-               <View style={styles.descriptionView}>
-                   <Text variant="headlineMedium" style={styles.defaultTextStyle}>Speed skating</Text>
-                   <Text variant='bodyLarge' style={styles.defaultTextStyle}>
-                    Embrace the need for speed as you challenge yourself in intense, high-speed skating sessions.
-                   </Text>
-               </View>
-           </ImageBackground>
-
-            </View>
-        );
-    }
-
-    return(
-        <Layout2Piece
-            header={
-                <ProfileConfigHeader backButton={true} disabled={false}
-                nextScreen={'SelectStyleAndExperience'}
-                 ></ProfileConfigHeader>}
-            body={getBody()}
-        ></Layout2Piece>
+        <ImageBackground
+          source={{ uri: "https://i.postimg.cc/BZHyNXVc/speed-Skating2.jpg" }}
+          resizeMode="cover"
+          imageStyle={styles.backgroundImageStyle}
+          style={styles.imageContainer}
+        >
+          <View style={styles.descriptionView}>
+            <Text variant="headlineMedium" style={styles.defaultTextStyle}>
+              Speed skating
+            </Text>
+            <Text variant="bodyLarge" style={styles.defaultTextStyle}>
+              Embrace the need for speed as you challenge yourself in intense,
+              high-speed skating sessions.
+            </Text>
+          </View>
+        </ImageBackground>
+      </View>
     );
+  };
+
+  return (
+    <Layout2Piece
+      header={
+        <ProfileConfigHeader
+          backButton={true}
+          disabled={false}
+          nextScreen={"SelectStyleAndExperience"}
+        ></ProfileConfigHeader>
+      }
+      body={getBody()}
+    ></Layout2Piece>
+  );
 };
 
 export default PreSelectStyleAndExperience;
 
 const styles = StyleSheet.create({
-    backgroundImageStyle: {
-        opacity: 0.8
-    },
-    imageContainer:{
-        width: "100%",
-        height: verticalScale(200),
-        justifyContent: "center",
-       
-    },
-    descriptionView: {
-        justifyContent: "center",
-        alignItems: "center",
-        padding: scale(10),
-        
-    },
-    defaultTextStyle: {
-        color: "white",
-        textAlign: "center",
-        opacity: 1,
-    }
+  backgroundImageStyle: {
+    opacity: 0.8,
+  },
+  imageContainer: {
+    width: "100%",
+    height: verticalScale(200),
+    justifyContent: "center",
+  },
+  descriptionView: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: scale(10),
+  },
+  defaultTextStyle: {
+    color: "white",
+    textAlign: "center",
+    opacity: 1,
+  },
 });

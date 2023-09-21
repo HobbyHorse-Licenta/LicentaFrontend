@@ -24,6 +24,19 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["@typescript-eslint"],
-  rules: {},
+  plugins: [
+    "@typescript-eslint",
+    "deprecation",
+    "eslint-plugin-react-hooks",
+    "eslint-plugin-react",
+  ],
+  rules: {
+    curly: 2,
+    // "max-params": [2, 4],
+    // "no-shadow": 0,
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-unused-vars": 0,
+    "@typescript-eslint/no-unused-vars": 2,
+  },
 };

@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import { View, Text } from "react-native";
 
 import * as Animatable from "react-native-animatable";
 

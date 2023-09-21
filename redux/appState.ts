@@ -11,6 +11,7 @@ import {
 import produce from "immer";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { IdTokenResult } from "firebase/auth";
+import { nothing } from "immer";
 
 interface SetSchedulesInterface {
   schedules: Array<Schedule>;
@@ -50,7 +51,9 @@ const initialState: AppState = {
 const loadState = async () => {
   try {
     const serializedState = await AsyncStorage.getItem("appState");
-    if (serializedState === null) return undefined;
+    if (serializedState === null) {
+      return undefined;
+    }
     return JSON.parse(serializedState);
   } catch (error) {
     return undefined;
@@ -65,7 +68,7 @@ export const loadAppStateAsync = createAsyncThunk(
   }
 );
 
-export const saveAppStateAsync = async (state) => {
+export const saveAppStateAsync = async state => {
   try {
     await AsyncStorage.setItem("appState", JSON.stringify(state));
   } catch (error) {
@@ -77,8 +80,8 @@ export const appStateSlice = createSlice({
   name: "appState",
   initialState,
   reducers: {
-    backupUser: (state) => {
-      state.userBackup = produce(state.user, (draft) => {}); //make backup
+    backupUser: state => {
+      state.userBackup = produce(state.user, () => nothing); //make backup
     },
 
     addAggresiveEventToUser: (state, action: PayloadAction<Event>) => {
@@ -87,7 +90,7 @@ export const appStateSlice = createSlice({
       if (state.user !== undefined) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (
               skateProfile.skatePracticeStyle ===
               SkatePracticeStyles.AggresiveSkating
@@ -99,10 +102,14 @@ export const appStateSlice = createSlice({
                 skateProfile.events.length === 0
               ) {
                 newEvents = [eventToAdd];
-              } else newEvents = [...skateProfile.events, eventToAdd];
+              } else {
+                newEvents = [...skateProfile.events, eventToAdd];
+              }
 
               return { ...skateProfile, events: newEvents };
-            } else return skateProfile;
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -113,16 +120,18 @@ export const appStateSlice = createSlice({
       if (state.user !== undefined) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (
               skateProfile.schedules !== undefined &&
               skateProfile.schedules !== null
             ) {
               const newSchedules = skateProfile.schedules.filter(
-                (schedule) => schedule.id !== idOfScheduleToRemove
+                schedule => schedule.id !== idOfScheduleToRemove
               );
               return { ...skateProfile, schedules: newSchedules };
-            } else return skateProfile;
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -133,10 +142,12 @@ export const appStateSlice = createSlice({
       if (state.user !== undefined) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (skateProfile.id === idOfSkateProfileToUpdate) {
               return { ...skateProfile, schedules: schedulesToSet };
-            } else return skateProfile;
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -147,13 +158,15 @@ export const appStateSlice = createSlice({
       if (state.user !== undefined) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (skateProfile.assignedSkills !== undefined) {
               const newAssignedSkills = skateProfile.assignedSkills.filter(
-                (skill) => skill.id !== idOfSkillToRemove
+                skill => skill.id !== idOfSkillToRemove
               );
               return { ...skateProfile, assignedSkills: newAssignedSkills };
-            } else return skateProfile;
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -164,22 +177,28 @@ export const appStateSlice = createSlice({
       if (state.user !== undefined && state.user !== null) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (skateProfile.id === updatedSkill.skateProfileId) {
               if (
                 skateProfile.assignedSkills !== undefined &&
                 skateProfile.assignedSkills !== null
               ) {
                 const newArray = skateProfile.assignedSkills.map(
-                  (assignedSkill) => {
+                  assignedSkill => {
                     if (assignedSkill.id === updatedSkill.id) {
                       return updatedSkill;
-                    } else return assignedSkill;
+                    } else {
+                      return assignedSkill;
+                    }
                   }
                 );
                 return { ...skateProfile, assignedSkills: newArray };
-              } else return skateProfile;
-            } else return skateProfile;
+              } else {
+                return skateProfile;
+              }
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -190,20 +209,26 @@ export const appStateSlice = createSlice({
       if (state.user !== undefined && state.user !== null) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (skateProfile.id === updatedSchedule.skateProfileId) {
               if (
                 skateProfile.schedules !== undefined &&
                 skateProfile.schedules !== null
               ) {
-                const newArray = skateProfile.schedules.map((schedule) => {
+                const newArray = skateProfile.schedules.map(schedule => {
                   if (schedule.id === updatedSchedule.id) {
                     return updatedSchedule;
-                  } else return schedule;
+                  } else {
+                    return schedule;
+                  }
                 });
                 return { ...skateProfile, schedules: newArray };
-              } else return skateProfile;
-            } else return skateProfile;
+              } else {
+                return skateProfile;
+              }
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -212,21 +237,30 @@ export const appStateSlice = createSlice({
     addAssignedSkill: (state, action: PayloadAction<AssignedSkill>) => {
       //payload == assignedSkill to add
       const skillToAdd: AssignedSkill = action.payload;
-      if (state.user !== undefined && state.user !== null && state.user.skateProfiles !== undefined && state.user.skateProfiles.length > 0) {
+      if (
+        state.user !== undefined &&
+        state.user !== null &&
+        state.user.skateProfiles !== undefined &&
+        state.user.skateProfiles.length > 0
+      ) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (skateProfile.id === skillToAdd.skateProfileId) {
               if (
                 skateProfile.assignedSkills !== undefined &&
                 skateProfile.assignedSkills !== null
-              )
+              ) {
                 return {
                   ...skateProfile,
                   assignedSkills: [...skateProfile.assignedSkills, skillToAdd],
                 };
-              else return { ...skateProfile, assignedSkills: [skillToAdd] };
-            } else return skateProfile;
+              } else {
+                return { ...skateProfile, assignedSkills: [skillToAdd] };
+              }
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -237,18 +271,22 @@ export const appStateSlice = createSlice({
       if (state.user !== undefined && state.user !== null) {
         state.user = {
           ...state.user,
-          skateProfiles: state.user.skateProfiles.map((skateProfile) => {
+          skateProfiles: state.user.skateProfiles.map(skateProfile => {
             if (skateProfile.id === scheduleToAdd.skateProfileId) {
               if (
                 skateProfile.schedules !== undefined &&
                 skateProfile.schedules !== null
-              )
+              ) {
                 return {
                   ...skateProfile,
                   schedules: [...skateProfile.schedules, scheduleToAdd],
                 };
-              else return { ...skateProfile, schedules: [scheduleToAdd] };
-            } else return skateProfile;
+              } else {
+                return { ...skateProfile, schedules: [scheduleToAdd] };
+              }
+            } else {
+              return skateProfile;
+            }
           }),
         };
       }
@@ -277,7 +315,7 @@ export const appStateSlice = createSlice({
     setInitialProfileConfigured: (state, action: PayloadAction<boolean>) => {
       state.initialProfileConfigured = action.payload;
     },
-    revertChangesInUser: (state) => {
+    revertChangesInUser: state => {
       if (state.user !== undefined && state.userBackup !== undefined) {
         state.user = {
           ...state.userBackup,
@@ -299,9 +337,9 @@ export const appStateSlice = createSlice({
     setfirstProfileConfig: (state, action: PayloadAction<boolean>) => {
       state.firstProfileConfig = action.payload;
     },
-    resetAppState: (state) => initialState,
+    resetAppState: () => initialState,
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(loadAppStateAsync.fulfilled, (state, action) => {
       return action.payload;
     });

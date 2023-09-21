@@ -1,14 +1,7 @@
-import {
-  applyMiddleware,
-  combineReducers,
-  configureStore,
-} from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import storage from "redux-persist/lib/storage";
-import CircularJSON from "circular-json";
 import thunk from "redux-thunk";
-import logger from "redux-logger";
 
 import uiReducer from "./ui";
 import appStateReducer, {
@@ -29,7 +22,7 @@ import createScheduleStateReducer, {
 } from "./createScheduleState";
 import configProfileStateReducer from "./configProfileState";
 import { WalkthroughState } from "./walkthroughState";
-import globalState, { GlobalState } from "./globalState";
+import { GlobalState } from "./globalState";
 import { debounce } from "lodash";
 
 export interface RootState {
@@ -60,7 +53,10 @@ export const store = configureStore({
   middleware: [thunk],
 });
 
-const saveWalkthroughStateAsyncDebounced = debounce(saveWalkthroughStateAsync, 3000);
+const saveWalkthroughStateAsyncDebounced = debounce(
+  saveWalkthroughStateAsync,
+  3000
+);
 const saveAppStateAsyncDebounced = debounce(saveAppStateAsync, 3000);
 const saveGlobalStateAsyncDebounced = debounce(saveGlobalStateAsync, 3000);
 
