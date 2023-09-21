@@ -9,5 +9,30 @@ import LocationSvg from "./LocationSvg";
 import LevelSvg from "./LevelSvg";
 import BigLocationSvg from "./BigLocationSvg";
 import DeleteSvg from "./DeleteSvg";
-export {ChatSvg, AllEventsSvg, MapsSvg, ScheduleSvg, MyEventsSvg, ProfileSvg,
-    PlusSvg, LocationSvg, LevelSvg, BigLocationSvg, DeleteSvg}
+import HandDownSvg from "./HandDownSvg";
+import MaleSvg from "./MaleSvg";
+import FemaleSvg from "./FemaleSvg";
+import MaleAndFemaleSvg from "./MaleAndFemaleSvg";
+import VisiblePassSvg from "./VisiblePassSvg";
+import NoInternetSvg from "./NoInternetSvg";
+import EmptyBoxSvg from "./EmptyBoxSvg";
+export {
+  ChatSvg,
+  AllEventsSvg,
+  MapsSvg,
+  ScheduleSvg,
+  MyEventsSvg,
+  ProfileSvg,
+  PlusSvg,
+  LocationSvg,
+  LevelSvg,
+  BigLocationSvg,
+  DeleteSvg,
+  HandDownSvg,
+  MaleSvg,
+  FemaleSvg,
+  MaleAndFemaleSvg,
+  VisiblePassSvg,
+  NoInternetSvg,
+  EmptyBoxSvg,
+};

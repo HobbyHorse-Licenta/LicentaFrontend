@@ -1,3 +1,3 @@
-import EventHeader from "./EventHeader";
 import EventImage from "./EventImage";
-export {EventHeader, EventImage}
+import GenderDisplay from "./GenderDisplay";
+export { EventImage, GenderDisplay };

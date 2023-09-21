@@ -1,25 +1,24 @@
 import React from "react";
-import { View } from 'react-native';
+import { View } from "react-native";
 
-import { Layout2PieceForNavigator } from '../../layouts';
+import { Layout2PieceForNavigator } from "../../layouts";
 import MySchedulesBody from "../../../components/mySchedules/MySchedulesBody";
-import { HeaderChatIcon } from "../../../components/general/headers";
+import { GeneralHeader } from "../../../components/general";
 
 const MySchedules = () => {
-
   const getBody = () => {
-    return(
-     <View>
+    return (
+      <View>
         <MySchedulesBody></MySchedulesBody>
-     </View>
+      </View>
     );
-  }
+  };
 
   return (
-     <Layout2PieceForNavigator 
-        header={<HeaderChatIcon></HeaderChatIcon>}
-        body={getBody()}
-     ></Layout2PieceForNavigator>
+    <Layout2PieceForNavigator
+      header={<GeneralHeader title="My Schedules"></GeneralHeader>}
+      body={getBody()}
+    ></Layout2PieceForNavigator>
   );
 };
 

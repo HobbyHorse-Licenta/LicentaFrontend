@@ -1,63 +1,64 @@
-import React, { useState, useEffect} from 'react'
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import React from "react";
+import { StyleSheet, ViewStyle } from "react-native";
 
-import { useTheme, Text } from 'react-native-paper';
+import { useTheme, Button as PaperButton } from "react-native-paper";
 
 interface Params {
-    text: string,
-    callBack: Function
+  text: string;
+  onPress: Function;
+  style?: ViewStyle;
+  disabled?: boolean;
+  textColor?: string;
+  mode?:
+    | "text"
+    | "outlined"
+    | "contained"
+    | "elevated"
+    | "contained-tonal"
+    | undefined;
 }
 
-interface ButtonSize {
-    width: number,
-    height: number
-}
+const Button = ({
+  text,
+  onPress,
+  style,
+  disabled,
+  mode,
+  textColor,
+}: Params) => {
+  const theme = useTheme();
 
-const Button = ({text, callBack} : Params) => {
-    
-    const [buttonSize, setButtonSize] = useState<ButtonSize>({width: 36, height: 154});
-    const [fontDimension, setFontDimension] = useState<number>(12);
-
-    const theme = useTheme();
-    const baseHeight = 36;
-    const baseWidth = 154;
-    const baseFontSize = 16;
-
-    useEffect(() => {
-        setFontDimension(getFontSize());
-    }, [buttonSize])
-
-    const getFontSize = () => {
-        const ratio = buttonSize.height / baseHeight;
-        return baseFontSize * ratio;
+  const getStyle = (): ViewStyle => {
+    let st;
+    if (style) {
+      st = { ...styles.button, ...style };
+    } else {
+      st = styles.button;
     }
 
-    const handleOnLayout = (layout) => {
-        const {x, y, width, height} = layout;
-        setButtonSize({width, height});
+    if (disabled) {
+      return { ...st, backgroundColor: theme.colors.onSurfaceDisabled };
+    } else {
+      return st;
     }
+  };
 
-    return(
-    <TouchableOpacity style={[styles.button, {backgroundColor: theme.colors.secondary}]} onLayout={(event) => handleOnLayout(event.nativeEvent.layout)}  onPress={() => callBack()}>
-        <Text style={{fontSize: fontDimension, color: theme.colors.onSecondary}}>{text}</Text>
-    </TouchableOpacity>
-   
-    );
+  return (
+    <PaperButton
+      textColor={textColor !== undefined ? textColor : undefined}
+      mode={mode !== undefined ? mode : "contained"}
+      onPress={() => !disabled && onPress()}
+      style={getStyle()}
+    >
+      {text}
+    </PaperButton>
+  );
 };
 
 const styles = StyleSheet.create({
-    button: {
-        borderRadius: 50, 
-        minHeight: 25,
-        minWidth: 40,
-        maxHeight: 80,
-        maxWidth: 300, 
-        padding: '3%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: '3%'
-    },
-})
+  button: {
+    borderRadius: 50,
+  },
+});
 
 export default Button;
-

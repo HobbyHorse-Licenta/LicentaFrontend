@@ -1,32 +1,65 @@
-import React, { PropsWithChildren, ReactNode } from "react";
-import { View, ViewStyle } from "react-native";
-
-import { useTheme } from "react-native-paper";
+import React, { ReactNode } from "react";
+import { TextStyle, View, ViewStyle } from "react-native";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import { SpacingStyles } from "../../styles";
 
 interface SvgViewInput {
-    onTouchEnd?:  Function,
-    children: ReactNode,
-    style?: ViewStyle,
-} 
+  onPress?: Function;
+  children: ReactNode;
+  style?: ViewStyle | TextStyle;
+  size: "tiny" | "small" | "medium" | "big" | "very large" | "wrappable";
+}
 
-const SvgView = ({children, onTouchEnd, style}: SvgViewInput) => {
-
-    const getStyle = () => {
-        if(style != undefined)
-            return [SpacingStyles.smallIcon, style];
-        return [SpacingStyles.smallIcon];
+const SvgView = (
+  { children, onPress, style, size }: SvgViewInput,
+  { copilot }
+) => {
+  const getStyle = () => {
+    let s;
+    switch (size) {
+      case "tiny":
+        s = [SpacingStyles.tinyIcon, style];
+        break;
+      case "small":
+        s = [SpacingStyles.smallIcon, style];
+        break;
+      case "medium":
+        s = [SpacingStyles.mediumIcon, style];
+        break;
+      case "big":
+        s = [SpacingStyles.bigIcon, style];
+        break;
+      case "very large":
+        s = [SpacingStyles.veryLargeIcon, style];
+        break;
+      case "wrappable":
+        s = [SpacingStyles.wrappableIcon, style];
+        break;
+      default:
+        s = [SpacingStyles.smallIcon, style];
+        break;
+    }
+    if (style != undefined) {
+      s = [...s, style];
     }
 
-    const theme = useTheme();
+    return s;
+  };
 
-    return (
-        <View onTouchEnd={() => (onTouchEnd != undefined) ? onTouchEnd() : console.log("[SvgView]: No action on press")} 
-        style={getStyle()}>
-            {children}
-        </View>
-    );
+  return (
+    <View style={getStyle()} {...copilot}>
+      <TouchableWithoutFeedback
+        onPressOut={() =>
+          onPress !== undefined
+            ? onPress()
+            : console.log("[SvgView]: No action on press")
+        }
+      >
+        {children}
+      </TouchableWithoutFeedback>
+    </View>
+  );
 };
 
 export default SvgView;

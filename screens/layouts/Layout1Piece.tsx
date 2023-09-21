@@ -1,21 +1,22 @@
-import React from 'react';
+import React from "react";
 
-import { SafeAreaView } from 'react-navigation';
-import { useSelector } from 'react-redux';
+import { SafeAreaView } from "react-navigation";
+import { useSelector } from "react-redux";
 
-interface Params{
-    body: any
+interface Params {
+  body: any;
 }
 
-const Layout1Piece = ({body} : Params) => {
-    
-    const {windowHeight} = useSelector((state: any) => state.ui)
-   
-    return (
-        <SafeAreaView style={{width: '100%', height: windowHeight, display: 'flex'}}>
-            {body}
-        </SafeAreaView>
-    );
+const Layout1Piece = ({ body }: Params) => {
+  const { windowHeight } = useSelector((state: any) => state.ui);
+
+  return (
+    <SafeAreaView
+      style={{ width: "100%", height: windowHeight, display: "flex" }}
+    >
+      {body}
+    </SafeAreaView>
+  );
 };
 
 export default Layout1Piece;

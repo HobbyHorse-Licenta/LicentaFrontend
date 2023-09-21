@@ -1,17 +1,16 @@
-import React from 'react';
+import React from "react";
 
-import { Layout2PieceForNavigator } from '../../layouts';
-import { EventsBody } from '../../../components/events'
-import { HeaderChatIcon } from '../../../components/general/headers';
+import { Layout2PieceForNavigator } from "../../layouts";
+import { EventsBody } from "../../../components/events";
+import { GeneralHeader } from "../../../components/general";
 
 const Events = () => {
-
-    return (
-        <Layout2PieceForNavigator 
-            header={<HeaderChatIcon></HeaderChatIcon>}
-            body={<EventsBody></EventsBody>}
-        ></Layout2PieceForNavigator>
-    );
+  return (
+    <Layout2PieceForNavigator
+      header={<GeneralHeader title="Event suggestions"></GeneralHeader>}
+      body={<EventsBody></EventsBody>}
+    ></Layout2PieceForNavigator>
+  );
 };
 
 export default Events;
