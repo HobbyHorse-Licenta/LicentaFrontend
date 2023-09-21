@@ -1,4 +1,4 @@
-const cancel= "Cancel";
+const cancel = "Cancel";
 const finish = "Finish";
 
-export default {cancel, finish};
+export default { cancel, finish };

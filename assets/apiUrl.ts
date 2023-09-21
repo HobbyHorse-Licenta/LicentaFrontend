@@ -1,2 +1,2 @@
-export const apiUrl = 'https://hobby-horse-api.herokuapp.com'
-//export const wsUrl = 'ws://hobby-horse-inline-skating.herokuapp.com'
+export const apiUrl =
+  "https://hobby-horse-api-staging-c015da26324c.herokuapp.com";

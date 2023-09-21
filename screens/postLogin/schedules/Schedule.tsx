@@ -1,324 +1,415 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, View } from 'react-native';
+import { ScrollView, View } from "react-native";
 
 import { scale } from "react-native-size-matters";
-import uuid from 'react-native-uuid';
+import uuid from "react-native-uuid";
 import { useTourGuideController } from "rn-tourguide";
 import { useDispatch, useSelector } from "react-redux";
 
-import { SpacingStyles } from '../../../styles';
-import { SelectDays, SelectLocationAggresive, SelectLocationCasualAndSpeed, SelectHourRange, SelectCompanion} from '../../../components/schedule';
-import { Layout2Piece } from '../../layouts';
-import { Gender, Schedule as ScheduleType, SkatePracticeStyles } from "../../../types";
+import { SpacingStyles } from "../../../styles";
+import {
+  SelectDays,
+  SelectLocationAggresive,
+  SelectLocationCasualAndSpeed,
+  SelectHourRange,
+  SelectCompanion,
+} from "../../../components/schedule";
+import { Layout2Piece } from "../../layouts";
+import {
+  Gender,
+  Schedule as ScheduleType,
+  SkatePracticeStyles,
+  Zone,
+} from "../../../types";
 import { GeneralHeader } from "../../../components/general";
 import { RootState } from "../../../redux/store";
 import { uiUtils, validation } from "../../../utils";
 import { Fetch } from "../../../services";
-import { addSchedule, backupUser, revertChangesInUser, updateSchedule } from "../../../redux/appState";
-import { resetCreateScheduleState, setEndTime, setSelectedDaysState, setStartTime } from "../../../redux/createScheduleState";
+import {
+  addSchedule,
+  backupUser,
+  revertChangesInUser,
+  updateSchedule,
+} from "../../../redux/appState";
+import { resetCreateScheduleState } from "../../../redux/createScheduleState";
 import { Day } from "../../../types";
 import { setScheduleWalkthrough } from "../../../redux/walkthroughState";
 
-const Schedule = ({route, navigation}) => {
-
-  let updateMode: boolean = false;
+const Schedule = ({ route, navigation }) => {
+  let updateMode = false;
   let scheduleToUpdate: ScheduleType | undefined = undefined;
-  if(route.params !== undefined)
-  {
+  if (route.params !== undefined) {
     updateMode = route.params.updateMode;
     scheduleToUpdate = route.params.scheduleToUpdate;
   }
 
-  const scheduleConfig = useSelector((state: RootState) => state.createScheduleState);
-  const {JWTTokenResult} = useSelector((state: RootState) => state.appState);
-  const {currentSkateProfile} = useSelector((state: RootState) => state.globalState);
-  const {schedule} = useSelector((state: RootState) => state.walkthroughState);
+  const scheduleConfig = useSelector(
+    (state: RootState) => state.createScheduleState
+  );
+
+  const { JWTTokenResult } = useSelector((state: RootState) => state.appState);
+  const { currentSkateProfile } = useSelector(
+    (state: RootState) => state.globalState
+  );
+  const { schedule } = useSelector(
+    (state: RootState) => state.walkthroughState
+  );
 
   const dispatch = useDispatch();
 
-  const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] = useState<boolean>(false);
+  const [skipWalkthroughPromptVisibility, setSkipWalkthroughPromptVisibility] =
+    useState<boolean>(false);
   const [parkSelected, setParkSelected] = useState(false);
   const [scrollEnable, setScrollEnable] = useState(true);
   const [canCreateSchedule, setCanCreateSchedule] = useState(false);
-  const [selectedDays, setSelectedDays] = useState<Array<Day>>(scheduleConfig.selectedDays !== undefined ? scheduleConfig.selectedDays : []);
-  const [startTime, setStarTTime] = useState<Date>(scheduleConfig.startTime !== undefined ? new Date(scheduleConfig.startTime) : new Date())
-  const [endTime, setEnDTime] = useState<Date>(scheduleConfig.endTime !== undefined ? new Date(scheduleConfig.endTime) : new Date())
+  const [selectedDays, setSelectedDays] = useState<Array<Day>>(
+    scheduleConfig.selectedDays !== undefined ? scheduleConfig.selectedDays : []
+  );
+  const [startTime, setStarTTime] = useState<Date>(
+    scheduleConfig.startTime !== undefined
+      ? new Date(scheduleConfig.startTime)
+      : new Date()
+  );
+  const [endTime, setEnDTime] = useState<Date>(
+    scheduleConfig.endTime !== undefined
+      ? new Date(scheduleConfig.endTime)
+      : new Date()
+  );
 
-  const [selectedGender, setSelectedGender] = useState<Gender | undefined>(scheduleConfig.gender);
-  const [numberOfPartners, setNumberOfPartners] = useState<number | undefined>(scheduleConfig.maxNumberOfPeople);
-  const [minimumAge, setMinimumAgee] = useState<number | undefined>(scheduleConfig.minimumAge);
-  const [maximumAge, setMaximumAgee] = useState<number | undefined>(scheduleConfig.maximumAge);
+  const zone: Zone | undefined = scheduleConfig.zone;
+
+  const [selectedGender, setSelectedGender] = useState<Gender | undefined>(
+    scheduleConfig.gender
+  );
+  const [numberOfPartners, setNumberOfPartners] = useState<number | undefined>(
+    scheduleConfig.maxNumberOfPeople
+  );
+  const [minimumAge, setMinimumAgee] = useState<number | undefined>(
+    scheduleConfig.minimumAge
+  );
+  const [maximumAge, setMaximumAgee] = useState<number | undefined>(
+    scheduleConfig.maximumAge
+  );
 
   const {
     canStart, // a boolean indicate if you can start tour guide
     start, // a function to start the tourguide
-    stop, // a function  to stopping it
     eventEmitter, // an object for listening some events
-    TourGuideZone
-  } = useTourGuideController('schedule')
-  
+  } = useTourGuideController("schedule");
 
   useEffect(() => {
-      if (canStart && schedule === true) {
-        start()
-      }
-      if(eventEmitter !== undefined)
-      {
-        eventEmitter.on('stop', () => setSkipWalkthroughPromptVisibility(true))
-      }
+    if (canStart && schedule === true) {
+      start();
+    }
+    if (eventEmitter !== undefined) {
+      eventEmitter.on("stop", () => setSkipWalkthroughPromptVisibility(true));
+    }
 
-      return () => {
-        if(eventEmitter !== undefined)
-        {
-            eventEmitter.off('stop', () => setSkipWalkthroughPromptVisibility(true))
-        }
+    return () => {
+      if (eventEmitter !== undefined) {
+        eventEmitter.off("stop", () =>
+          setSkipWalkthroughPromptVisibility(true)
+        );
       }
-  }, [canStart])
+    };
+  }, [canStart]);
 
   //checks if all fields are completed so the schedule can be created
   //(also sets if the button is disabled or not)
   useEffect(() => {
-    
-    if(!validation.isDefined(scheduleConfig.selectedDays))
-    {
+    if (!validation.isDefined(selectedDays)) {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.startTime) || !validation.isDefined(scheduleConfig.endTime))
-    {
+    if (!validation.isDefined(startTime) || !validation.isDefined(endTime)) {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.zone) || !validation.isDefined(scheduleConfig.zone?.location))
-    {
+    if (!validation.isDefined(zone) || !validation.isDefined(zone?.location)) {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.minimumAge)|| !validation.isDefined(scheduleConfig.maximumAge))
-    {
+    if (
+      !validation.isDefined(minimumAge) ||
+      !validation.isDefined(maximumAge)
+    ) {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.gender))
-    {
+    if (!validation.isDefined(selectedGender)) {
       setCanCreateSchedule(false);
       return;
     }
-    if(!validation.isDefined(scheduleConfig.maxNumberOfPeople))
-    {
+    if (!validation.isDefined(numberOfPartners)) {
       setCanCreateSchedule(false);
       return;
     }
-    if(currentSkateProfile !== undefined && (currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.CasualSkating || currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.SpeedSkating))
-    {
-      if(parkSelected === false)
-      {
+    if (
+      currentSkateProfile !== undefined &&
+      (currentSkateProfile.skatePracticeStyle ===
+        SkatePracticeStyles.CasualSkating ||
+        currentSkateProfile.skatePracticeStyle ===
+          SkatePracticeStyles.SpeedSkating)
+    ) {
+      if (parkSelected === false) {
         setCanCreateSchedule(false);
         return;
       }
     }
     setCanCreateSchedule(true);
-  }, [scheduleConfig, parkSelected])
-  
-  useEffect(() => {
-    dispatch(setSelectedDaysState(selectedDays));
-  }, [selectedDays])
-  
-  useEffect(() => {
-    dispatch(setStartTime(startTime.getTime()));
-    dispatch(setEndTime(endTime.getTime()));
-  }, [startTime, endTime])
+  }, [
+    selectedDays,
+    startTime,
+    endTime,
+    zone,
+    minimumAge,
+    maximumAge,
+    selectedGender,
+    numberOfPartners,
+    parkSelected,
+  ]);
 
-  const updateSelectedDays = (selectedDays: Array<Day>) =>{
-    setSelectedDays(selectedDays);
-  }
- 
+  // useEffect(() => {
+  //   dispatch(setSelectedDaysState(selectedDays));
+  // }, [selectedDays])
+
+  // useEffect(() => {
+  //   dispatch(setStartTime(startTime.getTime()));
+  //   dispatch(setEndTime(endTime.getTime()));
+  // }, [startTime, endTime])
+
   const createNewSchedule = () => {
-
-    if(currentSkateProfile !== undefined && currentSkateProfile !== null)
-    {
-      if(scheduleConfig.endTime !== undefined && scheduleConfig.startTime !== undefined
-        && scheduleConfig.zone !== undefined && scheduleConfig.minimumAge !== undefined
-        && scheduleConfig.maximumAge !== undefined && scheduleConfig.gender !== undefined &&
-        scheduleConfig.maxNumberOfPeople !== undefined && scheduleConfig.selectedDays !== undefined)
-      {
-        
+    if (currentSkateProfile !== undefined && currentSkateProfile !== null) {
+      if (
+        endTime !== undefined &&
+        startTime !== undefined &&
+        zone !== undefined &&
+        minimumAge !== undefined &&
+        maximumAge !== undefined &&
+        selectedGender !== undefined &&
+        numberOfPartners !== undefined &&
+        selectedDays !== undefined
+      ) {
         const newSchedule: ScheduleType = {
           id: uuid.v4().toString(),
           skateProfileId: currentSkateProfile.id,
-          days: scheduleConfig.selectedDays,
-          startTime: scheduleConfig.startTime,
-          endTime: scheduleConfig.endTime,
-          zones: [scheduleConfig.zone],
-          minimumAge: scheduleConfig.minimumAge,
-          maximumAge: scheduleConfig.maximumAge,
-          gender: scheduleConfig.gender,
-          maxNumberOfPeople: scheduleConfig.maxNumberOfPeople
-        }
+          days: selectedDays,
+          startTime: startTime.getTime(),
+          endTime: endTime.getTime(),
+          zones: [zone],
+          minimumAge: minimumAge,
+          maximumAge: maximumAge,
+          gender: selectedGender,
+          maxNumberOfPeople: numberOfPartners,
+        };
 
-        console.log("\n\n\nNEW CREATED SCHEDULE :  " + JSON.stringify(newSchedule));
         dispatch(backupUser());
-        
+
         //optimistic update
         dispatch(addSchedule(newSchedule));
         navigation.navigate("MySchedules" as never);
 
-        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-        {
-          Fetch.postSchedule(JWTTokenResult.token, newSchedule, 
-          () => {
-            console.log("Schedule post success");
-          },
-          () => {
-            console.log("Schedule post fail; rever changes");
-            uiUtils.showPopUp("Error", "Coudn't create schedule");
-            dispatch(revertChangesInUser());
-          })
-        }
-        else{
-            //TODO refresh token
+        if (
+          JWTTokenResult !== undefined &&
+          !validation.isJWTTokenExpired(JWTTokenResult)
+        ) {
+          Fetch.postSchedule(
+            JWTTokenResult.token,
+            newSchedule,
+            () => {
+              console.log("Schedule post success");
+            },
+            () => {
+              console.log("Schedule post fail; rever changes");
+              uiUtils.showPopUp("Error", "Coudn't create schedule");
+              dispatch(revertChangesInUser());
+            }
+          );
+        } else {
+          //TODO refresh token
         }
       }
-      
 
       dispatch(resetCreateScheduleState());
+    } else {
+      uiUtils.showPopUp("Error", "No skateProfile selected");
     }
-    else uiUtils.showPopUp("Error", "No skateProfile selected");
-
-  }
+  };
 
   const updateExistingSchedule = () => {
-
-    if(currentSkateProfile !== undefined && currentSkateProfile !== null)
-    {
-      if(scheduleToUpdate !== undefined &&
-        scheduleConfig.endTime !== undefined && scheduleConfig.startTime !== undefined
-        && scheduleConfig.zone !== undefined && scheduleConfig.minimumAge !== undefined
-        && scheduleConfig.maximumAge !== undefined && scheduleConfig.gender !== undefined &&
-        scheduleConfig.maxNumberOfPeople !== undefined && scheduleConfig.selectedDays !== undefined)
-      {
-        
+    if (currentSkateProfile !== undefined && currentSkateProfile !== null) {
+      if (
+        scheduleToUpdate !== undefined &&
+        endTime !== undefined &&
+        startTime !== undefined &&
+        zone !== undefined &&
+        minimumAge !== undefined &&
+        maximumAge !== undefined &&
+        selectedGender !== undefined &&
+        numberOfPartners !== undefined &&
+        selectedDays !== undefined
+      ) {
         const newSchedule: ScheduleType = {
           ...scheduleToUpdate,
-          days: scheduleConfig.selectedDays,
-          startTime: scheduleConfig.startTime,
-          endTime: scheduleConfig.endTime,
-          zones: [scheduleConfig.zone],
-          minimumAge: scheduleConfig.minimumAge,
-          maximumAge: scheduleConfig.maximumAge,
-          gender: scheduleConfig.gender,
-          maxNumberOfPeople: scheduleConfig.maxNumberOfPeople
-        }
+          days: selectedDays,
+          startTime: startTime.getTime(),
+          endTime: endTime.getTime(),
+          zones: [zone],
+          minimumAge: minimumAge,
+          maximumAge: maximumAge,
+          gender: selectedGender,
+          maxNumberOfPeople: numberOfPartners,
+        };
         dispatch(backupUser());
-        
 
-        
         //optimistic update
         dispatch(updateSchedule(newSchedule));
         navigation.navigate("MySchedules" as never);
 
         dispatch(resetCreateScheduleState());
 
-        if(JWTTokenResult !== undefined && !validation.isJWTTokenExpired(JWTTokenResult))
-        {
-          Fetch.putSchedule(JWTTokenResult.token, scheduleToUpdate.id, newSchedule, 
-          (dbSchedule) => {
-            console.log("Schedule put success");
-            console.log("\n\nUPDATED SCHEDULE IN DB:\n" + JSON.stringify(dbSchedule));
-          dispatch(updateSchedule(dbSchedule));
-
-          },
-          () => {
-            console.log("Schedule put fail; revert changes");
-            uiUtils.showPopUp("Error", "Coudn't update schedule");
-            dispatch(revertChangesInUser());
-          })
-        }
-        else{
-            //TODO refresh token
+        if (
+          JWTTokenResult !== undefined &&
+          !validation.isJWTTokenExpired(JWTTokenResult)
+        ) {
+          Fetch.putSchedule(
+            JWTTokenResult.token,
+            scheduleToUpdate.id,
+            newSchedule,
+            dbSchedule => {
+              console.log("Schedule put success");
+              dispatch(updateSchedule(dbSchedule));
+            },
+            () => {
+              console.log("Schedule put fail; revert changes");
+              uiUtils.showPopUp("Error", "Coudn't update schedule");
+              dispatch(revertChangesInUser());
+            }
+          );
+        } else {
+          //TODO refresh token
         }
       }
+    } else {
+      uiUtils.showPopUp("Error", "No skateProfile selected");
     }
-    else uiUtils.showPopUp("Error", "No skateProfile selected");
-
-  }
+  };
 
   const getcreateScheduleContainer = () => {
-      return(
-        <ScrollView scrollEnabled={scrollEnable} contentContainerStyle={{alignItems: 'center', justifyContent: 'center'}}>
-        <View style={[SpacingStyles.centeredContainer, {flex: 0.8}]}>
-          <SelectDays selectedDays={selectedDays} onSelectedDaysChange={updateSelectedDays}></SelectDays>
+    return (
+      <ScrollView
+        scrollEnabled={scrollEnable}
+        contentContainerStyle={{
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <View style={[SpacingStyles.centeredContainer, { flex: 0.8 }]}>
+          <SelectDays
+            selectedDays={selectedDays}
+            onSelectedDaysChange={setSelectedDays}
+          ></SelectDays>
         </View>
-        <View style={[SpacingStyles.centeredContainer, {flex: 0.9}]}>
-          <SelectHourRange 
-          startTime={startTime} 
-          onStartTimeChange={(value) => setStarTTime(value)}
-          endTime={endTime} 
-          onEndTimeChange={(value) => setEnDTime(value)}
+        <View style={[SpacingStyles.centeredContainer, { flex: 0.9 }]}>
+          <SelectHourRange
+            startTime={startTime}
+            onStartTimeChange={value => setStarTTime(value)}
+            endTime={endTime}
+            onEndTimeChange={value => setEnDTime(value)}
           ></SelectHourRange>
         </View>
-        {
-          currentSkateProfile?.skatePracticeStyle === SkatePracticeStyles.AggresiveSkating &&
-          <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
-            <SelectLocationAggresive onTouchInside={() => {setScrollEnable(false)}} onTouchOutside={() => {setScrollEnable(true);}}></SelectLocationAggresive>
+        {currentSkateProfile?.skatePracticeStyle ===
+          SkatePracticeStyles.AggresiveSkating && (
+          <View style={[SpacingStyles.centeredContainer, { flex: 3 }]}>
+            <SelectLocationAggresive
+              onTouchInside={() => {
+                setScrollEnable(false);
+              }}
+              zone={zone}
+              onTouchOutside={() => {
+                setScrollEnable(true);
+              }}
+            ></SelectLocationAggresive>
           </View>
-        }
-        {
-          currentSkateProfile !== undefined &&
-          (currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.CasualSkating || currentSkateProfile.skatePracticeStyle === SkatePracticeStyles.SpeedSkating) &&
-          <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
-            <SelectLocationCasualAndSpeed 
-            parkSelected={parkSelected}
-            setParkSelected={setParkSelected}
-            onTouchInside={() => {setScrollEnable(false)}} 
-            onTouchOutside={() => {setScrollEnable(true);}}></SelectLocationCasualAndSpeed>
-          </View>
-        }
-       
-        <View style={[SpacingStyles.centeredContainer, {flex: 3}]}>
+        )}
+        {currentSkateProfile !== undefined &&
+          (currentSkateProfile.skatePracticeStyle ===
+            SkatePracticeStyles.CasualSkating ||
+            currentSkateProfile.skatePracticeStyle ===
+              SkatePracticeStyles.SpeedSkating) && (
+            <View style={[SpacingStyles.centeredContainer, { flex: 3 }]}>
+              <SelectLocationCasualAndSpeed
+                parkSelected={parkSelected}
+                zone={zone}
+                setParkSelected={setParkSelected}
+                onTouchInside={() => {
+                  setScrollEnable(false);
+                }}
+                onTouchOutside={() => {
+                  setScrollEnable(true);
+                }}
+              ></SelectLocationCasualAndSpeed>
+            </View>
+          )}
+
+        <View style={[SpacingStyles.centeredContainer, { flex: 3 }]}>
           <SelectCompanion
-          selectedGender={selectedGender}
-          setSelectedGender={setSelectedGender}
-          numberOfPartners={numberOfPartners}
-          setNumberOfPartners={setNumberOfPartners}
-          minimumAge={minimumAge}
-          setMinimumAgee={setMinimumAgee}
-          maximumAge={maximumAge}
-          setMaximumAgee={setMaximumAgee}
+            selectedGender={selectedGender}
+            setSelectedGender={setSelectedGender}
+            numberOfPartners={numberOfPartners}
+            setNumberOfPartners={setNumberOfPartners}
+            minimumAge={minimumAge}
+            setMinimumAgee={setMinimumAgee}
+            maximumAge={maximumAge}
+            setMaximumAgee={setMaximumAgee}
           ></SelectCompanion>
         </View>
       </ScrollView>
-      );
-  }
-  
+    );
+  };
 
   const getBody = () => {
-    return(
-      <View style={[SpacingStyles.centeredContainer, SpacingStyles.fullSizeContainer, {padding: scale(14)}]}>
+    return (
+      <View
+        style={[
+          SpacingStyles.centeredContainer,
+          SpacingStyles.fullSizeContainer,
+          { padding: scale(14) },
+        ]}
+      >
         {getcreateScheduleContainer()}
-        {uiUtils.getShowWalkthroughModal(skipWalkthroughPromptVisibility, (visibility) => setSkipWalkthroughPromptVisibility(visibility),
-                                                () => { dispatch(setScheduleWalkthrough(false))})}
-           
+        {uiUtils.getShowWalkthroughModal(
+          skipWalkthroughPromptVisibility,
+          visibility => setSkipWalkthroughPromptVisibility(visibility),
+          () => {
+            dispatch(setScheduleWalkthrough(false));
+          }
+        )}
       </View>
     );
-  }
+  };
 
   const createOrUpdateSchedule = () => {
-    if(updateMode !== undefined && updateMode === true)
-    {
+    if (updateMode !== undefined && updateMode === true) {
       updateExistingSchedule();
-    }
-    else 
-    {
+    } else {
       createNewSchedule();
     }
-  }
+  };
   return (
-     <Layout2Piece
-        header={<GeneralHeader rightButtonEnable={canCreateSchedule} onBack={() => navigation.goBack()}
-        onRightButtonPress={() => createOrUpdateSchedule()} rightButtonText={updateMode === true ? "Update Schedule" : "Add Schedule"}/>}
-        body={getBody()}
-     ></Layout2Piece>
+    <Layout2Piece
+      header={
+        <GeneralHeader
+          rightButtonEnable={canCreateSchedule}
+          onBack={() => navigation.goBack()}
+          onRightButtonPress={() => createOrUpdateSchedule()}
+          rightButtonText={
+            updateMode === true ? "Update Schedule" : "Add Schedule"
+          }
+        />
+      }
+      body={getBody()}
+    ></Layout2Piece>
   );
 };
 
