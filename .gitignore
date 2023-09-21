@@ -12,3 +12,11 @@ web-build/
 
 # macOS
 .DS_Store
+
+# local config files
+google-services.json
+firebaseConfig.ts
+imgurConfig.ts
+
+# local env files
+.env
