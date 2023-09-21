@@ -1,13 +1,13 @@
-{
-  "expo": {
-    "name": "HobbyHorse",
-    "slug": "hobbyhorse",
-    "description": "App to meet friends by playing sports.",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/randomPics/smallSizeHobbyHorseIcon.png",
-    "userInterfaceStyle": "light",
-    "plugins": [
+module.export = {
+  expo: {
+    name: "HobbyHorse",
+    slug: "hobbyhorse",
+    description: "App to meet friends by playing sports.",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/randomPics/smallSizeHobbyHorseIcon.png",
+    userInterfaceStyle: "light",
+    plugins: [
       [
         "expo-image-picker",
         {
@@ -50,7 +50,7 @@
       "package": "com.alex99_pop.hobbyhorse",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCDKGOcm8RZc2jm_zhnvzws6Fd-PmLNK08"
+          "apiKey": process.env.EXPO_PUBLIC_GOOGLEMAPS_API_KEY
         }
       }
     },
